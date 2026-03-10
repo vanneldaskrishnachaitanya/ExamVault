@@ -184,20 +184,18 @@ const previewFile = async (req, res, next) => {
     if (req.user.role === "student" && file.status !== "approved") {
       return res.status(403).json({
         success: false,
-        message: "File not approved yet"
+        message: "File not accessible"
       });
     }
 
+    // redirect to Cloudinary preview
     return res.redirect(file.filePath);
 
   } catch (err) {
-
     next(err);
-
   }
 
 };
-
 
 // ─────────────────────────────────────────────────────────────
 // DOWNLOAD FILE
@@ -218,20 +216,18 @@ const downloadFile = async (req, res, next) => {
     if (req.user.role === "student" && file.status !== "approved") {
       return res.status(403).json({
         success: false,
-        message: "File not approved yet"
+        message: "File not accessible"
       });
     }
 
+    // redirect to Cloudinary download
     return res.redirect(file.filePath);
 
   } catch (err) {
-
     next(err);
-
   }
 
 };
-
 
 // ─────────────────────────────────────────────────────────────
 // ADMIN — PENDING FILES
