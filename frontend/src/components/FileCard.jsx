@@ -179,33 +179,25 @@ const isAdmin = backendUser?.role === "admin";
 
   /* ───────── DOWNLOAD ───────── */
 
-  const handleDownload = async () => {
-    try {
+const handleDownload = () => {
 
-      const res = await api.get(`/files/download/${file._id}`, {
-        responseType: "blob"
-      });
+  const url = `${import.meta.env.VITE_API_BASE_URL}/files/download/${file._id}`;
 
-      const url = window.URL.createObjectURL(new Blob([res.data]));
+  const link = document.createElement("a");
 
-      const link = document.createElement("a");
+  link.href = url;
 
-      link.href = url;
-      link.download = file.originalName;
+  link.target = "_blank";
 
-      document.body.appendChild(link);
+  link.setAttribute("download", file.originalName);
 
-      link.click();
+  document.body.appendChild(link);
 
-      link.remove();
+  link.click();
 
-    } catch (err) {
+  link.remove();
 
-      console.error("Download failed", err);
-      alert("Download failed");
-
-    }
-  };
+};
 
   /* ───────── DELETE (ADMIN) ───────── */
 
