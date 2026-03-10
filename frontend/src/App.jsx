@@ -1,0 +1,85 @@
+// src/App.jsx
+import { Navigate, Route, Routes } from 'react-router-dom';
+import { useAuth } from './hooks/useAuth';
+import MainLayout    from './layouts/MainLayout';
+import Login         from './pages/Login';
+import AdminLogin    from './pages/AdminLogin';
+import Dashboard     from './pages/Dashboard';
+import RegulationPage from './pages/RegulationPage';
+import SubjectPage   from './pages/SubjectPage';
+import AdminPanel    from './pages/AdminPanel';
+
+// ── Route guards ──────────────────────────────────────────────
+
+function ProtectedRoute({ children }) {
+  const { isAuthenticated, loading } = useAuth();
+  if (loading) return <AppLoader />;
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  return children;
+}
+
+function AdminRoute({ children }) {
+  const { isAuthenticated, isAdmin, loading } = useAuth();
+  if (loading) return <AppLoader />;
+  if (!isAuthenticated) return <Navigate to="/admin-login" replace />;
+  if (!isAdmin) return <Navigate to="/dashboard" replace />;
+  return children;
+}
+
+// Student login page — redirect away if already authenticated as student
+function GuestRoute({ children }) {
+  const { isAuthenticated, loading } = useAuth();
+  if (loading) return <AppLoader />;
+  if (isAuthenticated) return <Navigate to="/dashboard" replace />;
+  return children;
+}
+
+// Admin login page — redirect away if already authenticated as admin
+function AdminGuestRoute({ children }) {
+  const { isAuthenticated, isAdmin, loading } = useAuth();
+  if (loading) return <AppLoader />;
+  if (isAuthenticated && isAdmin) return <Navigate to="/admin" replace />;
+  return children;
+}
+
+function AppLoader() {
+  return (
+    <div className="app-loader">
+      <div className="app-loader__ring" />
+      <span className="app-loader__text">VNRVJIET</span>
+    </div>
+  );
+}
+
+// ── Route tree ────────────────────────────────────────────────
+export default function App() {
+  return (
+    <Routes>
+
+      {/* ── Public ─────────────────────────────────────────── */}
+      <Route path="/login" element={
+        <GuestRoute><Login /></GuestRoute>
+      } />
+
+      <Route path="/admin-login" element={
+        <AdminGuestRoute><AdminLogin /></AdminGuestRoute>
+      } />
+
+      {/* ── Student (protected) ────────────────────────────── */}
+      <Route element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
+        <Route path="/dashboard"                          element={<Dashboard />} />
+        <Route path="/r/:regulation"                      element={<RegulationPage />} />
+        <Route path="/r/:regulation/:branch/:subject"     element={<SubjectPage />} />
+      </Route>
+
+      {/* ── Admin (protected + role check) ─────────────────── */}
+      <Route path="/admin" element={<AdminRoute><MainLayout /></AdminRoute>}>
+        <Route index element={<AdminPanel />} />
+      </Route>
+
+      {/* ── Catch-all ──────────────────────────────────────── */}
+      <Route path="/"  element={<Navigate to="/login"   replace />} />
+      <Route path="*"  element={<Navigate to="/dashboard" replace />} />
+    </Routes>
+  );
+}
