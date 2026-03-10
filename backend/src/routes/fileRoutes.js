@@ -61,20 +61,13 @@ router.get(
  */
 router.get(
   '/preview/:id',
-  protect,
-  restrictTo('student', 'admin'),
   mongoIdParam('id'),
   validate,
   previewFile
 );
 
-/**
- * GET /files/download/:id
- */
 router.get(
   '/download/:id',
-  protect,
-  restrictTo('student', 'admin'),
   mongoIdParam('id'),
   validate,
   downloadFile
