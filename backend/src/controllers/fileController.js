@@ -181,9 +181,25 @@ const previewFile = async (req, res, next) => {
       });
     }
 
+    let previewUrl = file.filePath;
+
+    if (previewUrl && previewUrl.includes('cloudinary.com')) {
+      if (previewUrl.includes('/raw/upload/')) {
+        previewUrl = previewUrl.replace(
+          '/raw/upload/',
+          '/raw/upload/fl_inline/'
+        );
+      } else if (previewUrl.includes('/upload/')) {
+        previewUrl = previewUrl.replace(
+          '/upload/',
+          '/upload/fl_inline/'
+        );
+      }
+    }
+
     return res.json({
       success: true,
-      url: file.filePath
+      url: previewUrl
     });
 
   } catch (err) {
@@ -222,21 +238,19 @@ if (!file.filePath) {
 
 let downloadUrl = file.filePath;
 
-if (downloadUrl.includes('cloudinary.com')) {
+if (downloadUrl && downloadUrl.includes('cloudinary.com')) {
 
   const encodedName = encodeURIComponent(file.originalName || 'file');
-
-  if (downloadUrl.includes('/upload/')) {
-    downloadUrl = downloadUrl.replace(
-      '/upload/',
-      `/upload/fl_attachment:${encodedName}/`
-    );
-  }
 
   if (downloadUrl.includes('/raw/upload/')) {
     downloadUrl = downloadUrl.replace(
       '/raw/upload/',
       `/raw/upload/fl_attachment:${encodedName}/`
+    );
+  } else if (downloadUrl.includes('/upload/')) {
+    downloadUrl = downloadUrl.replace(
+      '/upload/',
+      `/upload/fl_attachment:${encodedName}/`
     );
   }
 
