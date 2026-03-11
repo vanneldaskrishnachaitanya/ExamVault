@@ -113,15 +113,29 @@ export default function FileCard({ file, showStatus = false, onReport, compact =
   /* ───────── DOWNLOAD ───────── */
 
   const handleDownload = () => {
-
-    if (!file?._id) {
-      alert("Download unavailable");
+    if (!file.filePath) {
+      alert("Download not available");
       return;
     }
 
-    const downloadUrl = `${import.meta.env.VITE_API_URL}/files/download/${file._id}`;
+    let url = file.filePath;
 
-    window.open(downloadUrl, "_blank");
+    if (url.includes("cloudinary.com")) {
+
+      const encoded = encodeURIComponent(file.originalName || "file");
+
+      if (url.includes("/upload/")) {
+        url = url.replace("/upload/", `/upload/fl_attachment:${encoded}/`);
+      }
+
+      if (url.includes("/raw/upload/")) {
+        url = url.replace("/raw/upload/", `/raw/upload/fl_attachment:${encoded}/`);
+      }
+
+    }
+
+    window.open(url, "_blank");
+
 
   };
 
