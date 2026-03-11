@@ -156,55 +156,17 @@ const isAdmin = backendUser?.role === "admin";
 
   /* ───────── PREVIEW ───────── */
 
-  const handlePreview = async () => {
-    try {
-
-      const res = await api.get(`/files/preview/${file._id}`, {
-        responseType: "blob"
-      });
-
-      const blob = new Blob([res.data], { type: file.mimeType });
-
-      const url = window.URL.createObjectURL(blob);
-
-      window.open(url, "_blank");
-
-    } catch (err) {
-
-      console.error("Preview failed", err);
-      alert("Unable to preview file");
-
-    }
+  const handlePreview = () => {
+    const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://vnr-academic-repository-1.onrender.com';
+    window.open(`${BASE_URL}/files/preview/${file._id}`, "_blank");
   };
 
   /* ───────── DOWNLOAD ───────── */
 
-const handleDownload = async () => {
-
-  try {
-
-    const res = await api.get(`/files/download/${file._id}`);
-
-    const link = document.createElement("a");
-
-    link.href = res.data.url;
-
-    link.download = file.originalName;
-
-    document.body.appendChild(link);
-
-    link.click();
-
-    link.remove();
-
-  } catch (err) {
-
-    console.error("Download failed", err);
-    alert("Download failed");
-
-  }
-
-};
+  const handleDownload = () => {
+    const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://vnr-academic-repository-1.onrender.com';
+    window.open(`${BASE_URL}/files/download/${file._id}`, "_blank");
+  };
 
   /* ───────── DELETE (ADMIN) ───────── */
 
