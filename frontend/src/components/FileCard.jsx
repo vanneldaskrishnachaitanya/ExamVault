@@ -102,28 +102,31 @@ export default function FileCard({ file, showStatus = false, onReport, compact =
   /* ───────── PREVIEW ───────── */
 
   const handlePreview = () => {
-    if (!file._id) {
-      alert("Preview not available");
+    if (!file.filePath) {
+      alert("Preview unavailable");
       return;
     }
-
-    const url = getPreviewUrl(file._id);
-    window.open(url, "_blank");
-
+  
+    window.open(file.filePath, "_blank");
   };
 
   /* ───────── DOWNLOAD ───────── */
 
   const handleDownload = () => {
-    if (!file._id) {
-      alert("Download not available");
+
+    if (!file.filePath) {
+      alert("Download unavailable");
       return;
     }
-
-    const url = getDownloadUrl(file._id);
-    window.open(url, "_blank");
-
-
+  
+    const link = document.createElement("a");
+    link.href = file.filePath;
+    link.download = file.originalName || "file";
+  
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  
   };
 
   /* ───────── DELETE (ADMIN) ───────── */
