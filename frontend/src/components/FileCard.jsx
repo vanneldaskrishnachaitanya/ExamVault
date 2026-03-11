@@ -37,7 +37,11 @@ const getMimeConfig = (mime) =>
   MIME_CONFIG[mime] || { icon: <FileText size={22} />, label: "FILE", color: "file-icon--default" };
 
 /* ───────────────── HELPERS ───────────────── */
-
+const handlePreview = () => {
+  console.log("FILE DATA:", JSON.stringify(file, null, 2));
+  if (!file.filePath) return alert("filePath is: " + file.filePath);
+  window.open(file.filePath, "_blank");
+};
 const formatBytes = (bytes) => {
   if (!bytes) return "";
   if (bytes < 1024) return `${bytes} B`;
