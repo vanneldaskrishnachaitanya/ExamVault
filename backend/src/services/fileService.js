@@ -8,181 +8,179 @@ const logger = require('../utils/logger');
 const { buildDuplicateFilter } = require('../utils/fileHelpers');
 
 const ALLOWED_MIMETYPES = new Set([
-  'application/pdf',
-  'application/msword',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'application/vnd.ms-powerpoint',
-  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-  'application/vnd.ms-excel',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  'image/png',
-  'image/jpeg',
-  'image/gif',
-  'image/webp',
-  'image/svg+xml',
-  'text/plain',
-  'application/zip',
-  'application/x-zip-compressed',
+'application/pdf',
+'application/msword',
+'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+'application/vnd.ms-powerpoint',
+'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+'application/vnd.ms-excel',
+'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+'image/png',
+'image/jpeg',
+'image/gif',
+'image/webp',
+'image/svg+xml',
+'text/plain',
+'application/zip',
+'application/x-zip-compressed',
 ]);
 
-// ─────────────────────────────────────────────
-// Cloudinary Storage
-// ─────────────────────────────────────────────
+/* ─────────────────────────────────────────────
+Cloudinary Storage
+───────────────────────────────────────────── */
 
 const storage = new CloudinaryStorage({
-  cloudinary,
-  params: async (req, file) => {
+cloudinary,
+params: async (req, file) => {
 
-    const { regulation, branch, subject } = req.body;
 
-    // remove extension from original filename
-    const nameWithoutExt = file.originalname.replace(/\.[^/.]+$/, "");
+const { regulation, branch, subject } = req.body;
 
-    let resourceType = "auto";
+// remove extension from original filename
+const nameWithoutExt = file.originalname.replace(/\.[^/.]+$/, "");
 
-    // force pdf as raw (important)
-    if (file.mimetype === "application/pdf") {
-      resourceType = "raw";
-    }
+return {
+  folder: `vnr_repository/${regulation || "misc"}/${branch || "misc"}/${subject || "misc"}`,
+  resource_type: "auto",   // IMPORTANT: allows PDF preview
+  public_id: `${Date.now()}-${nameWithoutExt}`
+};
 
-    return {
-      folder: `vnr_repository/${regulation || "misc"}/${branch || "misc"}/${subject || "misc"}`,
-      resource_type: resourceType,
-      public_id: `${Date.now()}-${nameWithoutExt}`
-    };
-  }
+
+}
 });
 
-// ─────────────────────────────────────────────
-// File filter
-// ─────────────────────────────────────────────
+/* ─────────────────────────────────────────────
+File filter
+───────────────────────────────────────────── */
 
 const fileFilter = (_req, file, cb) => {
 
-  if (ALLOWED_MIMETYPES.has(file.mimetype)) {
-    cb(null, true);
-  } else {
-    cb(Object.assign(
-      new Error(`File type '${file.mimetype}' is not permitted.`),
-      { statusCode: 415 }
-    ));
-  }
+if (ALLOWED_MIMETYPES.has(file.mimetype)) {
+cb(null, true);
+} else {
+cb(Object.assign(
+new Error(`File type '${file.mimetype}' is not permitted.`),
+{ statusCode: 415 }
+));
+}
 
 };
 
 const MAX_BYTES = (parseInt(process.env.MAX_FILE_SIZE_MB, 10) || 25) * 1024 * 1024;
 
 const upload = multer({
-  storage,
-  fileFilter,
-  limits: { fileSize: MAX_BYTES }
+storage,
+fileFilter,
+limits: { fileSize: MAX_BYTES }
 });
 
-// ─────────────────────────────────────────────
-// Duplicate check
-// ─────────────────────────────────────────────
+/* ─────────────────────────────────────────────
+Duplicate check
+───────────────────────────────────────────── */
 
 const checkDuplicate = async ({
-  regulation,
-  branch,
-  subject,
-  category,
-  examType,
-  originalName
+regulation,
+branch,
+subject,
+category,
+examType,
+originalName
 }) => {
 
-  const filter = buildDuplicateFilter({
-    regulation,
-    branch,
-    subject,
-    category,
-    examType,
-    originalName
-  });
+const filter = buildDuplicateFilter({
+regulation,
+branch,
+subject,
+category,
+examType,
+originalName
+});
 
-  return File.findOne(filter).lean();
+return File.findOne(filter).lean();
 
 };
 
-// ─────────────────────────────────────────────
-// Save metadata
-// ─────────────────────────────────────────────
+/* ─────────────────────────────────────────────
+Save metadata
+───────────────────────────────────────────── */
 
 const saveFileMeta = async ({ multerFile, body, userId }) => {
 
-  const {
-    regulation,
-    branch,
-    subject,
-    category,
-    examType,
-    year
-  } = body;
+const {
+regulation,
+branch,
+subject,
+category,
+examType,
+year
+} = body;
 
-  const doc = await File.create({
+const doc = await File.create({
 
-    regulation: regulation.toUpperCase(),
-    branch: branch.toUpperCase(),
-    subject: subject.trim(),
 
-    category,
-    examType: category === 'paper' ? (examType || null) : null,
+regulation: regulation.toUpperCase(),
+branch: branch.toUpperCase(),
+subject: subject.trim(),
 
-    year: year ? parseInt(year, 10) : null,
+category,
+examType: category === 'paper' ? (examType || null) : null,
 
-    originalName: multerFile.originalname,
+year: year ? parseInt(year, 10) : null,
 
-    storedName: multerFile.filename || multerFile.public_id,
+originalName: multerFile.originalname,
 
-    filePath: multerFile.path,   // Cloudinary URL
+storedName: multerFile.filename || multerFile.public_id,
 
-    mimeType: multerFile.mimetype,
+filePath: multerFile.path,   // Cloudinary URL
 
-    fileSize: multerFile.size,
+mimeType: multerFile.mimetype,
 
-    uploadedBy: userId,
+fileSize: multerFile.size,
 
-    status: 'pending',
+uploadedBy: userId,
 
-    uploadedAt: new Date(),
+status: 'pending',
 
-  });
+uploadedAt: new Date(),
 
-  logger.info(`Metadata saved: ${doc.originalName} [${doc._id}]`);
 
-  return doc;
+});
+
+logger.info(`Metadata saved: ${doc.originalName} [${doc._id}]`);
+
+return doc;
 
 };
 
-// ─────────────────────────────────────────────
-// Build query filter
-// ─────────────────────────────────────────────
+/* ─────────────────────────────────────────────
+Build query filter
+───────────────────────────────────────────── */
 
 const buildFileFilter = ({
-  regulation,
-  branch,
-  subject,
-  category,
-  examType,
-  year
+regulation,
+branch,
+subject,
+category,
+examType,
+year
 }) => {
 
-  const filter = {};
+const filter = {};
 
-  if (regulation) filter.regulation = regulation.toUpperCase();
-  if (branch) filter.branch = branch.toUpperCase();
-  if (subject) filter.subject = new RegExp(subject.trim(), 'i');
-  if (category) filter.category = category;
-  if (examType) filter.examType = examType;
-  if (year) filter.year = parseInt(year, 10);
+if (regulation) filter.regulation = regulation.toUpperCase();
+if (branch) filter.branch = branch.toUpperCase();
+if (subject) filter.subject = new RegExp(subject.trim(), 'i');
+if (category) filter.category = category;
+if (examType) filter.examType = examType;
+if (year) filter.year = parseInt(year, 10);
 
-  return filter;
+return filter;
 
 };
 
 module.exports = {
-  upload,
-  checkDuplicate,
-  saveFileMeta,
-  buildFileFilter
+upload,
+checkDuplicate,
+saveFileMeta,
+buildFileFilter
 };
