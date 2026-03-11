@@ -187,10 +187,8 @@ const previewFile = async (req, res, next) => {
       });
     }
 
-    return res.json({
-      success: true,
-      url: file.filePath
-    });
+    // Redirect to Cloudinary URL — browser previews inline
+    return res.redirect(file.fileUrl);
 
   } catch (err) {
     next(err);
@@ -219,10 +217,17 @@ const downloadFile = async (req, res, next) => {
       });
     }
 
-    return res.json({
-      success: true,
-      url: file.filePath
-    });
+    // Force download via Cloudinary fl_attachment flag
+    let downloadUrl = file.fileUrl;
+    if (downloadUrl && downloadUrl.includes('cloudinary.com')) {
+      const encodedName = encodeURIComponent(file.originalName || file.fileName || 'file');
+      downloadUrl = downloadUrl.replace('/upload/', `/upload/fl_attachment:${encodedName}/`);
+    }
+
+    File.findByIdAndUpdate(req.params.id, { $inc: { downloadCount: 1 } }).exec();
+    logger.info(`Download: ${file.originalName} by ${req.user.email}`);
+
+    return res.redirect(downloadUrl);
 
   } catch (err) {
     next(err);
