@@ -30,25 +30,27 @@ Cloudinary Storage
 ───────────────────────────────────────────── */
 
 const storage = new CloudinaryStorage({
-  cloudinary,
-  params: async (req, file) => {
+cloudinary,
+params: async (req, file) => {
 
-    const { regulation, branch, subject } = req.body;
+const { regulation, branch, subject } = req.body;
 
-    const nameWithoutExt = file.originalname.replace(/\.[^/.]+$/, "");
+const nameWithoutExt = file.originalname.replace(/\.[^/.]+$/, "");
+const ext = file.originalname.split('.').pop();
 
-    let resourceType = "auto";
+let resourceType = "auto";
 
-    if (file.mimetype === "application/pdf") {
-      resourceType = "raw";
-    }
+if (file.mimetype === "application/pdf") {
+  resourceType = "raw";
+}
 
-    return {
-      folder: `vnr_repository/${regulation || "misc"}/${branch || "misc"}/${subject || "misc"}`,
-      resource_type: resourceType,
-      public_id: `${Date.now()}-${nameWithoutExt}`
-    };
-  }
+return {
+  folder: `vnr_repository/${regulation || "misc"}/${branch || "misc"}/${subject || "misc"}`,
+  resource_type: resourceType,
+  public_id: `${Date.now()}-${nameWithoutExt}.${ext}`
+};
+
+}
 });
 
 /* ─────────────────────────────────────────────
@@ -119,7 +121,6 @@ year
 
 const doc = await File.create({
 
-
 regulation: regulation.toUpperCase(),
 branch: branch.toUpperCase(),
 subject: subject.trim(),
@@ -133,7 +134,7 @@ originalName: multerFile.originalname,
 
 storedName: multerFile.filename || multerFile.public_id,
 
-filePath: multerFile.path,   // Cloudinary URL
+filePath: multerFile.path,
 
 mimeType: multerFile.mimetype,
 
@@ -144,7 +145,6 @@ uploadedBy: userId,
 status: 'pending',
 
 uploadedAt: new Date(),
-
 
 });
 
