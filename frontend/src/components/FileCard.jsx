@@ -16,7 +16,7 @@ import {
   Trash2
 } from "lucide-react";
 
-import api from "../api/apiClient";
+import api, { getPreviewUrl, getDownloadUrl } from "../api/apiClient";
 import { useAuth } from "../hooks/useAuth";
 
 /* ───────────────── MIME CONFIG ───────────────── */
@@ -102,38 +102,25 @@ export default function FileCard({ file, showStatus = false, onReport, compact =
   /* ───────── PREVIEW ───────── */
 
   const handlePreview = () => {
-    if (!file.filePath) {
+    if (!file._id) {
       alert("Preview not available");
       return;
     }
-    window.open(file.filePath, "_blank");
+
+    const url = getPreviewUrl(file._id);
+    window.open(url, "_blank");
 
   };
 
   /* ───────── DOWNLOAD ───────── */
 
   const handleDownload = () => {
-    if (!file.filePath) {
+    if (!file._id) {
       alert("Download not available");
       return;
     }
 
-    let url = file.filePath;
-
-    if (url.includes("cloudinary.com")) {
-
-      const encoded = encodeURIComponent(file.originalName || "file");
-
-      if (url.includes("/upload/")) {
-        url = url.replace("/upload/", `/upload/fl_attachment:${encoded}/`);
-      }
-
-      if (url.includes("/raw/upload/")) {
-        url = url.replace("/raw/upload/", `/raw/upload/fl_attachment:${encoded}/`);
-      }
-
-    }
-
+    const url = getDownloadUrl(file._id);
     window.open(url, "_blank");
 
 

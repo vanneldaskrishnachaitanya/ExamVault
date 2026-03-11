@@ -181,10 +181,21 @@ const previewFile = async (req, res, next) => {
       });
     }
 
-    return res.json({
-      success: true,
-      url: file.filePath
-    });
+    if (!file.filePath) {
+      return res.status(404).json({
+        success: false,
+        message: 'File URL missing'
+      });
+    }
+
+    let previewUrl = file.filePath;
+
+    // For Cloudinary URLs, ensure we don't force download (fl_attachment)
+    if (previewUrl.includes('cloudinary.com') && previewUrl.includes('/fl_attachment:')) {
+      previewUrl = previewUrl.replace('/fl_attachment:', '/');
+    }
+
+    return res.redirect(previewUrl);
 
   } catch (err) {
     next(err);
