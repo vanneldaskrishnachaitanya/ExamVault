@@ -47,39 +47,6 @@ const StatusDot = ({ status }) => {
   return <span className={`fc-status ${cls}`}>{icon}{label}</span>;
 };
 
-// ── Cloudinary URL helpers ────────────────────────────────────
-const getPreviewUrl = (filePath, mimeType) => {
-  if (!filePath) return null;
-
-  // Images — open directly, browser previews natively
-  if (mimeType?.startsWith("image/")) {
-    return filePath;
-  }
-
-  // PDFs stored as raw in Cloudinary — use Google Docs viewer for preview
-  if (mimeType === "application/pdf") {
-    return `https://docs.google.com/viewer?url=${encodeURIComponent(filePath)}&embedded=false`;
-  }
-
-  // Office files — use Google Docs viewer
-  if (
-    mimeType?.includes("word") ||
-    mimeType?.includes("powerpoint") ||
-    mimeType?.includes("excel") ||
-    mimeType?.includes("presentation") ||
-    mimeType?.includes("spreadsheet")
-  ) {
-    return `https://docs.google.com/viewer?url=${encodeURIComponent(filePath)}&embedded=false`;
-  }
-
-  return filePath;
-};
-
-const getDownloadUrl = (filePath) => {
-  // Just use the raw Cloudinary URL — browser will download it
-  return filePath;
-};
-
 export default function FileCard({ file, showStatus = false, onReport, compact = false }) {
 
   const { backendUser } = useAuth();
@@ -105,24 +72,43 @@ export default function FileCard({ file, showStatus = false, onReport, compact =
 
   /* ───────── PREVIEW ───────── */
   const handlePreview = () => {
-    const url = getPreviewUrl(file.filePath, file.mimeType);
-    if (!url) return alert("Preview not available for this file.");
+    if (!file.filePath) return alert("Preview not available.");
+
+    // Images — open directly
+    if (file.mimeType?.startsWith("image/")) {
+      window.open(file.filePath, "_blank");
+      return;
+    }
+
+    // PDFs and Office files — use Google Docs viewer
+    const url = `https://docs.google.com/viewer?url=${encodeURIComponent(file.filePath)}&embedded=false`;
     window.open(url, "_blank");
   };
 
   /* ───────── DOWNLOAD ───────── */
-  const handleDownload = () => {
-    const url = getDownloadUrl(file.filePath);
-    if (!url) return alert("Download not available.");
+  const handleDownload = async () => {
+    if (!file.filePath) return alert("Download not available.");
 
-    // Create a hidden link and click it to trigger download
-    const link = document.createElement("a");
-    link.href = url;
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    try {
+      // Fetch the file as a blob so we can rename it to originalName
+      const response = await fetch(file.filePath);
+      const blob = await response.blob();
+
+      // Create object URL and trigger download with clean original filename
+      const blobUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = file.originalName; // ← clean filename, no timestamp
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
+
+    } catch (err) {
+      console.error("Download failed", err);
+      // Fallback — open directly in new tab
+      window.open(file.filePath, "_blank");
+    }
   };
 
   /* ───────── DELETE (ADMIN) ───────── */
@@ -203,8 +189,8 @@ export default function FileCard({ file, showStatus = false, onReport, compact =
             <Flag size={13} />
           </button>
         )}
-      </div>
 
+      </div>
     </article>
   );
 }
