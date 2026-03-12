@@ -35,7 +35,7 @@ Open `.env` and fill in each value:
 
 | Variable | Where to get it |
 |----------|----------------|
-| `MONGODB_URI` | Local: `mongodb://localhost:27017/vnrvjiet_repo`  Atlas: copy from cluster Connect dialog |
+| `MONGODB_URI` | Local: `mongodb://localhost:27017/vnr_repository`  Atlas: e.g. `mongodb+srv://<user>:<password>@cluster0.igofemj.mongodb.net/vnr_repository?retryWrites=true&w=majority` |
 | `FIREBASE_PROJECT_ID` | Firebase Console → Project Settings → General |
 | `FIREBASE_CLIENT_EMAIL` | Firebase Console → Project Settings → **Service Accounts** → Generate new private key (JSON) |
 | `FIREBASE_PRIVATE_KEY` | Same JSON — copy the `private_key` value, keep surrounding quotes, keep `\n` sequences |
