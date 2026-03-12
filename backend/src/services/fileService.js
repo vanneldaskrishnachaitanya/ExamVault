@@ -35,20 +35,23 @@ const storage = new CloudinaryStorage({
 
     const { regulation, branch, subject } = req.body;
 
-    const nameWithoutExt = file.originalname.replace(/\.[^/.]+$/, "");
+    // Extract extension so Cloudinary serves the file with the correct format
+    const ext = file.originalname.match(/\.[^/.]+$/)?.[0] || '';
+    const nameWithoutExt = file.originalname.replace(/\.[^/.]+$/, '');
 
-    let resourceType = "auto";
+    let resourceType = 'auto';
 
-    if (file.mimetype === "application/pdf") {
-      resourceType = "raw";
+    // PDFs must be raw — Cloudinary otherwise converts/transforms them
+    if (file.mimetype === 'application/pdf') {
+      resourceType = 'raw';
     }
 
     return {
-      folder: `vnr_repository/${regulation || "misc"}/${branch || "misc"}/${subject || "misc"}`,
+      folder: `vnr_repository/${regulation || 'misc'}/${branch || 'misc'}/${subject || 'misc'}`,
       resource_type: resourceType,
 
-      // ❗ DO NOT include extension here
-      public_id: `${Date.now()}-${nameWithoutExt}`
+      // Include extension in public_id — critical for correct download format
+      public_id: `${Date.now()}-${nameWithoutExt}${ext}`
     };
 
   }
