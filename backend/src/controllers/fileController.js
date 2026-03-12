@@ -391,13 +391,90 @@ next(err);
 };
 
 module.exports = {
-uploadFile,
-getFiles,
-getFileById,
-previewFile,
-downloadFile,
-getPendingFiles,
-approveFile,
-rejectFile,
-deleteFile
+  uploadFile,
+  getFiles,
+  getFileById,
+  previewFile,
+  downloadFile,
+  getPendingFiles,
+  approveFile,
+  rejectFile,
+  deleteFile,
+  getFolders,
+  createFolder,
+  deleteFolder
+};
+
+
+/* ─────────────────────────────────────────────
+FOLDERS
+───────────────────────────────────────────── */
+const Folder = require('../models/Folder');
+
+// GET /files/folders?regulation=R22&branch=CSE
+const getFolders = async (req, res, next) => {
+  try {
+    const { regulation, branch } = req.query;
+    const filter = {};
+    if (regulation) filter.regulation = regulation.toUpperCase();
+    if (branch)     filter.branch     = branch.toUpperCase();
+
+    const folders = await Folder.find(filter).sort({ subject: 1 }).lean();
+
+    res.json({
+      success: true,
+      data: { folders }
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// POST /files/folders
+const createFolder = async (req, res, next) => {
+  try {
+    const { regulation, branch, subject } = req.body;
+
+    if (!regulation || !branch || !subject) {
+      return res.status(400).json({
+        success: false,
+        message: 'regulation, branch and subject are required'
+      });
+    }
+
+    // Upsert — if folder already exists just return it
+    const folder = await Folder.findOneAndUpdate(
+      {
+        regulation: regulation.toUpperCase(),
+        branch:     branch.toUpperCase(),
+        subject:    subject.trim()
+      },
+      {
+        $setOnInsert: {
+          regulation: regulation.toUpperCase(),
+          branch:     branch.toUpperCase(),
+          subject:    subject.trim(),
+          createdBy:  req.user._id
+        }
+      },
+      { upsert: true, new: true }
+    );
+
+    res.status(201).json({
+      success: true,
+      data: { folder }
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// DELETE /files/folders/:id  (admin only)
+const deleteFolder = async (req, res, next) => {
+  try {
+    await Folder.findByIdAndDelete(req.params.id);
+    res.json({ success: true, message: 'Folder deleted' });
+  } catch (err) {
+    next(err);
+  }
 };

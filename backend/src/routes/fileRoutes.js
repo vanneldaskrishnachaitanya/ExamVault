@@ -16,7 +16,10 @@ const {
   getPendingFiles,
   approveFile,
   rejectFile,
-  deleteFile
+  deleteFile,
+  getFolders,
+  createFolder,
+  deleteFolder
 } = require('../controllers/fileController');
 
 const { upload } = require('../services/fileService');
@@ -92,6 +95,27 @@ router.get(
   getFileById
 );
 
+
+/**
+ * GET /files/folders?regulation=R22&branch=CSE
+ */
+router.get(
+  '/folders',
+  protect,
+  restrictTo('student', 'admin'),
+  getFolders
+);
+
+/**
+ * POST /files/folders
+ */
+router.post(
+  '/folders',
+  protect,
+  restrictTo('student', 'admin'),
+  createFolder
+);
+
 module.exports = router;
 
 
@@ -146,6 +170,16 @@ adminRouter.delete(
   mongoIdParam('id'),
   validate,
   deleteFile
+);
+
+/**
+ * DELETE /admin/folders/:id
+ */
+adminRouter.delete(
+  '/folders/:id',
+  protect,
+  restrictTo('admin'),
+  deleteFolder
 );
 
 module.exports.adminRouter = adminRouter;
