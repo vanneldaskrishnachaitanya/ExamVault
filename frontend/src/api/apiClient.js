@@ -10,13 +10,13 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 export const fetchFolders = (params) =>
-  api.get('/folders', { params }).then(r => r.data);
+  api.get('/files/folders', { params }).then(r => r.data.data);
 
 export const createFolder = (data) =>
-  api.post('/folders', data).then(r => r.data);
+  api.post('/files/folders', data).then(r => r.data.data);
 
 export const deleteFolder = (id) =>
-  api.delete(`/folders/${id}`).then(r => r.data);
+  api.delete(`/admin/folders/${id}`).then(r => r.data);
 // Attach Firebase ID token to every request
 api.interceptors.request.use(async (config) => {
   const user = auth.currentUser;
