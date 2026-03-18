@@ -7,7 +7,7 @@ import axios from 'axios';
 
 export const AuthContext = createContext(null);
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://examvault-miqe.onrender.com';
 
 /**
  * Try to sync with backend. Returns user profile on success.
