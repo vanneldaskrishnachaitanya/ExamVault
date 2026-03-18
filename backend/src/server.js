@@ -19,6 +19,7 @@ const fileRoutes            = require('./routes/fileRoutes');
 const { adminRouter }       = require('./routes/fileRoutes');
 const reportRoutes          = require('./routes/reportRoutes');
 const { adminReportRouter } = require('./routes/reportRoutes');
+const folderRoutes          = require('./routes/folderRoutes');
 // ── App setup ─────────────────────────────────────────────────
 const app = express();
 app.set('trust proxy', 1);
@@ -26,23 +27,28 @@ app.set('trust proxy', 1);
 app.use(helmet());
 
 // CORS — allow frontend
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  'http://localhost:3000',
+  'http://localhost:5173',
+  'https://exam-vault-ten.vercel.app',
+  'https://vnr-academic-repository.vercel.app',
+].filter(Boolean);
+
 app.use(cors({
   origin: function(origin, callback) {
-    const allowed = [
-      process.env.CLIENT_URL,
-      'http://localhost:3000',
-      'https://vnr-academic-repository.vercel.app',
-    ].filter(Boolean);
-    if (!origin || allowed.some(u => origin.startsWith(u))) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
+    // Allow requests with no origin (mobile apps, curl, Postman)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error('Not allowed by CORS'));
   },
   methods: ['GET','POST','PATCH','DELETE','OPTIONS'],
   allowedHeaders: ['Authorization','Content-Type','x-admin-login'],
   credentials: true,
 }));
+
+// Handle preflight for all routes
+app.options('*', cors());
 
 // HTTP request logging
 app.use(morgan('dev', {
@@ -88,6 +94,7 @@ app.get('/health', (_req, res) => {
 // ── API Routes ────────────────────────────────────────────────
 app.use('/auth', authLimiter, authRoutes);
 app.use('/files', fileRoutes);
+app.use('/folders', folderRoutes);
 app.use('/reports', reportRoutes);
 
 // Admin routes
