@@ -19,7 +19,6 @@ const fileRoutes            = require('./routes/fileRoutes');
 const { adminRouter }       = require('./routes/fileRoutes');
 const reportRoutes          = require('./routes/reportRoutes');
 const { adminReportRouter } = require('./routes/reportRoutes');
-const folderRoutes          = require('./routes/folderRoutes');
 // ── App setup ─────────────────────────────────────────────────
 const app = express();
 app.set('trust proxy', 1);
@@ -28,7 +27,18 @@ app.use(helmet());
 
 // CORS — allow frontend
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:3000',
+  origin: function(origin, callback) {
+    const allowed = [
+      process.env.CLIENT_URL,
+      'http://localhost:3000',
+      'https://vnr-academic-repository.vercel.app',
+    ].filter(Boolean);
+    if (!origin || allowed.some(u => origin.startsWith(u))) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET','POST','PATCH','DELETE','OPTIONS'],
   allowedHeaders: ['Authorization','Content-Type','x-admin-login'],
   credentials: true,
@@ -78,7 +88,6 @@ app.get('/health', (_req, res) => {
 // ── API Routes ────────────────────────────────────────────────
 app.use('/auth', authLimiter, authRoutes);
 app.use('/files', fileRoutes);
-app.use('/folders', folderRoutes);
 app.use('/reports', reportRoutes);
 
 // Admin routes
