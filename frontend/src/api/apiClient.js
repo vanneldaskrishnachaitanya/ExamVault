@@ -106,4 +106,60 @@ export const resolveReport = async (id) => {
   return data;
 };
 
+// ── Notifications ──────────────────────────────────────────────
+export const fetchNotifications = async () => {
+  const { data } = await api.get('/notifications');
+  return data.data;
+};
+export const markAllNotificationsRead = async () => {
+  const { data } = await api.patch('/notifications/read-all');
+  return data;
+};
+export const markNotificationRead = async (id) => {
+  const { data } = await api.patch(`/notifications/${id}/read`);
+  return data;
+};
+export const deleteNotification = async (id) => {
+  const { data } = await api.delete(`/notifications/${id}`);
+  return data;
+};
+
+// ── Announcements ──────────────────────────────────────────────
+export const fetchAnnouncements = async () => {
+  const { data } = await api.get('/announcements');
+  return data.data;
+};
+export const createAnnouncement = async (payload) => {
+  const { data } = await api.post('/admin/announcements', payload);
+  return data.data;
+};
+export const deleteAnnouncement = async (id) => {
+  const { data } = await api.delete(`/admin/announcements/${id}`);
+  return data;
+};
+export const toggleAnnouncement = async (id) => {
+  const { data } = await api.patch(`/admin/announcements/${id}`);
+  return data.data;
+};
+
+// ── Bookmarks ──────────────────────────────────────────────────
+export const fetchBookmarks = async () => {
+  const { data } = await api.get('/bookmarks');
+  return data.data;
+};
+export const addBookmark = async (payload) => {
+  const { data } = await api.post('/bookmarks', payload);
+  return data.data;
+};
+export const removeBookmark = async (payload) => {
+  const { data } = await api.delete('/bookmarks', { data: payload });
+  return data;
+};
+
+// ── Analytics ──────────────────────────────────────────────────
+export const fetchAnalytics = async () => {
+  const { data } = await api.get('/admin/analytics');
+  return data.data;
+};
+
 export default api;

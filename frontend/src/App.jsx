@@ -8,6 +8,8 @@ import Dashboard     from './pages/Dashboard';
 import RegulationPage from './pages/RegulationPage';
 import SubjectPage   from './pages/SubjectPage';
 import AdminPanel    from './pages/AdminPanel';
+import ProfilePage   from './pages/ProfilePage';
+import AnalyticsPage from './pages/AnalyticsPage';
 
 // ── Route guards ──────────────────────────────────────────────
 
@@ -70,11 +72,13 @@ export default function App() {
         <Route path="/dashboard"                          element={<Dashboard />} />
         <Route path="/r/:regulation"                      element={<RegulationPage />} />
         <Route path="/r/:regulation/:branch/:subject"     element={<SubjectPage />} />
+        <Route path="/profile"                            element={<ProfilePage />} />
       </Route>
 
       {/* ── Admin (protected + role check) ─────────────────── */}
       <Route path="/admin" element={<AdminRoute><MainLayout /></AdminRoute>}>
         <Route index element={<AdminPanel />} />
+        <Route path="analytics" element={<AnalyticsPage />} />
       </Route>
 
       {/* ── Catch-all ──────────────────────────────────────── */}

@@ -18,6 +18,7 @@ const { adminRouter }       = require('./routes/fileRoutes');
 const reportRoutes          = require('./routes/reportRoutes');
 const { adminReportRouter } = require('./routes/reportRoutes');
 const folderRoutes          = require('./routes/folderRoutes');
+const { notificationRouter, announcementRouter, bookmarkRouter, adminExtrasRouter } = require('./routes/newRoutes');
 
 const app = express();
 app.set('trust proxy', 1);
@@ -75,12 +76,16 @@ app.get('/health', (_req, res) => {
   res.json({ success: true, message: 'VNRVJIET API is running', timestamp: new Date() });
 });
 
-app.use('/auth',    authLimiter, authRoutes);
-app.use('/files',   fileRoutes);
-app.use('/folders', folderRoutes);
-app.use('/reports', reportRoutes);
-app.use('/admin',   adminRouter);
-app.use('/admin',   adminReportRouter);
+app.use('/auth',          authLimiter, authRoutes);
+app.use('/files',         fileRoutes);
+app.use('/folders',       folderRoutes);
+app.use('/reports',       reportRoutes);
+app.use('/notifications', notificationRouter);
+app.use('/announcements', announcementRouter);
+app.use('/bookmarks',     bookmarkRouter);
+app.use('/admin',         adminRouter);
+app.use('/admin',         adminReportRouter);
+app.use('/admin',         adminExtrasRouter);
 
 app.use((req, res) => {
   res.status(404).json({ success: false, message: `Route ${req.method} ${req.path} not found` });

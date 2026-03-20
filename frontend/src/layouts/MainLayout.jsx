@@ -1,17 +1,64 @@
-// src/layouts/MainLayout.jsx
+import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import { fetchAnnouncements } from '../api/apiClient';
+import { X, Megaphone } from 'lucide-react';
 
-/**
- * MainLayout
- * ──────────
- * Shell shared by all authenticated pages.
- * Renders <Navbar> at the top and the active page via <Outlet>.
- */
+const TYPE_STYLES = {
+  info:    { bg: '#3b82f618', border: '#3b82f640', color: '#60a5fa' },
+  warning: { bg: '#f59e0b18', border: '#f59e0b40', color: '#fbbf24' },
+  success: { bg: '#22c55e18', border: '#22c55e40', color: '#4ade80' },
+  danger:  { bg: '#ef444418', border: '#ef444440', color: '#f87171' },
+};
+
 export default function MainLayout() {
+  const [theme, setTheme] = useState(() => localStorage.getItem('ev-theme') || 'dark');
+  const [announcements, setAnnouncements] = useState([]);
+  const [dismissed, setDismissed] = useState([]);
+
+  // Apply theme to <html>
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('ev-theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => setTheme(t => t === 'dark' ? 'light' : 'dark');
+
+  // Load announcements
+  useEffect(() => {
+    fetchAnnouncements()
+      .then(d => setAnnouncements(d.announcements || []))
+      .catch(() => {});
+  }, []);
+
+  const visible = announcements.filter(a => !dismissed.includes(a._id));
+
   return (
     <div className="layout">
-      <Navbar />
+      <Navbar theme={theme} toggleTheme={toggleTheme} />
+
+      {/* Announcement banners */}
+      {visible.map(ann => {
+        const s = TYPE_STYLES[ann.type] || TYPE_STYLES.info;
+        return (
+          <div
+            key={ann._id}
+            className="announcement-banner"
+            style={{ background: s.bg, borderColor: s.border, color: s.color }}
+          >
+            <Megaphone size={15} />
+            <strong>{ann.title}:</strong>
+            <span>{ann.message}</span>
+            <button
+              className="announcement-banner__close"
+              onClick={() => setDismissed(d => [...d, ann._id])}
+            >
+              <X size={14} />
+            </button>
+          </div>
+        );
+      })}
+
       <main className="layout__main">
         <Outlet />
       </main>

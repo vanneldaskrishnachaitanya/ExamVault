@@ -16,6 +16,7 @@ const {
 } = require('../services/fileService');
 
 const logger = require('../utils/logger');
+const { createNotification } = require('./notificationController');
 
 /* ─────────────────────────────────────────────
 POST /files/upload
@@ -309,10 +310,16 @@ const approveFile = async (req, res, next) => {
 
     await file.save();
 
-    res.json({
-      success: true,
-      message: 'File approved'
+    // Notify uploader
+    createNotification({
+      userId:  file.uploadedBy,
+      type:    'file_approved',
+      title:   '✅ File Approved',
+      message: `Your file "${file.originalName}" has been approved and is now live.`,
+      link:    `/r/${file.regulation}/${file.branch}/${encodeURIComponent(file.subject)}`,
     });
+
+    res.json({ success: true, message: 'File approved' });
 
 
   } catch (err) {
@@ -342,10 +349,15 @@ const rejectFile = async (req, res, next) => {
 
     await file.save();
 
-    res.json({
-      success: true,
-      message: 'File rejected'
+    // Notify uploader
+    createNotification({
+      userId:  file.uploadedBy,
+      type:    'file_rejected',
+      title:   '❌ File Rejected',
+      message: `Your file "${file.originalName}" was rejected. Reason: ${file.rejectionNote}`,
     });
+
+    res.json({ success: true, message: 'File rejected' });
 
 
   } catch (err) {

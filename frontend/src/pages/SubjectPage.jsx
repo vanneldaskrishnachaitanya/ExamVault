@@ -15,7 +15,7 @@ import {
   AlertCircle, BookOpen, ChevronRight, FileText, Flag,
   Home, Loader2, Plus, RefreshCw, SearchX, X,
 } from 'lucide-react';
-import { fetchFiles, reportFile } from '../api/apiClient';
+import { fetchFiles, reportFile, fetchBookmarks, addBookmark, removeBookmark } from '../api/apiClient';
 import FileCard    from '../components/FileCard';
 import UploadModal from '../components/UploadModal';
 
@@ -125,6 +125,22 @@ export default function SubjectPage() {
   };
 
   // ── Upload shortcut ───────────────────────────────────────
+  // Bookmark
+  const [bookmarked, setBookmarked] = useState(false);
+  useEffect(() => {
+    fetchBookmarks().then(d => {
+      const bms = d.bookmarks || [];
+      setBookmarked(bms.some(b => b.regulation === regulation && b.branch === branch && b.subject === decodedSubject));
+    }).catch(() => {});
+  }, [regulation, branch, decodedSubject]);
+
+  const toggleBookmark = async () => {
+    try {
+      if (bookmarked) { await removeBookmark({ regulation, branch, subject: decodedSubject }); setBookmarked(false); }
+      else { await addBookmark({ regulation, branch, subject: decodedSubject }); setBookmarked(true); }
+    } catch {}
+  };
+
   const openUpload = (cat = 'paper') => { setUploadCat(cat); setUploadOpen(true); };
 
   // ─────────────────────────────────────────────────────────
@@ -161,6 +177,13 @@ export default function SubjectPage() {
         </div>
 
         <div className="sp-header__actions">
+          <button
+            className={`btn btn--sm ${bookmarked ? 'btn--warning' : 'btn--ghost'}`}
+            onClick={toggleBookmark}
+            title={bookmarked ? 'Remove bookmark' : 'Bookmark this subject'}
+          >
+            {bookmarked ? '🔖 Bookmarked' : '🔖 Bookmark'}
+          </button>
           <button className="btn btn--ghost btn--sm" onClick={() => openUpload('resource')}>
             <Plus size={14} /> Resource
           </button>
