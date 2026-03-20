@@ -1,17 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { User, Mail, Shield, BookMarked, FileText, Clock, ChevronRight, Trash2, Loader2, Download } from 'lucide-react';
+import { User, Mail, Shield, BookMarked, FileText, Clock, ChevronRight, Trash2, Loader2 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
-import { fetchBookmarks, removeBookmark, fetchDownloadHistory } from '../api/apiClient';
-import { useState as useTabState } from 'react';
+import { fetchBookmarks, removeBookmark } from '../api/apiClient';
 
 export default function ProfilePage() {
   const { backendUser } = useAuth();
+  const [activeTab, setActiveTab] = useState('bookmarks');
   const [bookmarks, setBookmarks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('bookmarks');
-  const [downloads, setDownloads] = useState([]);
-  const [dlLoading, setDlLoading] = useState(false);
 
   useEffect(() => {
     fetchBookmarks().then(d => setBookmarks(d.bookmarks || [])).catch(() => {}).finally(() => setLoading(false));
@@ -55,19 +52,10 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      <div className="profile-tabs">
-        <button className={`profile-tab${activeTab==='bookmarks'?' profile-tab--active':''}`} onClick={()=>setActiveTab('bookmarks')}>
-          <BookMarked size={14}/> Bookmarks <span className="profile-section__count">{bookmarks.length}</span>
-        </button>
-        <button className={`profile-tab${activeTab==='downloads'?' profile-tab--active':''}`} onClick={()=>setActiveTab('downloads')}>
-          <Download size={14}/> Downloads <span className="profile-section__count">{downloads.length}</span>
-        </button>
-      </div>
-
       <section className="profile-section">
         <h2 className="profile-section__title">
           <BookMarked size={17} /> Bookmarked Subjects
-            <span className="profile-section__count">{bookmarks.length}</span>
+          <span className="profile-section__count">{bookmarks.length}</span>
         </h2>
         {loading ? (
           <div className="profile-loading"><Loader2 size={20} className="spin" /> Loading bookmarks…</div>
@@ -97,33 +85,6 @@ export default function ProfilePage() {
           </div>
         )}
       </section>
-      {activeTab === 'downloads' && (
-        <section className="profile-section" style={{marginTop: '1rem'}}>
-          <h2 className="profile-section__title"><Download size={17}/> Recent Downloads</h2>
-          {dlLoading ? (
-            <div className="profile-loading"><Loader2 size={20} className="spin"/> Loading…</div>
-          ) : downloads.length === 0 ? (
-            <div className="profile-empty"><Download size={32}/><p>No downloads yet</p></div>
-          ) : (
-            <div className="bookmark-list">
-              {downloads.map((d,i) => (
-                <div key={i} className="bookmark-item">
-                  <a href={`/r/${d.regulation}/${d.branch}/${encodeURIComponent(d.subject||'')}`} className="bookmark-item__link">
-                    <FileText size={15} className="bookmark-item__icon"/>
-                    <div className="bookmark-item__body">
-                      <span className="bookmark-item__subject">{d.fileName}</span>
-                      <span className="bookmark-item__meta">{d.regulation} · {d.branch} · {d.subject}</span>
-                    </div>
-                    <span className="bookmark-item__meta" style={{flexShrink:0}}>
-                      <Clock size={11}/> {new Date(d.createdAt).toLocaleDateString('en-IN',{day:'2-digit',month:'short'})}
-                    </span>
-                  </a>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
-      )}
     </div>
   );
 }

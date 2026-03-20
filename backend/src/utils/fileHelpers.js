@@ -138,6 +138,7 @@ const buildDuplicateFilter = ({ regulation, branch, subject, category, examType,
   category,
   examType:   category === 'paper' ? (examType || null) : null,
   originalName,
+  status: 'approved',
 });
 
 // ─────────────────────────────────────────────────────────────────────────────

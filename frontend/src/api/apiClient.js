@@ -6,16 +6,18 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://examvault-miqe.on
 console.log("API BASE URL:", BASE_URL);
 const api = axios.create({
   baseURL: BASE_URL,
-  timeout: 30_000,
+  timeout: 120_000,
   headers: { 'Content-Type': 'application/json' },
 });
 export const fetchFolders = (params) =>
   api.get('/folders', { params }).then(r => r.data);
+
 export const createFolder = (data) =>
   api.post('/folders', data).then(r => r.data);
+
 export const deleteFolder = (id) =>
   api.delete(`/folders/${id}`).then(r => r.data);
-
+// Attach Firebase ID token to every request
 api.interceptors.request.use(async (config) => {
   const user = auth.currentUser;
   if (user) {
@@ -25,6 +27,7 @@ api.interceptors.request.use(async (config) => {
   return config;
 });
 
+// Normalise errors
 api.interceptors.response.use(
   (res) => res,
   (err) => {
@@ -33,63 +36,130 @@ api.interceptors.response.use(
   }
 );
 
+// ── Auth ──────────────────────────────────────────────────────
 export const loginToBackend = async (idToken) => {
-  const { data } = await axios.post(`${BASE_URL}/auth/login`, {}, { headers: { Authorization: `Bearer ${idToken}` } });
+  const { data } = await axios.post(
+    `${BASE_URL}/auth/login`,
+    {},
+    { headers: { Authorization: `Bearer ${idToken}` } }
+  );
   return data.data.user;
 };
 
-export const fetchFiles = async (params = {}) => { const { data } = await api.get('/files', { params }); return data.data; };
-export const fetchFileById = async (id) => { const { data } = await api.get(`/files/${id}`); return data.data.file; };
+// ── Files ─────────────────────────────────────────────────────
+export const fetchFiles = async (params = {}) => {
+  const { data } = await api.get('/files', { params });
+  return data.data;
+};
+
+export const fetchFileById = async (id) => {
+  const { data } = await api.get(`/files/${id}`);
+  return data.data.file;
+};
+
 export const uploadFile = async (formData, onProgress) => {
   const { data } = await api.post('/files/upload', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
-    onUploadProgress: onProgress ? (e) => onProgress(e.loaded, e.total) : undefined,
+    onUploadProgress: onProgress
+      ? (e) => onProgress(e.loaded, e.total)
+      : undefined,
   });
   return data.data.file;
 };
+
 export const getPreviewUrl  = (id) => `${BASE_URL}/files/preview/${id}`;
 export const getDownloadUrl = (id) => `${BASE_URL}/files/download/${id}`;
-export const reportFile = async (fileId, reason, description = '') => { const { data } = await api.post('/reports', { fileId, reason, description }); return data; };
 
-export const fetchPendingFiles = async (params = {}) => { const { data } = await api.get('/admin/pending-files', { params }); return data.data; };
-export const approveFile = async (id) => { const { data } = await api.patch(`/admin/files/${id}/approve`); return data; };
-export const rejectFile = async (id, note = '') => { const { data } = await api.patch(`/admin/files/${id}/reject`, { note }); return data; };
-export const deleteFile = async (id) => { const { data } = await api.delete(`/admin/files/${id}`); return data; };
-export const fetchReports = async (params = {}) => { const { data } = await api.get('/admin/reports', { params }); return data.data; };
-export const resolveReport = async (id) => { const { data } = await api.patch(`/admin/reports/${id}/resolve`); return data; };
+export const reportFile = async (fileId, reason, description = '') => {
+  const { data } = await api.post('/reports', { fileId, reason, description });
+  return data;
+};
 
-export const fetchNotifications = async () => { const { data } = await api.get('/notifications'); return data.data; };
-export const markAllNotificationsRead = async () => { const { data } = await api.patch('/notifications/read-all'); return data; };
-export const markNotificationRead = async (id) => { const { data } = await api.patch(`/notifications/${id}/read`); return data; };
-export const deleteNotification = async (id) => { const { data } = await api.delete(`/notifications/${id}`); return data; };
+// ── Admin ─────────────────────────────────────────────────────
+export const fetchPendingFiles = async (params = {}) => {
+  const { data } = await api.get('/admin/pending-files', { params });
+  return data.data;
+};
 
-export const fetchAnnouncements = async () => { const { data } = await api.get('/announcements'); return data.data; };
-export const createAnnouncement = async (payload) => { const { data } = await api.post('/admin/announcements', payload); return data.data; };
-export const deleteAnnouncement = async (id) => { const { data } = await api.delete(`/admin/announcements/${id}`); return data; };
-export const toggleAnnouncement = async (id) => { const { data } = await api.patch(`/admin/announcements/${id}`); return data.data; };
+export const approveFile = async (id) => {
+  const { data } = await api.patch(`/admin/files/${id}/approve`);
+  return data;
+};
 
-export const fetchBookmarks = async () => { const { data } = await api.get('/bookmarks'); return data.data; };
-export const addBookmark = async (payload) => { const { data } = await api.post('/bookmarks', payload); return data.data; };
-export const removeBookmark = async (payload) => { const { data } = await api.delete('/bookmarks', { data: payload }); return data; };
+export const rejectFile = async (id, note = '') => {
+  const { data } = await api.patch(`/admin/files/${id}/reject`, { note });
+  return data;
+};
 
-export const fetchAnalytics = async () => { const { data } = await api.get('/admin/analytics'); return data.data; };
+export const deleteFile = async (id) => {
+  const { data } = await api.delete(`/admin/files/${id}`);
+  return data;
+};
 
-export const globalSearch = async (params = {}) => { const { data } = await api.get('/search', { params }); return data.data; };
+export const fetchReports = async (params = {}) => {
+  const { data } = await api.get('/admin/reports', { params });
+  return data.data;
+};
 
-export const getFileRatings = async (fileId) => { const { data } = await api.get(`/ratings/${fileId}`); return data.data; };
-export const rateFile = async (fileId, stars, comment = '') => { const { data } = await api.post(`/ratings/${fileId}`, { stars, comment }); return data.data; };
-export const deleteRating = async (fileId) => { const { data } = await api.delete(`/ratings/${fileId}`); return data; };
+export const resolveReport = async (id) => {
+  const { data } = await api.patch(`/admin/reports/${id}/resolve`);
+  return data;
+};
 
-export const recordDownloadApi = async (fileId) => { try { await api.post(`/downloads/record/${fileId}`); } catch {} };
-export const fetchDownloadHistory = async () => { const { data } = await api.get('/downloads'); return data.data; };
+// ── Notifications ──────────────────────────────────────────────
+export const fetchNotifications = async () => {
+  const { data } = await api.get('/notifications');
+  return data.data;
+};
+export const markAllNotificationsRead = async () => {
+  const { data } = await api.patch('/notifications/read-all');
+  return data;
+};
+export const markNotificationRead = async (id) => {
+  const { data } = await api.patch(`/notifications/${id}/read`);
+  return data;
+};
+export const deleteNotification = async (id) => {
+  const { data } = await api.delete(`/notifications/${id}`);
+  return data;
+};
 
-export const fetchAllUsers = async (params = {}) => { const { data } = await api.get('/admin/users', { params }); return data.data; };
-export const toggleUserActive = async (id) => { const { data } = await api.patch(`/admin/users/${id}/toggle`); return data.data; };
+// ── Announcements ──────────────────────────────────────────────
+export const fetchAnnouncements = async () => {
+  const { data } = await api.get('/announcements');
+  return data.data;
+};
+export const createAnnouncement = async (payload) => {
+  const { data } = await api.post('/admin/announcements', payload);
+  return data.data;
+};
+export const deleteAnnouncement = async (id) => {
+  const { data } = await api.delete(`/admin/announcements/${id}`);
+  return data;
+};
+export const toggleAnnouncement = async (id) => {
+  const { data } = await api.patch(`/admin/announcements/${id}`);
+  return data.data;
+};
 
-export const fetchBranches = async () => { const { data } = await api.get('/branches'); return data.data; };
-export const fetchAllBranches = async () => { const { data } = await api.get('/admin/branches'); return data.data; };
-export const createBranch = async (payload) => { const { data } = await api.post('/admin/branches', payload); return data.data; };
-export const updateBranch = async (id, payload) => { const { data } = await api.patch(`/admin/branches/${id}`, payload); return data.data; };
-export const deleteBranch = async (id) => { const { data } = await api.delete(`/admin/branches/${id}`); return data; };
+// ── Bookmarks ──────────────────────────────────────────────────
+export const fetchBookmarks = async () => {
+  const { data } = await api.get('/bookmarks');
+  return data.data;
+};
+export const addBookmark = async (payload) => {
+  const { data } = await api.post('/bookmarks', payload);
+  return data.data;
+};
+export const removeBookmark = async (payload) => {
+  const { data } = await api.delete('/bookmarks', { data: payload });
+  return data;
+};
+
+// ── Analytics ──────────────────────────────────────────────────
+export const fetchAnalytics = async () => {
+  const { data } = await api.get('/admin/analytics');
+  return data.data;
+};
 
 export default api;
