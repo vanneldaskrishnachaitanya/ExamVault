@@ -4,7 +4,6 @@ import {
   Trash2, X, Megaphone, Plus, BarChart2,
   Users, GitBranch, CheckCircle, XCircle, GraduationCap,
 } from 'lucide-react';
-import Confetti from '../components/Confetti';
 import {
   approveFile, deleteFile, fetchPendingFiles,
   fetchReports, rejectFile, resolveReport,
@@ -83,7 +82,6 @@ export default function AdminPanel() {
   const [rejectTarget,  setRejectTarget]  = useState(null);
   const [actionLoading, setActionLoading] = useState('');
   const [toastMsg,      setToastMsg]      = useState('');
-  const [showConfetti, setShowConfetti]  = useState(false);
   const toast = (msg) => { setToastMsg(msg); setTimeout(() => setToastMsg(''), 3000); };
 
   // ── Load functions ────────────────────────────────────────────
@@ -130,7 +128,7 @@ export default function AdminPanel() {
   // ── Pending actions ───────────────────────────────────────────
   const handleApprove = async (id) => {
     setActionLoading(id + '-approve');
-    try { await approveFile(id); setPending(p => p.filter(f => f._id !== id)); setSelected(s => s.filter(x => x !== id)); toast('File approved ✓'); setShowConfetti(true); }
+    try { await approveFile(id); setPending(p => p.filter(f => f._id !== id)); setSelected(s => s.filter(x => x !== id)); toast('File approved ✓'); }
     catch (e) { toast(`Error: ${e.message}`); }
     finally { setActionLoading(''); }
   };
@@ -242,12 +240,7 @@ export default function AdminPanel() {
     <div className="admin-panel">
       <div className="admin-panel__header">
         <h1 className="admin-panel__title"><Shield size={24} /> Admin Panel</h1>
-        
-        
-        
-        <button className="btn btn--ghost btn--sm" onClick={() => navigate('/admin/analytics')}>
-          <BarChart2 size={14} /> Analytics
-        </button>
+
       </div>
 
       {/* Tabs */}
@@ -484,7 +477,6 @@ export default function AdminPanel() {
         </section>
       )}
 
-      {showConfetti && <Confetti onDone={() => setShowConfetti(false)} />}
       {rejectTarget && <RejectDialog file={rejectTarget} onConfirm={handleRejectConfirm} onCancel={() => setRejectTarget(null)} />}
       {toastMsg && <div className="toast">{toastMsg}</div>}
     </div>
