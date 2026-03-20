@@ -2670,3 +2670,29 @@ YEAR / SEMESTER DRILL-DOWN NAVIGATION
 .branch-mgmt-actions {
   display: flex; gap: 0.4rem; flex-shrink: 0;
 }
+/* ── Profile tab fix: ensure text is visible ── */
+.profile-tabs {
+  display: flex; gap: 0.25rem; padding: 0.25rem;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); width: fit-content;
+  margin-bottom: 1.25rem;
+}
+.profile-tab {
+  display: flex; align-items: center; gap: 0.4rem;
+  padding: 0.45rem 1rem; border-radius: var(--radius-sm);
+  font-size: 0.875rem; font-weight: 600;
+  color: var(--text-2) !important;
+  transition: color 0.15s, background 0.15s;
+  background: none; border: none; cursor: pointer;
+}
+.profile-tab:hover { color: var(--text-1) !important; background: var(--bg-raised); }
+.profile-tab--active {
+  background: var(--bg-raised);
+  color: var(--text-1) !important;
+}
+.profile-tab .profile-section__count {
+  background: var(--amber-dim); color: var(--amber);
+  border: 1px solid var(--amber-border);
+  border-radius: 100px; padding: 0.1rem 0.45rem;
+  font-family: var(--font-mono); font-size: 0.68rem; font-weight: 700;
+}

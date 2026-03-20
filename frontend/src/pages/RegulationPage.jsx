@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   ChevronRight, Home, Search, FolderPlus,
@@ -6,16 +6,19 @@ import {
   GraduationCap, BookMarked, ChevronDown,
 } from 'lucide-react';
 
-import {
-  fetchFolders,
-  createFolder,
-  deleteFolder,
-  fetchBranches,
-} from '../api/apiClient';
-
+import { fetchFolders, createFolder, deleteFolder, fetchBranches } from '../api/apiClient';
 import { useAuth } from '../hooks/useAuth';
 
-// Branches loaded from API
+// Fallback hardcoded branches (shown instantly, replaced by API data)
+const DEFAULT_BRANCHES = [
+  { id: 'CSE',   label: 'Computer Science & Engineering',           emoji: '💻' },
+  { id: 'ECE',   label: 'Electronics & Communication Engineering',  emoji: '📡' },
+  { id: 'EEE',   label: 'Electrical & Electronics Engineering',     emoji: '⚡' },
+  { id: 'IT',    label: 'Information Technology',                   emoji: '🌐' },
+  { id: 'MECH',  label: 'Mechanical Engineering',                   emoji: '⚙️' },
+  { id: 'CIVIL', label: 'Civil Engineering',                        emoji: '🏗️' },
+  { id: 'AIML',  label: 'Artificial Intelligence & Machine Learning', emoji: '🧠' },
+];
 
 const YEARS = [
   { id: '1', label: '1st Year', short: 'Y1', desc: 'Foundation' },
@@ -25,8 +28,8 @@ const YEARS = [
 ];
 
 const SEMESTERS = [
-  { id: '1', label: 'Semester 1', short: 'SEM 1' },
-  { id: '2', label: 'Semester 2', short: 'SEM 2' },
+  { id: '1', label: 'Semester 1' },
+  { id: '2', label: 'Semester 2' },
 ];
 
 function Hl({ text, query }) {
@@ -48,27 +51,27 @@ export default function RegulationPage() {
   const { backendUser } = useAuth();
   const isAdmin = backendUser?.role === 'admin';
 
-  const [branches, setBranches] = useState([]);
-  const [branchesLoading, setBranchesLoading] = useState(true);
+  // Start with default branches so page never shows blank
+  const [branches, setBranches] = useState(DEFAULT_BRANCHES);
+
   const [expandedBranch, setExpandedBranch] = useState(null);
-  const [selectedYear, setSelectedYear] = useState({});
-  const [selectedSem, setSelectedSem] = useState({});
-  const [folders, setFolders] = useState({});
-  const [loadingKey, setLoadingKey] = useState(null);
-  const [creating, setCreating] = useState(null);
-  const [folderName, setFolderName] = useState('');
-  const [folderError, setFolderError] = useState('');
-  const [search, setSearch] = useState('');
+  const [selectedYear, setSelectedYear]     = useState({});
+  const [selectedSem, setSelectedSem]       = useState({});
+  const [folders, setFolders]               = useState({});
+  const [loadingKey, setLoadingKey]         = useState(null);
+  const [creating, setCreating]             = useState(null);
+  const [folderName, setFolderName]         = useState('');
+  const [folderError, setFolderError]       = useState('');
+  const [search, setSearch]                 = useState('');
 
-  const cacheKey = (branch, year, sem) => `${branch}-${year}-${sem}`;
-
-  // Load branches from API
+  // Load branches from API — silently replaces defaults if successful
   useEffect(() => {
     fetchBranches()
-      .then(d => setBranches(d.branches || []))
-      .catch(() => {})
-      .finally(() => setBranchesLoading(false));
+      .then(d => { if (d?.branches?.length) setBranches(d.branches); })
+      .catch(() => {}); // keep defaults on error
   }, []);
+
+  const cacheKey = (branch, year, sem) => `${branch}-${year}-${sem}`;
 
   const loadFolders = useCallback(async (branch, year, sem) => {
     const key = cacheKey(branch, year, sem);
@@ -89,14 +92,14 @@ export default function RegulationPage() {
     } else {
       setExpandedBranch(branchId);
       setSelectedYear(prev => ({ ...prev, [branchId]: null }));
-      setSelectedSem(prev => ({ ...prev, [branchId]: null }));
+      setSelectedSem(prev  => ({ ...prev, [branchId]: null }));
     }
     setCreating(null);
   };
 
   const pickYear = (branchId, yearId) => {
     setSelectedYear(prev => ({ ...prev, [branchId]: yearId }));
-    setSelectedSem(prev => ({ ...prev, [branchId]: null }));
+    setSelectedSem(prev  => ({ ...prev, [branchId]: null }));
     setCreating(null);
   };
 
@@ -111,18 +114,15 @@ export default function RegulationPage() {
     const name = folderName.trim();
     if (!name) { setFolderError('Please enter a subject name.'); return; }
     const year = selectedYear[branchId];
-    const sem = selectedSem[branchId];
-    const key = cacheKey(branchId, year, sem);
+    const sem  = selectedSem[branchId];
+    const key  = cacheKey(branchId, year, sem);
     try {
       const result = await createFolder({ regulation, branch: branchId, subject: name, year, sem });
       const folder = result?.folder || result?.data?.folder;
       setFolders(prev => ({ ...prev, [key]: [...(prev[key] || []), folder] }));
-      setCreating(null);
-      setFolderName('');
+      setCreating(null); setFolderName('');
       navigate(`/r/${regulation}/${branchId}/${encodeURIComponent(name)}`);
-    } catch (e) {
-      setFolderError(e.message || 'Failed to create folder.');
-    }
+    } catch (e) { setFolderError(e.message || 'Failed to create folder.'); }
   };
 
   const handleDelete = async (branchId, folderId, e) => {
@@ -130,18 +130,15 @@ export default function RegulationPage() {
     e.stopPropagation();
     if (!window.confirm('Delete this folder?')) return;
     const year = selectedYear[branchId];
-    const sem = selectedSem[branchId];
-    const key = cacheKey(branchId, year, sem);
+    const sem  = selectedSem[branchId];
+    const key  = cacheKey(branchId, year, sem);
     await deleteFolder(folderId);
-    setFolders(prev => ({
-      ...prev,
-      [key]: (prev[key] || []).filter(f => f._id !== folderId),
-    }));
+    setFolders(prev => ({ ...prev, [key]: (prev[key] || []).filter(f => f._id !== folderId) }));
   };
 
   const cancelCreate = () => { setCreating(null); setFolderName(''); setFolderError(''); };
 
-  const query = search.trim().toLowerCase();
+  const query    = search.trim().toLowerCase();
   const filtered = branches.filter(b =>
     !query || b.id.toLowerCase().includes(query) || b.label.toLowerCase().includes(query)
   );
@@ -149,9 +146,7 @@ export default function RegulationPage() {
   return (
     <div className="reg-page">
       <nav className="breadcrumb">
-        <Link to="/dashboard" className="breadcrumb__item">
-          <Home size={13} /> Repository
-        </Link>
+        <Link to="/dashboard" className="breadcrumb__item"><Home size={13} /> Repository</Link>
         <ChevronRight size={13} className="breadcrumb__sep" />
         <span className="breadcrumb__item breadcrumb__item--active">{regulation}</span>
       </nav>
@@ -159,80 +154,47 @@ export default function RegulationPage() {
       <div className="reg-page__header">
         <div>
           <h1 className="reg-page__title">Regulation {regulation}</h1>
-          <p className="reg-page__sub">
-            Select a branch → year → semester → subject folder
-          </p>
+          <p className="reg-page__sub">Select a branch → year → semester → subject folder</p>
         </div>
       </div>
 
       <div className="reg-page__search-wrap">
         <Search size={15} className="reg-page__search-icon" />
-        <input
-          type="search"
-          className="reg-page__search"
-          placeholder="Search branches…"
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-        />
+        <input type="search" className="reg-page__search" placeholder="Search branches…"
+          value={search} onChange={e => setSearch(e.target.value)} />
       </div>
 
-      {branchesLoading ? (
-        <div className="sp-state sp-state--loading" style={{padding:'2rem 0'}}>
-          <Loader2 size={22} className="spin" />
-          <span>Loading branches…</span>
-        </div>
-      ) : null}
-
       <div className="branch-list">
-        {filtered.length === 0 && (
-          <p className="reg-page__no-results">No branches match "{search}"</p>
-        )}
+        {filtered.length === 0 && <p className="reg-page__no-results">No branches match "{search}"</p>}
 
         {filtered.map(branch => {
-          const isOpen = expandedBranch === branch.id;
-          const year = selectedYear[branch.id];
-          const sem = selectedSem[branch.id];
-          const key = cacheKey(branch.id, year, sem);
-          const subs = (year && sem && folders[key]) || [];
-          const loading = loadingKey === key;
+          const isOpen     = expandedBranch === branch.id;
+          const year       = selectedYear[branch.id];
+          const sem        = selectedSem[branch.id];
+          const key        = cacheKey(branch.id, year, sem);
+          const subs       = (year && sem && folders[key]) || [];
+          const loading    = loadingKey === key;
           const isCreating = creating === key;
 
           return (
-            <div
-              key={branch.id}
-              className={`branch-accordion${isOpen ? ' branch-accordion--open' : ''}`}
-            >
-              <button
-                className="branch-accordion__header"
-                onClick={() => toggleBranch(branch.id)}
-                aria-expanded={isOpen}
-              >
+            <div key={branch.id} className={`branch-accordion${isOpen ? ' branch-accordion--open' : ''}`}>
+              <button className="branch-accordion__header" onClick={() => toggleBranch(branch.id)} aria-expanded={isOpen}>
                 <span className="branch-accordion__emoji">{branch.emoji}</span>
                 <span className="branch-accordion__id">{branch.id}</span>
-                <span className="branch-accordion__label">
-                  <Hl text={branch.label} query={query} />
-                </span>
-                <ChevronDown
-                  size={16}
-                  className={`branch-accordion__chevron-down${isOpen ? ' open' : ''}`}
-                />
+                <span className="branch-accordion__label"><Hl text={branch.label} query={query} /></span>
+                <ChevronDown size={16} className={`branch-accordion__chevron-down${isOpen ? ' open' : ''}`} />
               </button>
 
               {isOpen && (
                 <div className="branch-accordion__body">
 
-                  {/* STEP 1: Year picker */}
+                  {/* STEP 1: Year */}
                   <div className="drill-step">
-                    <p className="drill-step__label">
-                      <GraduationCap size={14} /> Select Year
-                    </p>
+                    <p className="drill-step__label"><GraduationCap size={14} /> Select Year</p>
                     <div className="year-grid">
                       {YEARS.map(y => (
-                        <button
-                          key={y.id}
-                          className={`year-card${year === y.id ? ' year-card--active' : ''}`}
-                          onClick={() => pickYear(branch.id, y.id)}
-                        >
+                        <button key={y.id} className={`year-card${year === y.id ? ' year-card--active' : ''}`}
+                          onClick={() => pickYear(branch.id, y.id)}>
                           <span className="year-card__short">{y.short}</span>
                           <span className="year-card__label">{y.label}</span>
                           <span className="year-card__desc">{y.desc}</span>
@@ -241,7 +203,7 @@ export default function RegulationPage() {
                     </div>
                   </div>
 
-                  {/* STEP 2: Semester picker */}
+                  {/* STEP 2: Semester */}
                   {year && (
                     <div className="drill-step drill-step--animate">
                       <p className="drill-step__label">
@@ -250,11 +212,8 @@ export default function RegulationPage() {
                       </p>
                       <div className="sem-grid">
                         {SEMESTERS.map(s => (
-                          <button
-                            key={s.id}
-                            className={`sem-card${sem === s.id ? ' sem-card--active' : ''}`}
-                            onClick={() => pickSem(branch.id, s.id)}
-                          >
+                          <button key={s.id} className={`sem-card${sem === s.id ? ' sem-card--active' : ''}`}
+                            onClick={() => pickSem(branch.id, s.id)}>
                             <span className="sem-card__label">{s.label}</span>
                           </button>
                         ))}
@@ -262,7 +221,7 @@ export default function RegulationPage() {
                     </div>
                   )}
 
-                  {/* STEP 3: Subject folders */}
+                  {/* STEP 3: Subjects */}
                   {year && sem && (
                     <div className="drill-step drill-step--animate">
                       <div className="drill-step__header-row">
@@ -270,10 +229,8 @@ export default function RegulationPage() {
                           <FolderOpen size={14} /> Subjects
                           <span className="drill-step__ctx"> — Y{year} · Sem {sem}</span>
                         </p>
-                        <button
-                          className="branch-accordion__new-btn"
-                          onClick={() => { setCreating(key); setFolderName(''); setFolderError(''); }}
-                        >
+                        <button className="branch-accordion__new-btn"
+                          onClick={() => { setCreating(key); setFolderName(''); setFolderError(''); }}>
                           <FolderPlus size={14} /> New folder
                         </button>
                       </div>
@@ -282,32 +239,18 @@ export default function RegulationPage() {
                         <div className="create-folder-form">
                           <div className="create-folder-form__inner">
                             <FolderOpen size={16} className="create-folder-form__icon" />
-                            <input
-                              autoFocus
-                              className="create-folder-form__input"
-                              type="text"
-                              placeholder="Subject name"
-                              value={folderName}
+                            <input autoFocus className="create-folder-form__input" type="text"
+                              placeholder="Subject name" value={folderName}
                               onChange={e => setFolderName(e.target.value)}
-                              onKeyDown={e => e.key === 'Enter' && handleCreate(branch.id)}
-                            />
-                            <button
-                              className="create-folder-form__confirm"
-                              onClick={() => handleCreate(branch.id)}
-                            >Create</button>
-                            <button className="create-folder-form__cancel" onClick={cancelCreate}>
-                              <X size={14} />
-                            </button>
+                              onKeyDown={e => e.key === 'Enter' && handleCreate(branch.id)} />
+                            <button className="create-folder-form__confirm" onClick={() => handleCreate(branch.id)}>Create</button>
+                            <button className="create-folder-form__cancel" onClick={cancelCreate}><X size={14} /></button>
                           </div>
                           {folderError && <p className="create-folder-form__error">{folderError}</p>}
                         </div>
                       )}
 
-                      {loading && (
-                        <div className="branch-subjects-loading">
-                          <Loader2 size={15} className="spin" /> Loading subjects…
-                        </div>
-                      )}
+                      {loading && <div className="branch-subjects-loading"><Loader2 size={15} className="spin" /> Loading subjects…</div>}
 
                       {!loading && (
                         <div className="subject-folder-grid">
@@ -315,33 +258,23 @@ export default function RegulationPage() {
                             <div className="subject-folder-empty">
                               <FolderOpen size={32} />
                               <p>No subjects yet for Y{year} · Sem {sem}</p>
-                              <button
-                                className="btn btn--ghost btn--sm"
-                                onClick={() => { setCreating(key); setFolderName(''); setFolderError(''); }}
-                              >
+                              <button className="btn btn--ghost btn--sm"
+                                onClick={() => { setCreating(key); setFolderName(''); setFolderError(''); }}>
                                 <FolderPlus size={13} /> Add subject
                               </button>
                             </div>
                           )}
-
                           {subs.map(folder => (
                             <div key={folder._id} className="subject-folder-row">
-                              <button
-                                className="subject-folder"
-                                onClick={() =>
-                                  navigate(`/r/${regulation}/${branch.id}/${encodeURIComponent(folder.subject)}`)
-                                }
-                              >
+                              <button className="subject-folder"
+                                onClick={() => navigate(`/r/${regulation}/${branch.id}/${encodeURIComponent(folder.subject)}`)}>
                                 <FolderOpen size={16} className="subject-folder__icon" />
                                 <span className="subject-folder__name">{folder.subject}</span>
                                 <ChevronRight size={14} className="subject-folder__arrow" />
                               </button>
                               {isAdmin && (
-                                <button
-                                  className="subject-folder__delete"
-                                  onClick={e => handleDelete(branch.id, folder._id, e)}
-                                  title="Delete folder"
-                                >
+                                <button className="subject-folder__delete"
+                                  onClick={e => handleDelete(branch.id, folder._id, e)} title="Delete folder">
                                   <Trash2 size={13} />
                                 </button>
                               )}
