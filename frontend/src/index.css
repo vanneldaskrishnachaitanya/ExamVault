@@ -1837,3 +1837,427 @@ option { background: var(--bg-card); }
   font-family: var(--font-mono); font-size: 0.75rem;
   margin: 0; line-height: 1.6;
 }
+YEAR / SEMESTER DRILL-DOWN NAVIGATION
+══════════════════════════════════════════════════════════════ */
+
+/* ChevronDown for branch accordion */
+.branch-accordion__chevron-down {
+  color: var(--text-3);
+  flex-shrink: 0;
+  transition: transform 0.25s var(--ease);
+  margin-left: auto;
+}
+.branch-accordion__chevron-down.open {
+  transform: rotate(180deg);
+}
+
+/* Drill step wrapper */
+.drill-step {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.drill-step--animate {
+  animation: drillIn 0.22s var(--ease);
+}
+
+@keyframes drillIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.drill-step__label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.drill-step__ctx {
+  color: var(--amber);
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.drill-step__header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Divider between steps */
+.drill-step + .drill-step {
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--border-lite);
+}
+
+/* ── Year cards ──────────────────────────────────────────────── */
+.year-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
+@media (max-width: 520px) {
+  .year-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.year-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.75rem 0.5rem;
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, transform 0.15s var(--ease);
+  text-align: center;
+}
+
+.year-card:hover {
+  border-color: var(--amber-border);
+  background: var(--bg-hover);
+  transform: translateY(-2px);
+}
+
+.year-card--active {
+  border-color: var(--amber) !important;
+  background: var(--amber-dim) !important;
+}
+
+.year-card__short {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--amber);
+}
+
+.year-card--active .year-card__short {
+  color: var(--amber);
+}
+
+.year-card__label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-1);
+}
+
+.year-card__desc {
+  font-size: 0.68rem;
+  color: var(--text-3);
+}
+
+/* ── Semester cards ──────────────────────────────────────────── */
+.sem-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+
+.sem-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.9rem 1rem;
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, transform 0.15s var(--ease);
+}
+
+.sem-card:hover {
+  border-color: var(--blue);
+  background: #3b82f610;
+  transform: translateY(-2px);
+}
+
+.sem-card--active {
+  border-color: var(--blue) !important;
+  background: #3b82f618 !important;
+}
+
+.sem-card__label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-1);
+}
+
+.sem-card--active .sem-card__label {
+  color: var(--blue);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   REDESIGNED DASHBOARD HERO
+══════════════════════════════════════════════════════════════ */
+
+.dash-hero {
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 2.5rem;
+  margin-bottom: 2.5rem;
+  animation: heroIn 0.5s var(--ease);
+}
+
+@keyframes heroIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.dash-hero__glow {
+  position: absolute;
+  top: -100px; right: -80px;
+  width: 350px; height: 350px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #f5a62318 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.dash-hero__glow--2 {
+  top: auto; right: auto;
+  bottom: -80px; left: -60px;
+  width: 250px; height: 250px;
+  background: radial-gradient(circle, #3b82f612 0%, transparent 70%);
+}
+
+.dash-hero__top {
+  margin-bottom: 1.25rem;
+}
+
+.dash-hero__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.75rem;
+  background: var(--amber-dim);
+  border: 1px solid var(--amber-border);
+  border-radius: 100px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--amber);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.dash-hero__content {
+  margin-bottom: 2rem;
+}
+
+.dash-hero__icon {
+  color: var(--amber);
+  margin-bottom: 0.85rem;
+  filter: drop-shadow(0 0 12px #f5a62340);
+}
+
+.dash-hero__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 800;
+  color: var(--text-1);
+  margin-bottom: 0.6rem;
+  line-height: 1.15;
+}
+
+.dash-hero__name {
+  color: var(--amber);
+}
+
+.dash-hero__wave {
+  display: inline-block;
+  animation: wave 2.5s ease-in-out infinite;
+  transform-origin: 70% 70%;
+}
+
+@keyframes wave {
+  0%, 100% { transform: rotate(0deg); }
+  15%       { transform: rotate(16deg); }
+  30%       { transform: rotate(-8deg); }
+  45%       { transform: rotate(12deg); }
+  60%       { transform: rotate(-4deg); }
+}
+
+.dash-hero__sub {
+  color: var(--text-2);
+  max-width: 540px;
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+
+/* Stats row */
+.dash-hero__stats {
+  display: flex;
+  gap: 0;
+  flex-wrap: wrap;
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.dash-stat {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  flex: 1;
+  min-width: 100px;
+  border-right: 1px solid var(--border);
+  transition: background 0.15s;
+}
+
+.dash-stat:last-child { border-right: none; }
+
+.dash-stat__icon { color: var(--amber); flex-shrink: 0; }
+
+.dash-stat__value {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-1);
+}
+
+.dash-stat__label {
+  font-size: 0.75rem;
+  color: var(--text-3);
+  font-family: var(--font-mono);
+}
+
+@media (max-width: 480px) {
+  .dash-hero { padding: 1.5rem; }
+  .dash-hero__stats { display: grid; grid-template-columns: 1fr 1fr; }
+  .dash-stat { border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .dash-stat:nth-child(2n) { border-right: none; }
+}
+
+/* Regulation cards stagger animation */
+.reg-grid .reg-card:nth-child(1) { animation-delay: 0.05s; }
+.reg-grid .reg-card:nth-child(2) { animation-delay: 0.10s; }
+.reg-grid .reg-card:nth-child(3) { animation-delay: 0.15s; }
+
+.reg-card {
+  animation: cardIn 0.4s var(--ease) both;
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.reg-card__emoji {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+  display: block;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4));
+}
+
+/* ══════════════════════════════════════════════════════════════
+   IMPROVED FILE CARDS
+══════════════════════════════════════════════════════════════ */
+
+.file-card {
+  transition: border-color 0.18s, background 0.18s, transform 0.2s var(--ease), box-shadow 0.2s;
+}
+
+.file-card:hover {
+  box-shadow: 0 4px 20px #00000050;
+}
+
+.sp-file-list .file-card {
+  animation: fileIn 0.25s var(--ease) both;
+}
+
+.sp-file-list .file-card:nth-child(1) { animation-delay: 0.02s; }
+.sp-file-list .file-card:nth-child(2) { animation-delay: 0.05s; }
+.sp-file-list .file-card:nth-child(3) { animation-delay: 0.08s; }
+.sp-file-list .file-card:nth-child(4) { animation-delay: 0.11s; }
+.sp-file-list .file-card:nth-child(5) { animation-delay: 0.14s; }
+
+@keyframes fileIn {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   MOBILE RESPONSIVENESS IMPROVEMENTS
+══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 640px) {
+  /* Navbar */
+  .navbar__links { display: none; }
+  .navbar__inner { gap: 0.75rem; }
+
+  /* Regulation page */
+  .reg-page__header { flex-direction: column; }
+
+  /* Branch accordion compact on mobile */
+  .branch-accordion__label { font-size: 0.82rem; }
+  .branch-accordion__id { min-width: 42px; font-size: 0.72rem; }
+
+  /* Subject page header */
+  .sp-header { flex-direction: column; gap: 0.75rem; }
+  .sp-header__actions { width: 100%; justify-content: flex-end; }
+
+  /* Tabs scrollable */
+  .sp-tabs {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Semester cards full width */
+  .sem-grid { grid-template-columns: 1fr 1fr; }
+
+  /* File card actions wrap */
+  .file-card__actions { flex-wrap: wrap; }
+
+  /* Modal */
+  .modal { margin: 0.5rem; width: calc(100vw - 1rem); }
+  .modal__row--2col { flex-direction: column; }
+}
+
+@media (max-width: 400px) {
+  .year-grid { grid-template-columns: repeat(2, 1fr); }
+  .dash-stat { padding: 0.6rem 0.75rem; }
+}
+
+/* Smooth page transitions */
+.reg-page,
+.dashboard,
+.subject-page {
+  animation: pageIn 0.3s var(--ease);
+}
+
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Branch list stagger */
+.branch-list .branch-accordion:nth-child(1) { animation-delay: 0.03s; }
+.branch-list .branch-accordion:nth-child(2) { animation-delay: 0.06s; }
+.branch-list .branch-accordion:nth-child(3) { animation-delay: 0.09s; }
+.branch-list .branch-accordion:nth-child(4) { animation-delay: 0.12s; }
+.branch-list .branch-accordion:nth-child(5) { animation-delay: 0.15s; }
+.branch-list .branch-accordion:nth-child(6) { animation-delay: 0.18s; }
+.branch-list .branch-accordion:nth-child(7) { animation-delay: 0.21s; }
+
+.branch-accordion {
+  animation: cardIn 0.3s var(--ease) both;
+}

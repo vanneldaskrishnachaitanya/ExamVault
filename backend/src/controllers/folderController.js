@@ -4,9 +4,14 @@ const Folder = require('../models/Folder');
 
 const getFolders = async (req, res) => {
 
-  const { regulation, branch } = req.query;
+  const { regulation, branch, year, sem } = req.query;
 
-  const folders = await Folder.find({ regulation, branch }).sort({ subject: 1 });
+  // Build filter — year & sem are required for the new UI
+  const filter = { regulation, branch };
+  if (year) filter.year = year;
+  if (sem)  filter.sem  = sem;
+
+  const folders = await Folder.find(filter).sort({ subject: 1 });
 
   res.json({
     success: true,
@@ -17,12 +22,21 @@ const getFolders = async (req, res) => {
 
 const createFolder = async (req, res) => {
 
-  const { regulation, branch, subject } = req.body;
+  const { regulation, branch, subject, year, sem } = req.body;
+
+  if (!year || !sem) {
+    return res.status(400).json({
+      success: false,
+      message: 'year and sem are required'
+    });
+  }
 
   const folder = await Folder.create({
     regulation,
     branch,
     subject,
+    year,
+    sem,
     createdBy: req.user._id
   });
 
