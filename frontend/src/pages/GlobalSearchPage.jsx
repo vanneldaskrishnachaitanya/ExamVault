@@ -1,6 +1,6 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { Search, Loader2, Filter, X, SearchX } from 'lucide-react';
-import { globalSearch, fetchFolders } from '../api/apiClient';
+import { globalSearch } from '../api/apiClient';
 import FileCard from '../components/FileCard';
 
 const REGULATIONS = ['R25', 'R22', 'R19'];
@@ -65,6 +65,16 @@ export default function GlobalSearchPage() {
             value={query} onChange={e => setQuery(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && doSearch()} />
           {query && <button className="search-page__clear" onClick={clear}><X size={14} /></button>}
+          {showSugg && suggestions.length > 0 && (
+            <div className="search-sugg" ref={suggRef}>
+              {suggestions.map((s, i) => (
+                <button key={i} className="search-sugg__item"
+                  onMouseDown={() => { setQuery(s); setShowSugg(false); doSearch(s); }}>
+                  <Search size={11} /> {s}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
         <button className={`btn btn--ghost${activeFilters > 0 ? ' btn--filter-active' : ''}`}
           onClick={() => setShowFilters(f => !f)}>
