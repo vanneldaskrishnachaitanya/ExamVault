@@ -28,7 +28,10 @@ const {
   historyRouter,
   searchRouter,
   branchRouter,
+  examRouter,
+  codingRouter,
 } = require('./routes/newRoutes');
+const { seedCodingData } = require('./controllers/codingController');
 
 const { seedBranches } = require('./controllers/branchController');
 
@@ -96,6 +99,8 @@ app.use('/ratings',       ratingRouter);
 app.use('/downloads',     historyRouter);
 app.use('/search',        searchRouter);
 app.use('/branches',      branchRouter);
+app.use('/exams',         examRouter);
+app.use('/coding',        codingRouter);
 app.use('/admin',         adminRouter);
 app.use('/admin',         adminReportRouter);
 app.use('/admin',         adminExtrasRouter);
@@ -133,6 +138,8 @@ const start = async () => {
     initFirebase();
     await connectDB();
     await seedBranches();
+    // Seed coding platforms (needs first admin user)
+    try { const User = require('./models/User'); const admin = await User.findOne({role:'admin'}); if(admin) await seedCodingData(admin._id); } catch{}
 
     const server = app.listen(PORT, () => {
       logger.info(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);

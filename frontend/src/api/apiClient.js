@@ -92,4 +92,19 @@ export const createBranch = async (payload) => { const { data } = await api.post
 export const updateBranch = async (id, payload) => { const { data } = await api.patch(`/admin/branches/${id}`, payload); return data.data; };
 export const deleteBranch = async (id) => { const { data } = await api.delete(`/admin/branches/${id}`); return data; };
 
+// ── Exams ───────────────────────────────────────────────────────
+export const fetchExams = async () => { const { data } = await api.get('/exams'); return data.data; };
+export const createExam = async (payload) => { const { data } = await api.post('/exams', payload); return data.data; };
+export const deleteExam = async (id) => { const { data } = await api.delete(`/exams/${id}`); return data; };
+
+// ── Coding Platforms ────────────────────────────────────────────
+export const getCodingItems     = async () => { const { data } = await api.get('/coding'); return data.data; };
+export const suggestPlatform    = async (payload) => { const { data } = await api.post('/coding/suggest', payload); return data.data; };
+export const getAllCodingItems   = async () => { const { data } = await api.get('/admin/coding'); return data.data; };
+export const createCodingItem   = async (payload) => { const { data } = await api.post('/admin/coding', payload); return data.data; };
+export const deleteCodingItem   = async (id) => { const { data } = await api.delete(`/admin/coding/${id}`); return data; };
+export const toggleCodingItem   = async (id) => { const { data } = await api.patch(`/admin/coding/${id}`); return data.data; };
+export const getCodingSuggestions = async () => { const { data } = await api.get('/admin/coding/suggestions'); return data.data; };
+export const reviewSuggestion   = async (id, action, adminNote='') => { const { data } = await api.patch(`/admin/coding/suggestions/${id}`, { action, adminNote }); return data; };
+
 export default api;

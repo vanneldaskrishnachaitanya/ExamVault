@@ -13,6 +13,8 @@ import AnalyticsPage        from './pages/AnalyticsPage';
 import GlobalSearchPage     from './pages/GlobalSearchPage';
 import DownloadHistoryPage  from './pages/DownloadHistoryPage';
 import UserManagementPage   from './pages/UserManagementPage';
+import CodingPage           from './pages/CodingPage';
+import ExamSchedulePage     from './pages/ExamSchedulePage';
 
 // ── Route guards ──────────────────────────────────────────────
 
@@ -78,6 +80,8 @@ export default function App() {
         <Route path="/profile"                            element={<ProfilePage />} />
         <Route path="/search"                             element={<GlobalSearchPage />} />
         <Route path="/downloads"                          element={<DownloadHistoryPage />} />
+        <Route path="/coding"                             element={<CodingPage />} />
+        <Route path="/exams"                              element={<ExamSchedulePage />} />
       </Route>
 
       {/* ── Admin (protected + role check) ─────────────────── */}

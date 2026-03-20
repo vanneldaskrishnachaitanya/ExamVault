@@ -10,6 +10,11 @@ const { getBookmarks, addBookmark, removeBookmark } = require('../controllers/bo
 const { getAnalytics } = require('../controllers/analyticsController');
 const { getFileRatings, rateFile, deleteRating } = require('../controllers/ratingController');
 const { getDownloadHistory, recordDownloadFromFrontend, globalSearch, getAllUsers, toggleUserActive } = require('../controllers/extraController');
+const { getExams, createExam, deleteExam } = require('../controllers/examController');
+const {
+  getCodingItems, getAllCodingItems, createCodingItem, deleteCodingItem,
+  toggleCodingItem, suggestPlatform, getSuggestions, reviewSuggestion,
+} = require('../controllers/codingController');
 const { getBranches, getAllBranches, createBranch, updateBranch, deleteBranch } = require('../controllers/branchController');
 
 // ── Notifications ─────────────────────────────────────────────
@@ -61,6 +66,24 @@ adminExtrasRouter.post('/branches',              protect, restrictTo('admin'), c
 adminExtrasRouter.patch('/branches/:id',         protect, restrictTo('admin'), updateBranch);
 adminExtrasRouter.delete('/branches/:id',        protect, restrictTo('admin'), deleteBranch);
 
+// Coding platforms (public read)
+const codingRouter = express.Router();
+codingRouter.get('/',          protect, getCodingItems);
+codingRouter.post('/suggest',  protect, suggestPlatform);
+
+// Admin coding management
+adminExtrasRouter.get('/coding',                   protect, restrictTo('admin'), getAllCodingItems);
+adminExtrasRouter.post('/coding',                  protect, restrictTo('admin'), createCodingItem);
+adminExtrasRouter.delete('/coding/:id',            protect, restrictTo('admin'), deleteCodingItem);
+adminExtrasRouter.patch('/coding/:id',             protect, restrictTo('admin'), toggleCodingItem);
+adminExtrasRouter.get('/coding/suggestions',       protect, restrictTo('admin'), getSuggestions);
+adminExtrasRouter.patch('/coding/suggestions/:id', protect, restrictTo('admin'), reviewSuggestion);
+
+const examRouter = express.Router();
+examRouter.get('/',       protect, getExams);
+examRouter.post('/',      protect, restrictTo('admin'), createExam);
+examRouter.delete('/:id', protect, restrictTo('admin'), deleteExam);
+
 module.exports = {
   notificationRouter,
   announcementRouter,
@@ -70,4 +93,6 @@ module.exports = {
   historyRouter,
   searchRouter,
   branchRouter,
+  examRouter,
+  codingRouter,
 };

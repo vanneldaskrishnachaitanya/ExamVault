@@ -3,7 +3,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import {
   BookOpen, ChevronDown, LayoutDashboard,
   LogOut, Shield, Bell, Sun, Moon, Check,
-  Trash2, Search, Download,
+  Trash2, Search, Download, Code, Calendar,
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { fetchNotifications, markAllNotificationsRead, deleteNotification } from '../api/apiClient';
@@ -72,6 +72,17 @@ export default function Navbar({ theme, toggleTheme }) {
     ? backendUser.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
     : '?';
 
+  // Keyboard shortcut / → navigate to search
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.key === '/' && !['INPUT','TEXTAREA'].includes(e.target.tagName)) {
+        e.preventDefault(); navigate('/search');
+      }
+    };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [navigate]);
+
   return (
     <nav className="navbar" role="navigation" aria-label="Main navigation">
       <div className="navbar__inner">
@@ -93,6 +104,12 @@ export default function Navbar({ theme, toggleTheme }) {
             className={({ isActive }) => 'navbar__link' + (isActive ? ' navbar__link--active' : '')}
           >
             <LayoutDashboard size={15} /> Repository
+          </NavLink>
+          <NavLink to="/coding" className={({ isActive }) => 'navbar__link' + (isActive ? ' navbar__link--active' : '')}>
+            <Code size={15} /> Coding
+          </NavLink>
+          <NavLink to="/exams" className={({ isActive }) => 'navbar__link' + (isActive ? ' navbar__link--active' : '')}>
+            <Calendar size={15} /> Exams
           </NavLink>
           {isAdmin && (
             <NavLink

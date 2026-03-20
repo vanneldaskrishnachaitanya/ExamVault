@@ -1,3 +1,4 @@
+import BottomNav from '../components/BottomNav';
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Navbar from '../components/Navbar';
@@ -15,6 +16,8 @@ export default function MainLayout() {
   const [theme, setTheme] = useState(() => localStorage.getItem('ev-theme') || 'dark');
   const [announcements, setAnnouncements] = useState([]);
   const [dismissed, setDismissed] = useState([]);
+  const [installPrompt, setInstallPrompt] = useState(null);
+  const [showInstall, setShowInstall] = useState(false);
 
   // Apply theme to <html>
   useEffect(() => {
@@ -23,6 +26,19 @@ export default function MainLayout() {
   }, [theme]);
 
   const toggleTheme = () => setTheme(t => t === 'dark' ? 'light' : 'dark');
+
+  useEffect(() => {
+    const handler = (e) => { e.preventDefault(); setInstallPrompt(e); setShowInstall(true); };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  const handleInstall = async () => {
+    if (!installPrompt) return;
+    installPrompt.prompt();
+    const { outcome } = await installPrompt.userChoice;
+    if (outcome === 'accepted') setShowInstall(false);
+  };
 
   // Load announcements
   useEffect(() => {
@@ -59,7 +75,15 @@ export default function MainLayout() {
         );
       })}
 
-      <main className="layout__main">
+      {showInstall && (
+        <div className="pwa-banner">
+          <span>📲 Install ExamVault as an app!</span>
+          <button className="pwa-banner__install" onClick={handleInstall}>Install</button>
+          <button className="pwa-banner__dismiss" onClick={() => setShowInstall(false)}>✕</button>
+        </div>
+      )}
+      <BottomNav />
+      <main className="layout__main" style={{paddingBottom: '5rem'}}>
         <Outlet />
       </main>
     </div>
