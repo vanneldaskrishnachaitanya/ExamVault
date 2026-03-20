@@ -22,9 +22,9 @@ const REGULATIONS = [
   },
   {
     id:       'R19',
-    year:     '2018',
+    year:     '2019',
     heading:  'Regulation 19',
-    desc:     'Regulation for 2018–2021 admitted batches',
+    desc:     'Regulation for 2019–2021 admitted batches',
     accent:   'reg--teal',
     note:     'Legacy',
   },
