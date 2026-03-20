@@ -15,7 +15,12 @@ const TYPE_STYLES = {
 };
 
 export default function MainLayout() {
-  const [theme, setTheme] = useState(() => localStorage.getItem('ev-theme') || 'dark');
+  const [theme, setTheme] = useState(() => {
+    const saved = localStorage.getItem('ev-theme');
+    if (saved) return saved;
+    // Detect system preference
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  });
   const [announcements, setAnnouncements] = useState([]);
   const [showTour, setShowTour] = useState(() => !localStorage.getItem('ev-tour-done'));
   const [dismissed, setDismissed] = useState([]);
@@ -29,6 +34,18 @@ export default function MainLayout() {
   }, [theme]);
 
   const toggleTheme = () => setTheme(t => t === 'dark' ? 'light' : 'dark');
+
+  // Listen for system theme changes (only if user hasn't manually set a preference)
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const handler = (e) => {
+      if (!localStorage.getItem('ev-theme')) {
+        setTheme(e.matches ? 'dark' : 'light');
+      }
+    };
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
 
   useEffect(() => {
     const handler = (e) => { e.preventDefault(); setInstallPrompt(e); setShowInstall(true); };

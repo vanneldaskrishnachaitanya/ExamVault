@@ -3749,3 +3749,100 @@ YEAR / SEMESTER DRILL-DOWN NAVIGATION
   text-transform: uppercase; letter-spacing: 0.1em;
   font-family: var(--font-mono); margin-bottom: 0.75rem;
 }
+
+/* ══════════════════════════════════════════════════════════════
+   DASHBOARD STATS BAR
+══════════════════════════════════════════════════════════════ */
+.dash-stats-bar {
+  display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.5rem;
+}
+.dash-stat-chip {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 0.85rem 1.25rem; gap: 0.15rem;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); flex: 1; min-width: 80px;
+  animation: cardIn 0.3s var(--ease) both;
+}
+.dash-stat-chip--warn { border-color: var(--amber-border); background: var(--amber-dim); }
+.dash-stat-chip__val   { font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; color: var(--text-1); }
+.dash-stat-chip__label { font-size: 0.68rem; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.08em; font-family: var(--font-mono); }
+.dash-stat-chip--warn .dash-stat-chip__val   { color: var(--amber); }
+.dash-stat-chip--warn .dash-stat-chip__label { color: var(--amber); }
+
+/* ══════════════════════════════════════════════════════════════
+   SEARCH AUTOCOMPLETE SUGGESTIONS
+══════════════════════════════════════════════════════════════ */
+.search-sugg {
+  position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 200;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); box-shadow: var(--shadow-lg);
+  overflow: hidden; animation: dropIn 0.15s var(--ease);
+}
+.search-sugg__item {
+  display: flex; align-items: center; gap: 0.5rem;
+  width: 100%; padding: 0.65rem 1rem;
+  font-size: 0.875rem; color: var(--text-2); text-align: left;
+  background: none; border: none; cursor: pointer;
+  transition: background 0.1s, color 0.1s;
+}
+.search-sugg__item:hover { background: var(--bg-raised); color: var(--text-1); }
+
+/* ══════════════════════════════════════════════════════════════
+   WHATSAPP SHARE BUTTON
+══════════════════════════════════════════════════════════════ */
+.fc-share-group { display: flex; gap: 0.3rem; align-items: center; }
+.fc-btn--whatsapp {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0.35rem 0.5rem; font-size: 0.9rem;
+  background: #25d36618; border: 1px solid #25d36635;
+  border-radius: var(--radius-sm); cursor: pointer;
+  transition: opacity 0.15s;
+}
+.fc-btn--whatsapp:hover { opacity: 0.8; }
+
+/* ══════════════════════════════════════════════════════════════
+   SYLLABUS + TIMETABLE PAGES
+══════════════════════════════════════════════════════════════ */
+.syllabus-page { max-width: 860px; }
+.syllabus-page__header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+.syllabus-page__title {
+  display: flex; align-items: center; gap: 0.6rem;
+  font-family: var(--font-display); font-size: 1.6rem; font-weight: 800;
+}
+.syllabus-filters {
+  display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.5rem;
+}
+.syllabus-form {
+  background: var(--bg-raised); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 1.25rem;
+  margin-bottom: 1.5rem; animation: drillIn 0.2s var(--ease);
+}
+.syllabus-form__title {
+  font-family: var(--font-display); font-size: 0.95rem; font-weight: 700;
+  margin-bottom: 0.85rem; color: var(--text-2);
+}
+.syllabus-form__grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap: 0.75rem;
+}
+.syllabus-year-group { margin-bottom: 1.5rem; }
+.syllabus-year-label {
+  font-family: var(--font-display); font-size: 0.9rem; font-weight: 700;
+  color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em;
+  font-family: var(--font-mono); margin-bottom: 0.6rem; padding-left: 0.25rem;
+}
+.syllabus-list { display: flex; flex-direction: column; gap: 0.5rem; }
+.syllabus-item {
+  display: flex; align-items: center; gap: 0.85rem;
+  padding: 0.85rem 1rem; background: var(--bg-card);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  transition: border-color 0.15s; flex-wrap: wrap;
+}
+.syllabus-item:hover { border-color: var(--amber-border); }
+.syllabus-item__icon { color: var(--amber); flex-shrink: 0; }
+.syllabus-item__body { flex: 1; min-width: 0; }
+.syllabus-item__title { font-size: 0.875rem; font-weight: 600; color: var(--text-1); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.syllabus-item__meta  { font-size: 0.72rem; color: var(--text-3); font-family: var(--font-mono); margin-top: 0.1rem; }
+.syllabus-item__actions { display: flex; gap: 0.4rem; flex-wrap: wrap; flex-shrink: 0; }

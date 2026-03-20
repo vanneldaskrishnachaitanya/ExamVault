@@ -11,7 +11,6 @@ const { getAnalytics } = require('../controllers/analyticsController');
 const { getFileRatings, rateFile, deleteRating } = require('../controllers/ratingController');
 const { getDownloadHistory, recordDownloadFromFrontend, globalSearch, getAllUsers, toggleUserActive } = require('../controllers/extraController');
 const { getExams, createExam, deleteExam } = require('../controllers/examController');
-const { getLeaderboard, getUploadProgress, exportFiles, exportUsers, exportDownloads } = require('../controllers/leaderboardController');
 const {
   getCodingItems, getAllCodingItems, createCodingItem, deleteCodingItem,
   toggleCodingItem, suggestPlatform, getSuggestions, reviewSuggestion,
@@ -85,18 +84,29 @@ examRouter.get('/',       protect, getExams);
 examRouter.post('/',      protect, restrictTo('admin'), createExam);
 examRouter.delete('/:id', protect, restrictTo('admin'), deleteExam);
 
-// Leaderboard
-const leaderboardRouter = express.Router();
-leaderboardRouter.get('/', protect, getLeaderboard);
 
-// Upload progress
-const progressRouter = express.Router();
-progressRouter.get('/', protect, getUploadProgress);
 
 // Admin export CSV
-adminExtrasRouter.get('/export/files',     protect, restrictTo('admin'), exportFiles);
-adminExtrasRouter.get('/export/users',     protect, restrictTo('admin'), exportUsers);
-adminExtrasRouter.get('/export/downloads', protect, restrictTo('admin'), exportDownloads);
+
+const {
+  upload: syllabusUpload,
+  getSyllabus, uploadSyllabus, deleteSyllabus,
+  getTimetable, uploadTimetable, deleteTimetable,
+} = require('../controllers/syllabusController');
+
+// Syllabus (students read, admin write)
+const syllabusRouter = express.Router();
+syllabusRouter.get('/', protect, getSyllabus);
+
+// Timetable (students read, admin write)
+const timetableRouter = express.Router();
+timetableRouter.get('/', protect, getTimetable);
+
+// Admin syllabus/timetable management
+adminExtrasRouter.post('/syllabus',       protect, restrictTo('admin'), syllabusUpload.single('file'), uploadSyllabus);
+adminExtrasRouter.delete('/syllabus/:id', protect, restrictTo('admin'), deleteSyllabus);
+adminExtrasRouter.post('/timetable',       protect, restrictTo('admin'), syllabusUpload.single('file'), uploadTimetable);
+adminExtrasRouter.delete('/timetable/:id', protect, restrictTo('admin'), deleteTimetable);
 
 module.exports = {
   notificationRouter,
@@ -109,6 +119,6 @@ module.exports = {
   branchRouter,
   examRouter,
   codingRouter,
-  leaderboardRouter,
-  progressRouter,
+  syllabusRouter,
+  timetableRouter,
 };

@@ -30,8 +30,8 @@ const {
   branchRouter,
   examRouter,
   codingRouter,
-  leaderboardRouter,
-  progressRouter,
+  syllabusRouter,
+  timetableRouter,
 } = require('./routes/newRoutes');
 const { seedCodingData } = require('./controllers/codingController');
 
@@ -103,8 +103,8 @@ app.use('/search',        searchRouter);
 app.use('/branches',      branchRouter);
 app.use('/exams',         examRouter);
 app.use('/coding',        codingRouter);
-app.use('/leaderboard',   leaderboardRouter);
-app.use('/upload-progress', progressRouter);
+app.use('/syllabus',      syllabusRouter);
+app.use('/timetable',     timetableRouter);
 app.use('/admin',         adminRouter);
 app.use('/admin',         adminReportRouter);
 app.use('/admin',         adminExtrasRouter);

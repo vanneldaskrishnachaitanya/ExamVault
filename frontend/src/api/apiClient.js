@@ -107,13 +107,15 @@ export const toggleCodingItem   = async (id) => { const { data } = await api.pat
 export const getCodingSuggestions = async () => { const { data } = await api.get('/admin/coding/suggestions'); return data.data; };
 export const reviewSuggestion   = async (id, action, adminNote='') => { const { data } = await api.patch(`/admin/coding/suggestions/${id}`, { action, adminNote }); return data; };
 
-// ── Leaderboard ──────────────────────────────────────────────
-export const fetchLeaderboard = async () => { const { data } = await api.get('/leaderboard'); return data.data; };
-// ── Upload Progress ───────────────────────────────────────────
-export const fetchUploadProgress = async (params={}) => { const { data } = await api.get('/upload-progress', { params }); return data.data; };
-// ── Export CSV (admin) ────────────────────────────────────────
-export const exportFilesCSV     = () => window.open(api.defaults.baseURL + '/admin/export/files',     '_blank');
-export const exportUsersCSV     = () => window.open(api.defaults.baseURL + '/admin/export/users',     '_blank');
-export const exportDownloadsCSV = () => window.open(api.defaults.baseURL + '/admin/export/downloads', '_blank');
+
+// ── Syllabus ──────────────────────────────────────────────────
+export const fetchSyllabus    = async (params={}) => { const { data } = await api.get('/syllabus', { params }); return data.data; };
+export const uploadSyllabus   = async (formData) => { const { data } = await api.post('/admin/syllabus', formData, { headers:{'Content-Type':'multipart/form-data'}, timeout:120000 }); return data.data; };
+export const deleteSyllabus   = async (id) => { const { data } = await api.delete(`/admin/syllabus/${id}`); return data; };
+
+// ── Timetable ─────────────────────────────────────────────────
+export const fetchTimetable   = async (params={}) => { const { data } = await api.get('/timetable', { params }); return data.data; };
+export const uploadTimetable  = async (formData) => { const { data } = await api.post('/admin/timetable', formData, { headers:{'Content-Type':'multipart/form-data'}, timeout:120000 }); return data.data; };
+export const deleteTimetable  = async (id) => { const { data } = await api.delete(`/admin/timetable/${id}`); return data; };
 
 export default api;

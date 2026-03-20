@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef } from 'react';
 import { Search, Loader2, Filter, X, SearchX } from 'lucide-react';
-import { globalSearch } from '../api/apiClient';
+import { globalSearch, fetchFolders } from '../api/apiClient';
 import FileCard from '../components/FileCard';
 
 const REGULATIONS = ['R25', 'R22', 'R19'];
@@ -15,6 +15,30 @@ export default function GlobalSearchPage() {
   const [searched,    setSearched]    = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const inputRef = useRef(null);
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSugg,    setShowSugg]    = useState(false);
+  const suggRef = useRef(null);
+
+  // Autocomplete — fetch subject names matching query
+  useEffect(() => {
+    if (!query || query.length < 2) { setSuggestions([]); setShowSugg(false); return; }
+    const timer = setTimeout(async () => {
+      try {
+        const d = await globalSearch({ q: query, limit: 5 });
+        const subjects = [...new Set((d.files || []).map(f => f.subject))].slice(0, 6);
+        setSuggestions(subjects);
+        setShowSugg(subjects.length > 0);
+      } catch {}
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [query]);
+
+  // Close suggestions on outside click
+  useEffect(() => {
+    const handler = (e) => { if (suggRef.current && !suggRef.current.contains(e.target)) setShowSugg(false); };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
 
   const doSearch = useCallback(async (q = query) => {
     if (!q || q.trim().length < 2) return;

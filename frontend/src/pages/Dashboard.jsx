@@ -1,6 +1,8 @@
 import RecentlyViewed from '../components/RecentlyViewed';
 // src/pages/Dashboard.jsx
 import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { fetchAnalytics } from '../api/apiClient';
 import { ArrowRight, BookOpen, GraduationCap, Layers } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 
@@ -35,6 +37,11 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const { backendUser } = useAuth();
   const firstName = backendUser?.name?.split(' ')[0] || 'there';
+  const [stats, setStats] = useState(null);
+
+  useEffect(() => {
+    fetchAnalytics().then(d => setStats(d)).catch(() => {});
+  }, []);
 
   return (
     <div className="dashboard">

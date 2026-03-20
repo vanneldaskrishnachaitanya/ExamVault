@@ -13,9 +13,9 @@ import AnalyticsPage        from './pages/AnalyticsPage';
 import GlobalSearchPage     from './pages/GlobalSearchPage';
 import DownloadHistoryPage  from './pages/DownloadHistoryPage';
 import UserManagementPage   from './pages/UserManagementPage';
-import LeaderboardPage      from './pages/LeaderboardPage';
-import UploadProgressPage   from './pages/UploadProgressPage';
 import CodingPage           from './pages/CodingPage';
+import SyllabusPage         from './pages/SyllabusPage';
+import TimetablePage        from './pages/TimetablePage';
 import ExamSchedulePage     from './pages/ExamSchedulePage';
 
 // ── Route guards ──────────────────────────────────────────────
@@ -83,9 +83,9 @@ export default function App() {
         <Route path="/search"                             element={<GlobalSearchPage />} />
         <Route path="/downloads"                          element={<DownloadHistoryPage />} />
         <Route path="/coding"                             element={<CodingPage />} />
+        <Route path="/syllabus"                           element={<SyllabusPage />} />
+        <Route path="/timetable"                          element={<TimetablePage />} />
         <Route path="/exams"                              element={<ExamSchedulePage />} />
-        <Route path="/leaderboard"                        element={<LeaderboardPage />} />
-        <Route path="/progress"                           element={<UploadProgressPage />} />
       </Route>
 
       {/* ── Admin (protected + role check) ─────────────────── */}

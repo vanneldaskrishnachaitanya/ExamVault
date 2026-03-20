@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { X, Upload, CheckCircle, AlertCircle, FileUp } from 'lucide-react';
 import { uploadFile, fetchBranches } from '../api/apiClient';
+import { useAuth } from '../hooks/useAuth';
 
 const REGULATIONS = [
   { id: 'R25', label: 'R25 — Regulation 2025' },
@@ -20,6 +21,8 @@ const DEFAULT_BRANCHES = [
 ];
 
 export default function UploadModal({ isOpen, onClose, onSuccess, prefill = {} }) {
+  const { backendUser } = useAuth();
+  const isAdmin = backendUser?.role === 'admin';
   const fileInputRef = useRef(null);
 
   const [form, setForm] = useState({
@@ -28,7 +31,8 @@ export default function UploadModal({ isOpen, onClose, onSuccess, prefill = {} }
     subject:    prefill.subject    || '',
     category:   prefill.category   || 'paper',
     examType:   '',
-    year:       '',
+    year:            '',
+    hideUploaderName: false,
   });
 
   const [file,       setFile]       = useState(null);
@@ -53,7 +57,8 @@ export default function UploadModal({ isOpen, onClose, onSuccess, prefill = {} }
         subject:    prefill.subject    || '',
         category:   prefill.category   || 'paper',
         examType:   '',
-        year:       '',
+        year:            '',
+    hideUploaderName: false,
       });
       setFile(null);
       setProgress(0);
@@ -224,6 +229,13 @@ export default function UploadModal({ isOpen, onClose, onSuccess, prefill = {} }
             <div className="modal__success"><CheckCircle size={16} /> Uploaded! Awaiting admin approval.</div>
           )}
 
+          {isAdmin && (
+            <label style={{display:'flex',alignItems:'center',gap:'0.6rem',fontSize:'0.85rem',color:'var(--text-2)',cursor:'pointer',marginBottom:'0.5rem'}}>
+              <input type="checkbox" checked={form.hideUploaderName}
+                onChange={e => setForm(f=>({...f,hideUploaderName:e.target.checked}))} />
+              Hide my name from this file
+            </label>
+          )}
           {/* Submit */}
           <button type="submit" className="modal__submit"
             disabled={status === 'uploading' || status === 'success'}>
