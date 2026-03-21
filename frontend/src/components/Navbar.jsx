@@ -26,6 +26,8 @@ export default function Navbar({ theme, toggleTheme }) {
     const load = async () => {
       try {
         const data = await fetchNotifications();
+      const newUnread = (data.notifications || []).filter(n => !n.read).length;
+      if (newUnread > unread) playNotifSound();
         setNotifications(data.notifications || []);
         setUnread(data.unreadCount || 0);
       } catch {}

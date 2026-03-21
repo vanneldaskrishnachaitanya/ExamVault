@@ -13,6 +13,8 @@ import AnalyticsPage        from './pages/AnalyticsPage';
 import GlobalSearchPage     from './pages/GlobalSearchPage';
 import DownloadHistoryPage  from './pages/DownloadHistoryPage';
 import UserManagementPage   from './pages/UserManagementPage';
+import CGPACalculatorPage   from './pages/CGPACalculatorPage';
+import NotFoundPage         from './pages/NotFoundPage';
 import CodingPage           from './pages/CodingPage';
 import SyllabusPage         from './pages/SyllabusPage';
 import TimetablePage        from './pages/TimetablePage';
@@ -86,6 +88,7 @@ export default function App() {
         <Route path="/syllabus"                           element={<SyllabusPage />} />
         <Route path="/timetable"                          element={<TimetablePage />} />
         <Route path="/exams"                              element={<ExamSchedulePage />} />
+        <Route path="/cgpa"                               element={<CGPACalculatorPage />} />
       </Route>
 
       {/* ── Admin (protected + role check) ─────────────────── */}
@@ -97,7 +100,7 @@ export default function App() {
 
       {/* ── Catch-all ──────────────────────────────────────── */}
       <Route path="/"  element={<Navigate to="/login"   replace />} />
-      <Route path="*"  element={<Navigate to="/dashboard" replace />} />
+      <Route path="*"  element={<NotFoundPage />} />
     </Routes>
   );
 }

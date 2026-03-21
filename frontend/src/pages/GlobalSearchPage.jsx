@@ -15,6 +15,7 @@ export default function GlobalSearchPage() {
   const [searched,    setSearched]    = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const inputRef = useRef(null);
+  const [previewFile, setPreviewFile] = useState(null);
   const [suggestions, setSuggestions] = useState([]);
   const [showSugg,    setShowSugg]    = useState(false);
   const suggRef = useRef(null);
@@ -148,6 +149,25 @@ export default function GlobalSearchPage() {
           <Search size={52} />
           <p>Search across all papers and resources</p>
           <p style={{ fontSize: '0.82rem', color: 'var(--text-3)' }}>Type at least 2 characters and press Enter</p>
+        </div>
+      )}
+      {previewFile && (
+        <div className="preview-modal-overlay" onClick={e => e.target === e.currentTarget && setPreviewFile(null)}>
+          <div className="preview-modal">
+            <div className="preview-modal__header">
+              <span className="preview-modal__title">{previewFile.originalName}</span>
+              <button className="preview-modal__close" onClick={() => setPreviewFile(null)}>✕</button>
+            </div>
+            <div className="preview-modal__body">
+              {previewFile.mimeType?.startsWith('image/') ? (
+                <img src={previewFile.filePath} alt={previewFile.originalName} className="preview-modal__img" />
+              ) : previewFile.mimeType === 'application/pdf' ? (
+                <iframe src={`https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(previewFile.filePath)}`} className="preview-modal__iframe" title={previewFile.originalName} allowFullScreen />
+              ) : (
+                <iframe src={`https://docs.google.com/viewer?url=${encodeURIComponent(previewFile.filePath)}&embedded=true`} className="preview-modal__iframe" title={previewFile.originalName} allowFullScreen />
+              )}
+            </div>
+          </div>
         </div>
       )}
     </div>

@@ -7,7 +7,7 @@ const { restrictTo }  = require('../middleware/roleMiddleware');
 const { getNotifications, markAllRead, markOneRead, deleteNotification } = require('../controllers/notificationController');
 const { getAnnouncements, createAnnouncement, deleteAnnouncement, toggleAnnouncement } = require('../controllers/announcementController');
 const { getBookmarks, addBookmark, removeBookmark } = require('../controllers/bookmarkController');
-const { getAnalytics } = require('../controllers/analyticsController');
+const { getAnalytics, getPublicStats } = require('../controllers/analyticsController');
 const { getFileRatings, rateFile, deleteRating } = require('../controllers/ratingController');
 const { getDownloadHistory, recordDownloadFromFrontend, globalSearch, getAllUsers, toggleUserActive } = require('../controllers/extraController');
 const { getExams, createExam, deleteExam } = require('../controllers/examController');
@@ -55,6 +55,10 @@ branchRouter.get('/', protect, getBranches);
 
 // ── Admin extras ──────────────────────────────────────────────
 const adminExtrasRouter = express.Router();
+// Public stats router (no auth)
+const statsRouter = express.Router();
+statsRouter.get('/', getPublicStats);
+
 adminExtrasRouter.get('/analytics',              protect, restrictTo('admin'), getAnalytics);
 adminExtrasRouter.post('/announcements',         protect, restrictTo('admin'), createAnnouncement);
 adminExtrasRouter.delete('/announcements/:id',   protect, restrictTo('admin'), deleteAnnouncement);

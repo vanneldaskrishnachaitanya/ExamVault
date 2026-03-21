@@ -120,4 +120,11 @@ export const fetchTimetable   = async (params={}) => { const { data } = await ap
 export const uploadTimetable  = async (formData)  => { const { data } = await api.post('/admin/timetable', formData, { headers:{'Content-Type':'multipart/form-data'}, timeout:120000 }); return data.data; };
 export const deleteTimetable  = async (id)        => { const { data } = await api.delete(`/admin/timetable/${id}`); return data; };
 
+
+// ── Public stats (no auth needed) ────────────────────────────
+export const fetchPublicStats = async () => { const { data } = await api.get('/stats'); return data.data; };
+
+// ── Important marker (admin) ──────────────────────────────────
+export const toggleImportant = async (id) => { const { data } = await api.patch(`/admin/files/${id}/important`); return data.data; };
+
 export default api;

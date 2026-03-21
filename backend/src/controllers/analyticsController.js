@@ -1,10 +1,23 @@
 'use strict';
+// GET /stats — public, no auth required
+
 
 const File = require('../models/File');
 const User = require('../models/User');
 const Folder = require('../models/Folder');
 
 // GET /admin/analytics
+const getPublicStats = async (req, res, next) => {
+  try {
+    const [approvedFiles, totalUsers, totalFolders] = await Promise.all([
+      File.countDocuments({ status: 'approved' }),
+      User.countDocuments({ role: 'student' }),
+      Folder.countDocuments(),
+    ]);
+    res.json({ success: true, data: { approvedFiles, totalUsers, totalFolders } });
+  } catch (err) { next(err); }
+};
+
 const getAnalytics = async (req, res, next) => {
   try {
     const [
@@ -53,4 +66,4 @@ const getAnalytics = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-module.exports = { getAnalytics };
+module.exports = { getAnalytics, getPublicStats };

@@ -103,6 +103,7 @@ app.use('/search',        searchRouter);
 app.use('/branches',      branchRouter);
 app.use('/exams',         examRouter);
 app.use('/coding',        codingRouter);
+app.use('/stats',         statsRouter);
 app.use('/syllabus',      syllabusRouter);
 app.use('/timetable',     timetableRouter);
 app.use('/admin',         adminRouter);

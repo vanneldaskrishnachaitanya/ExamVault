@@ -2,7 +2,7 @@ import RecentlyViewed from '../components/RecentlyViewed';
 // src/pages/Dashboard.jsx
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { fetchAnalytics } from '../api/apiClient';
+import { fetchPublicStats } from '../api/apiClient';
 import { ArrowRight, BookOpen, GraduationCap, Layers } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 
@@ -40,7 +40,7 @@ export default function Dashboard() {
   const [stats, setStats] = useState(null);
 
   useEffect(() => {
-    fetchAnalytics().then(d => setStats(d.overview || d)).catch(() => {});
+    fetchPublicStats().then(d => setStats(d)).catch(() => {});
   }, []);
 
   return (
