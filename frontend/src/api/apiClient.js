@@ -125,6 +125,5 @@ export const deleteTimetable  = async (id)        => { const { data } = await ap
 export const fetchPublicStats = async () => { const { data } = await api.get('/stats'); return data.data; };
 
 // ── Important marker (admin) ──────────────────────────────────
-export const toggleImportant = async (id) => { const { data } = await api.patch(`/admin/files/${id}/important`); return data.data; };
 
 export default api;

@@ -32,6 +32,7 @@ const {
   codingRouter,
   syllabusRouter,
   timetableRouter,
+  statsRouter,
 } = require('./routes/newRoutes');
 const { seedCodingData } = require('./controllers/codingController');
 
