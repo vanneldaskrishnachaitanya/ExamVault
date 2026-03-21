@@ -3,7 +3,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import {
   BookOpen, ChevronDown, LayoutDashboard,
   LogOut, Shield, Bell, Sun, Moon, Check,
-  Trash2, Search, Download, Calculator, Code, Calendar, Clock2,
+  Trash2, Search, Download, Code, Calendar, Clock2,
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { fetchNotifications, markAllNotificationsRead, deleteNotification } from '../api/apiClient';
@@ -13,7 +13,6 @@ export default function Navbar({ theme, toggleTheme }) {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
-  const [showShortcuts, setShowShortcuts] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [unread, setUnread] = useState(0);
   const menuRef   = useRef(null);
@@ -79,9 +78,6 @@ export default function Navbar({ theme, toggleTheme }) {
       if (e.key === '/' && !['INPUT','TEXTAREA'].includes(e.target.tagName)) {
         e.preventDefault(); navigate('/search');
       }
-      if (e.key === '?' && !['INPUT','TEXTAREA'].includes(e.target.tagName)) {
-        e.preventDefault(); setShowShortcuts(s => !s);
-      }
     };
     document.addEventListener('keydown', handler);
     return () => document.removeEventListener('keydown', handler);
@@ -120,9 +116,6 @@ export default function Navbar({ theme, toggleTheme }) {
           </NavLink>
           <NavLink to="/timetable" className={({ isActive }) => 'navbar__link' + (isActive ? ' navbar__link--active' : '')}>
             <Clock2 size={15} /> Timetable
-          </NavLink>
-          <NavLink to="/cgpa" className={({ isActive }) => 'navbar__link' + (isActive ? ' navbar__link--active' : '')}>
-            <Calculator size={15} /> CGPA
           </NavLink>
           {isAdmin && (
             <NavLink
@@ -269,22 +262,6 @@ export default function Navbar({ theme, toggleTheme }) {
           </div>
         </div>
       </div>
-      {showShortcuts && (
-        <div className="shortcuts-overlay" onClick={() => setShowShortcuts(false)}>
-          <div className="shortcuts-modal" onClick={e => e.stopPropagation()}>
-            <div className="shortcuts-modal__header">
-              <h3>⌨️ Keyboard Shortcuts</h3>
-              <button onClick={() => setShowShortcuts(false)}>✕</button>
-            </div>
-            <div className="shortcuts-list">
-              <div className="shortcut-row"><kbd>/</kbd><span>Open Global Search</span></div>
-              <div className="shortcut-row"><kbd>?</kbd><span>Show this shortcuts guide</span></div>
-              <div className="shortcut-row"><kbd>Esc</kbd><span>Close modals / previews</span></div>
-            </div>
-            <p className="shortcuts-hint">Press <kbd>?</kbd> again to close</p>
-          </div>
-        </div>
-      )}
     </nav>
   );
 }

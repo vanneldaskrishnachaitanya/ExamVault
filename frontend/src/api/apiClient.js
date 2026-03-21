@@ -120,10 +120,11 @@ export const fetchTimetable   = async (params={}) => { const { data } = await ap
 export const uploadTimetable  = async (formData)  => { const { data } = await api.post('/admin/timetable', formData, { headers:{'Content-Type':'multipart/form-data'}, timeout:120000 }); return data.data; };
 export const deleteTimetable  = async (id)        => { const { data } = await api.delete(`/admin/timetable/${id}`); return data; };
 
-
-// ── Public stats (no auth needed) ────────────────────────────
-export const fetchPublicStats = async () => { const { data } = await api.get('/stats'); return data.data; };
-
-// ── Important marker (admin) ──────────────────────────────────
+// ── Feedback ──────────────────────────────────────────────────
+export const fetchFeedback   = async (params={}) => { const { data } = await api.get('/feedback', { params }); return data.data; };
+export const submitFeedback  = async (payload)   => { const { data } = await api.post('/feedback', payload); return data.data; };
+export const upvoteFeedback  = async (id)        => { const { data } = await api.patch(`/feedback/${id}/upvote`); return data.data; };
+export const reviewFeedback  = async (id, payload) => { const { data } = await api.patch(`/admin/feedback/${id}`, payload); return data.data; };
+export const deleteFeedbackAdmin = async (id)    => { const { data } = await api.delete(`/admin/feedback/${id}`); return data; };
 
 export default api;

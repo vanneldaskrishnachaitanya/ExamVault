@@ -7,7 +7,7 @@ const { restrictTo }  = require('../middleware/roleMiddleware');
 const { getNotifications, markAllRead, markOneRead, deleteNotification } = require('../controllers/notificationController');
 const { getAnnouncements, createAnnouncement, deleteAnnouncement, toggleAnnouncement } = require('../controllers/announcementController');
 const { getBookmarks, addBookmark, removeBookmark } = require('../controllers/bookmarkController');
-const { getAnalytics, getPublicStats } = require('../controllers/analyticsController');
+const { getAnalytics } = require('../controllers/analyticsController');
 const { getFileRatings, rateFile, deleteRating } = require('../controllers/ratingController');
 const { getDownloadHistory, recordDownloadFromFrontend, globalSearch, getAllUsers, toggleUserActive } = require('../controllers/extraController');
 const { getExams, createExam, deleteExam } = require('../controllers/examController');
@@ -55,10 +55,6 @@ branchRouter.get('/', protect, getBranches);
 
 // ── Admin extras ──────────────────────────────────────────────
 const adminExtrasRouter = express.Router();
-// Public stats router (no auth)
-const statsRouter = express.Router();
-statsRouter.get('/', getPublicStats);
-
 adminExtrasRouter.get('/analytics',              protect, restrictTo('admin'), getAnalytics);
 adminExtrasRouter.post('/announcements',         protect, restrictTo('admin'), createAnnouncement);
 adminExtrasRouter.delete('/announcements/:id',   protect, restrictTo('admin'), deleteAnnouncement);
@@ -112,6 +108,17 @@ adminExtrasRouter.delete('/syllabus/:id', protect, restrictTo('admin'), deleteSy
 adminExtrasRouter.post('/timetable',       protect, restrictTo('admin'), syllabusUpload.single('file'), uploadTimetable);
 adminExtrasRouter.delete('/timetable/:id', protect, restrictTo('admin'), deleteTimetable);
 
+// Feedback router
+const feedbackRouter = express.Router();
+feedbackRouter.get('/',              protect, getFeedback);
+feedbackRouter.post('/',             protect, createFeedback);
+feedbackRouter.patch('/:id/upvote', protect, upvoteFeedback);
+
+// Admin feedback management
+adminExtrasRouter.get('/feedback',         protect, restrictTo('admin'), getFeedback);
+adminExtrasRouter.patch('/feedback/:id',   protect, restrictTo('admin'), reviewFeedback);
+adminExtrasRouter.delete('/feedback/:id',  protect, restrictTo('admin'), deleteFeedback);
+
 module.exports = {
   notificationRouter,
   announcementRouter,
@@ -125,5 +132,4 @@ module.exports = {
   codingRouter,
   syllabusRouter,
   timetableRouter,
-  statsRouter,
 };

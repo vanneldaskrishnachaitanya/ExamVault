@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Code, Calendar, User, Shield, BookOpen, Clock } from 'lucide-react';
+import { LayoutDashboard, Code, Calendar, User, Shield, BookOpen, Clock, MessageSquare } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 
 export default function BottomNav() {
@@ -11,6 +11,7 @@ export default function BottomNav() {
     { to: '/exams',     icon: <Calendar size={20} />,        label: 'Exams' },
     { to: '/syllabus',  icon: <BookOpen size={20} />,        label: 'Syllabus' },
     { to: '/timetable', icon: <Clock size={20} />,          label: 'Timetable' },
+    { to: '/feedback', icon: <MessageSquare size={20} />, label: 'Feedback' },
     { to: '/profile',   icon: <User size={20} />,            label: 'Profile' },
     ...(isAdmin ? [{ to: '/admin', icon: <Shield size={20} />, label: 'Admin' }] : []),
   ];
