@@ -125,4 +125,5 @@ module.exports = {
   codingRouter,
   syllabusRouter,
   timetableRouter,
+  statsRouter,
 };
