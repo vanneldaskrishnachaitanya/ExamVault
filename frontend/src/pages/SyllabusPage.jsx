@@ -1,10 +1,10 @@
 import { useEffect, useState, useRef } from 'react';
 import { BookOpen, Upload, Trash2, Loader2, FileText, Eye, Download, Plus, X } from 'lucide-react';
-import { fetchSyllabus, uploadSyllabus, deleteSyllabus } from '../api/apiClient';
+import { fetchSyllabus, uploadSyllabus, deleteSyllabus, fetchBranches } from '../api/apiClient';
 import { useAuth } from '../hooks/useAuth';
 
 const REGULATIONS = ['R25', 'R22', 'R19'];
-const BRANCHES    = ['CSE', 'ECE', 'EEE', 'IT', 'MECH', 'CIVIL', 'AIML'];
+const DEFAULT_BRANCHES = ['CSE', 'ECE', 'EEE', 'IT', 'MECH', 'CIVIL', 'AIML'];
 const YEARS       = ['1', '2', '3', '4'];
 
 const formatBytes = (b) => !b ? '' : b < 1048576 ? `${(b/1024).toFixed(1)} KB` : `${(b/1048576).toFixed(1)} MB`;
@@ -23,6 +23,7 @@ export default function SyllabusPage() {
   const [form,       setForm]       = useState({ regulation:'R22', branch:'CSE', year:'1', title:'' });
   const [file,       setFile]       = useState(null);
   const [uploading,  setUploading]  = useState(false);
+  const [branches,   setBranches]   = useState(DEFAULT_BRANCHES);
   const [toast,      setToast]      = useState('');
   const [preview,    setPreview]    = useState(null);
 
@@ -38,6 +39,12 @@ export default function SyllabusPage() {
     } catch {}
     finally { setLoading(false); }
   };
+
+  useEffect(() => {
+    fetchBranches()
+      .then(d => { if (d?.branches?.length) setBranches(d.branches.map(b => b.id)); })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => { load(); }, [regulation, branch, year]);
 
@@ -95,7 +102,7 @@ export default function SyllabusPage() {
         <label className="modal__label">
           Branch
           <select className="modal__select" value={branch} onChange={e => setBranch(e.target.value)}>
-            {BRANCHES.map(b => <option key={b} value={b}>{b}</option>)}
+            {branches.map(b => <option key={b} value={b}>{b}</option>)}
           </select>
         </label>
         <label className="modal__label">
@@ -119,7 +126,7 @@ export default function SyllabusPage() {
             </label>
             <label className="modal__label">Branch
               <select className="modal__select" value={form.branch} onChange={e => setForm(f=>({...f,branch:e.target.value}))}>
-                {BRANCHES.map(b => <option key={b} value={b}>{b}</option>)}
+                {branches.map(b => <option key={b} value={b}>{b}</option>)}
               </select>
             </label>
             <label className="modal__label">Year
