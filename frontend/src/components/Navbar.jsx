@@ -3,7 +3,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import {
   BookOpen, ChevronDown, LayoutDashboard,
   LogOut, Shield, Bell, Sun, Moon, Check,
-  Trash2, Search, Download, Code, Calendar, Clock2,
+  Trash2, Search, Download, Calculator, MessageSquare, Code, Calendar, Clock2,
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { fetchNotifications, markAllNotificationsRead, deleteNotification } from '../api/apiClient';
@@ -116,6 +116,9 @@ export default function Navbar({ theme, toggleTheme }) {
           </NavLink>
           <NavLink to="/timetable" className={({ isActive }) => 'navbar__link' + (isActive ? ' navbar__link--active' : '')}>
             <Clock2 size={15} /> Timetable
+          </NavLink>
+          <NavLink to="/feedback" className={({ isActive }) => 'navbar__link' + (isActive ? ' navbar__link--active' : '')}>
+            <MessageSquare size={15} /> Feedback
           </NavLink>
           {isAdmin && (
             <NavLink

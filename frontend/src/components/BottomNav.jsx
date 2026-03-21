@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Code, Calendar, User, Shield, BookOpen, Clock, MessageSquare } from 'lucide-react';
+import { LayoutDashboard, MessageSquare, Code, Calendar, User, Shield, BookOpen, Clock } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 
 export default function BottomNav() {
