@@ -108,13 +108,11 @@ adminExtrasRouter.delete('/syllabus/:id', protect, restrictTo('admin'), deleteSy
 adminExtrasRouter.post('/timetable',       protect, restrictTo('admin'), syllabusUpload.single('file'), uploadTimetable);
 adminExtrasRouter.delete('/timetable/:id', protect, restrictTo('admin'), deleteTimetable);
 
-// Feedback router
 const feedbackRouter = express.Router();
 feedbackRouter.get('/',              protect, getFeedback);
 feedbackRouter.post('/',             protect, createFeedback);
 feedbackRouter.patch('/:id/upvote', protect, upvoteFeedback);
 
-// Admin feedback management
 adminExtrasRouter.get('/feedback',         protect, restrictTo('admin'), getFeedback);
 adminExtrasRouter.patch('/feedback/:id',   protect, restrictTo('admin'), reviewFeedback);
 adminExtrasRouter.delete('/feedback/:id',  protect, restrictTo('admin'), deleteFeedback);
