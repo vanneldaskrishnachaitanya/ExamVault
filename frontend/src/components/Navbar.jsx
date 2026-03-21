@@ -269,7 +269,6 @@ export default function Navbar({ theme, toggleTheme }) {
           </div>
         </div>
       </div>
-    </nav>
       {showShortcuts && (
         <div className="shortcuts-overlay" onClick={() => setShowShortcuts(false)}>
           <div className="shortcuts-modal" onClick={e => e.stopPropagation()}>
