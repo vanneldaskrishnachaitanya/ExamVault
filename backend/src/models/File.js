@@ -92,7 +92,8 @@ const FileSchema = new mongoose.Schema(
     },
 
     /** Admin can mark as important for exam */
-    isImportant: { type: Boolean, default: false },
+    isImportant:      { type: Boolean, default: false },
+    hideUploaderName: { type: Boolean, default: false },
 
     /** upload → pending → approved | rejected */
     status: {

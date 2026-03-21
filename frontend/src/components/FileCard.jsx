@@ -72,10 +72,10 @@ export default function FileCard({ file, showStatus = false, onReport, compact =
     || file.mimeType?.includes('excel');
 
   const getDisplayName = () => {
+    if (file.hideUploaderName) return null;
     const uploader = file.uploadedBy;
     if (!uploader) return null;
-    if (file.hideUploaderName) return null;
-    if (uploader.role === 'admin') return null; // admin always hidden
+    if (uploader.role === 'admin') return null;
     const email = uploader.email || '';
     if (email.endsWith('@vnrvjiet.in')) return email.split('@')[0].toUpperCase();
     return uploader.name || email.split('@')[0] || null;

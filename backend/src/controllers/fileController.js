@@ -97,7 +97,7 @@ const getFiles = async (req, res, next) => {
 
     const [files, total] = await Promise.all([
       File.find(filter)
-        .populate('uploadedBy', 'name email')
+        .populate('uploadedBy', 'name email role')
         .sort({ uploadedAt: -1 })
         .skip((pageNum - 1) * limitNum)
         .limit(limitNum)
@@ -131,7 +131,7 @@ const getFileById = async (req, res, next) => {
   try {
 
     const file = await File.findById(req.params.id)
-      .populate('uploadedBy', 'name email')
+      .populate('uploadedBy', 'name email role')
       .populate('approvedBy', 'name email');
 
     if (!file) {
@@ -278,7 +278,7 @@ const getPendingFiles = async (req, res, next) => {
   try {
 
     const files = await File.find({ status: 'pending' })
-      .populate('uploadedBy', 'name email')
+      .populate('uploadedBy', 'name email role')
       .sort({ uploadedAt: 1 });
 
     res.json({
