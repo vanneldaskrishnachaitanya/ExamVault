@@ -8,7 +8,7 @@ export default function BottomNav() {
   const links = [
     { to: '/dashboard', icon: <LayoutDashboard size={20} />, label: 'Home' },
     { to: '/coding',    icon: <Code size={20} />,            label: 'Coding' },
-    { to: '/exams',     icon: <Calendar size={20} />,        label: 'Exams' },
+    { to: '/events',     icon: <Calendar size={20} />,        label: 'Events' },
     { to: '/syllabus',  icon: <BookOpen size={20} />,        label: 'Syllabus' },
     { to: '/timetable', icon: <Clock size={20} />,          label: 'Timetable' },
     { to: '/feedback', icon: <MessageSquare size={20} />, label: 'Feedback' },

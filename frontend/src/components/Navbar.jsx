@@ -108,8 +108,8 @@ export default function Navbar({ theme, toggleTheme }) {
           <NavLink to="/coding" className={({ isActive }) => 'navbar__link' + (isActive ? ' navbar__link--active' : '')}>
             <Code size={15} /> Coding
           </NavLink>
-          <NavLink to="/exams" className={({ isActive }) => 'navbar__link' + (isActive ? ' navbar__link--active' : '')}>
-            <Calendar size={15} /> Exams
+          <NavLink to="/events" className={({ isActive }) => 'navbar__link' + (isActive ? ' navbar__link--active' : '')}>
+            <Calendar size={15} /> Events
           </NavLink>
           <NavLink to="/syllabus" className={({ isActive }) => 'navbar__link' + (isActive ? ' navbar__link--active' : '')}>
             <BookOpen size={15} /> Syllabus

@@ -19,7 +19,7 @@ import NotFoundPage         from './pages/NotFoundPage';
 import CodingPage           from './pages/CodingPage';
 import SyllabusPage         from './pages/SyllabusPage';
 import TimetablePage        from './pages/TimetablePage';
-import ExamSchedulePage     from './pages/ExamSchedulePage';
+import EventsPage           from './pages/EventsPage';
 
 // ── Route guards ──────────────────────────────────────────────
 
@@ -88,7 +88,7 @@ export default function App() {
         <Route path="/coding"                             element={<CodingPage />} />
         <Route path="/syllabus"                           element={<SyllabusPage />} />
         <Route path="/timetable"                          element={<TimetablePage />} />
-        <Route path="/exams"                              element={<ExamSchedulePage />} />
+        <Route path="/events"                             element={<EventsPage />} />
         <Route path="/cgpa"                               element={<CGPACalculatorPage />} />
         <Route path="/feedback"                            element={<FeedbackPage />} />
       </Route>

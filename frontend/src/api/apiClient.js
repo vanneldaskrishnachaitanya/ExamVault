@@ -96,10 +96,12 @@ export const createBranch     = async (payload)    => { const { data } = await a
 export const updateBranch     = async (id, payload) => { const { data } = await api.patch(`/admin/branches/${id}`, payload); return data.data; };
 export const deleteBranch     = async (id)         => { const { data } = await api.delete(`/admin/branches/${id}`); return data; };
 
-// ── Exams ─────────────────────────────────────────────────────
-export const fetchExams  = async ()        => { const { data } = await api.get('/exams'); return data.data; };
-export const createExam  = async (payload) => { const { data } = await api.post('/exams', payload); return data.data; };
-export const deleteExam  = async (id)      => { const { data } = await api.delete(`/exams/${id}`); return data; };
+// ── Events ────────────────────────────────────────────────────
+export const fetchEvents       = async (params={})  => { const { data } = await api.get('/events', { params }); return data.data; };
+export const fetchEventClubs   = async ()           => { const { data } = await api.get('/events/clubs'); return data.data; };
+export const createEvent       = async (formData)   => { const { data } = await api.post('/admin/events', formData, { headers:{'Content-Type':'multipart/form-data'}, timeout:60000 }); return data.data; };
+export const toggleEventComplete = async (id)       => { const { data } = await api.patch(`/admin/events/${id}/complete`); return data.data; };
+export const deleteEvent       = async (id)         => { const { data } = await api.delete(`/admin/events/${id}`); return data; };
 
 // ── Coding platforms ──────────────────────────────────────────
 export const getCodingItems       = async ()        => { const { data } = await api.get('/coding'); return data.data; };

@@ -28,7 +28,7 @@ const {
   historyRouter,
   searchRouter,
   branchRouter,
-  examRouter,
+  eventRouter,
   codingRouter,
   syllabusRouter,
   timetableRouter,
@@ -103,7 +103,7 @@ app.use('/ratings',       ratingRouter);
 app.use('/downloads',     historyRouter);
 app.use('/search',        searchRouter);
 app.use('/branches',      branchRouter);
-app.use('/exams',         examRouter);
+app.use('/events',        eventRouter);
 app.use('/coding',        codingRouter);
 app.use('/syllabus',      syllabusRouter);
 app.use('/timetable',     timetableRouter);

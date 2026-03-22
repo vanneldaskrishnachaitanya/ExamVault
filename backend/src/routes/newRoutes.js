@@ -10,7 +10,7 @@ const { getBookmarks, addBookmark, removeBookmark } = require('../controllers/bo
 const { getAnalytics, getPublicStats } = require('../controllers/analyticsController');
 const { getFileRatings, rateFile, deleteRating } = require('../controllers/ratingController');
 const { getDownloadHistory, recordDownloadFromFrontend, globalSearch, getAllUsers, toggleUserActive } = require('../controllers/extraController');
-const { getExams, createExam, deleteExam } = require('../controllers/examController');
+const { upload: eventUpload, getEvents, createEvent, toggleComplete, deleteEvent, getClubs } = require('../controllers/eventController');
 const {
   getCodingItems, getAllCodingItems, createCodingItem, deleteCodingItem,
   toggleCodingItem, suggestPlatform, getSuggestions, reviewSuggestion,
@@ -64,10 +64,11 @@ const statsRouter = express.Router();
 statsRouter.get('/', getPublicStats);
 
 // ── Exams ─────────────────────────────────────────────────────
-const examRouter = express.Router();
-examRouter.get('/',       protect, getExams);
-examRouter.post('/',      protect, restrictTo('admin'), createExam);
-examRouter.delete('/:id', protect, restrictTo('admin'), deleteExam);
+const eventRouter = express.Router();
+eventRouter.get('/',       protect, getEvents);
+eventRouter.get('/clubs',  protect, getClubs);
+
+// Admin event management via adminExtrasRouter
 
 // ── Coding platforms ──────────────────────────────────────────
 const codingRouter = express.Router();
@@ -110,6 +111,10 @@ adminExtrasRouter.post('/syllabus',              protect, restrictTo('admin'), s
 adminExtrasRouter.delete('/syllabus/:id',        protect, restrictTo('admin'), deleteSyllabus);
 adminExtrasRouter.post('/timetable',             protect, restrictTo('admin'), syllabusUpload.single('file'), uploadTimetable);
 adminExtrasRouter.delete('/timetable/:id',       protect, restrictTo('admin'), deleteTimetable);
+adminExtrasRouter.post('/events',            protect, restrictTo('admin'), eventUpload.single('image'), createEvent);
+adminExtrasRouter.patch('/events/:id/complete', protect, restrictTo('admin'), toggleComplete);
+adminExtrasRouter.delete('/events/:id',        protect, restrictTo('admin'), deleteEvent);
+
 adminExtrasRouter.get('/feedback',               protect, restrictTo('admin'), getFeedback);
 adminExtrasRouter.patch('/feedback/:id',         protect, restrictTo('admin'), reviewFeedback);
 adminExtrasRouter.delete('/feedback/:id',        protect, restrictTo('admin'), deleteFeedback);
@@ -123,7 +128,7 @@ module.exports = {
   historyRouter,
   searchRouter,
   branchRouter,
-  examRouter,
+  eventRouter,
   codingRouter,
   syllabusRouter,
   timetableRouter,
