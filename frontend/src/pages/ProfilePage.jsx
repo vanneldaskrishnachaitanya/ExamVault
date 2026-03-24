@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { User, Mail, Shield, BookMarked, FileText, Clock, ChevronRight, Trash2, Loader2 } from 'lucide-react';
+import { User, Mail, Shield, BookMarked, FileText, Clock, ChevronRight, Trash2, Loader2, Calculator } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { fetchBookmarks, removeBookmark } from '../api/apiClient';
 
 export default function ProfilePage() {
   const { backendUser } = useAuth();
+  const isStudent = backendUser?.role !== 'admin';
   const [activeTab, setActiveTab] = useState('bookmarks');
   const [bookmarks, setBookmarks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -49,6 +50,13 @@ export default function ProfilePage() {
             </span>
             <span className="profile-card__meta-item"><Clock size={13} /> Joined {joinedDate}</span>
           </div>
+
+          {/* CGPA Calculator — only for students */}
+          {isStudent && (
+            <Link to="/cgpa" className="profile-cgpa-btn">
+              <Calculator size={16} /> CGPA Calculator
+            </Link>
+          )}
         </div>
       </div>
 

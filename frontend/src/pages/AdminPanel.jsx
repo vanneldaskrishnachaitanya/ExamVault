@@ -12,7 +12,7 @@ import {
   fetchAllBranches, createBranch, updateBranch, deleteBranch,
 } from '../api/apiClient';
 import FileCard from '../components/FileCard';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const TABS = [
   { id: 'pending',       label: 'Pending',       icon: <Check size={14} />     },
@@ -50,41 +50,29 @@ export default function AdminPanel() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('pending');
 
-  // ── Pending ──────────────────────────────────────────────────
   const [pending,       setPending]       = useState([]);
   const [selected,      setSelected]      = useState([]);
   const [pLoading,      setPLoading]      = useState(true);
   const [pError,        setPError]        = useState('');
-
-  // ── Reports ──────────────────────────────────────────────────
   const [reports,       setReports]       = useState([]);
   const [rLoading,      setRLoading]      = useState(false);
   const [rError,        setRError]        = useState('');
-
-  // ── Announcements ─────────────────────────────────────────────
   const [announcements, setAnnouncements] = useState([]);
   const [aLoading,      setALoading]      = useState(false);
   const [newAnn,        setNewAnn]        = useState({ title: '', message: '', type: 'info' });
   const [aSubmitting,   setASubmitting]   = useState(false);
-
-  // ── Users ─────────────────────────────────────────────────────
   const [users,         setUsers]         = useState([]);
   const [uLoading,      setULoading]      = useState(false);
   const [uSearch,       setUSearch]       = useState('');
-
-  // ── Branches ─────────────────────────────────────────────────
   const [branches,      setBranches]      = useState([]);
   const [bLoading,      setBLoading]      = useState(false);
   const [newBranch,     setNewBranch]     = useState({ id: '', label: '', emoji: '📁' });
   const [bSubmitting,   setBSubmitting]   = useState(false);
-
-  // ── Shared ────────────────────────────────────────────────────
   const [rejectTarget,  setRejectTarget]  = useState(null);
   const [actionLoading, setActionLoading] = useState('');
   const [toastMsg,      setToastMsg]      = useState('');
   const toast = (msg) => { setToastMsg(msg); setTimeout(() => setToastMsg(''), 3000); };
 
-  // ── Load functions ────────────────────────────────────────────
   const loadPending = useCallback(async () => {
     setPLoading(true); setPError(''); setSelected([]);
     try { const { files } = await fetchPendingFiles(); setPending(files || []); }
@@ -107,7 +95,7 @@ export default function AdminPanel() {
 
   const loadUsers = useCallback(async () => {
     setULoading(true);
-    try { const d = await fetchAllUsers({ search: uSearch, limit: 50 }); setUsers(d.users || []); }
+    try { const d = await fetchAllUsers({ search: uSearch, limit: 100 }); setUsers(d.users || []); }
     catch {} finally { setULoading(false); }
   }, [uSearch]);
 
@@ -125,7 +113,6 @@ export default function AdminPanel() {
     if (activeTab === 'branches')      loadBranches();
   }, [activeTab, loadReports, loadAnnouncements, loadUsers, loadBranches]);
 
-  // ── Pending actions ───────────────────────────────────────────
   const handleApprove = async (id) => {
     setActionLoading(id + '-approve');
     try { await approveFile(id); setPending(p => p.filter(f => f._id !== id)); setSelected(s => s.filter(x => x !== id)); toast('File approved ✓'); }
@@ -171,7 +158,6 @@ export default function AdminPanel() {
     finally { setActionLoading(''); }
   };
 
-  // ── Announcement actions ──────────────────────────────────────
   const handleCreateAnnouncement = async () => {
     if (!newAnn.title || !newAnn.message) { toast('Title and message are required'); return; }
     setASubmitting(true);
@@ -189,7 +175,6 @@ export default function AdminPanel() {
     catch (e) { toast(`Error: ${e.message}`); }
   };
 
-  // ── User actions ──────────────────────────────────────────────
   const handleToggleUser = async (id, name, isActive) => {
     try {
       await toggleUserActive(id);
@@ -198,7 +183,6 @@ export default function AdminPanel() {
     } catch (e) { toast(`Error: ${e.message}`); }
   };
 
-  // ── Branch actions ────────────────────────────────────────────
   const handleCreateBranch = async () => {
     if (!newBranch.id || !newBranch.label) { toast('Short code and name are required'); return; }
     setBSubmitting(true);
@@ -240,7 +224,12 @@ export default function AdminPanel() {
     <div className="admin-panel">
       <div className="admin-panel__header">
         <h1 className="admin-panel__title"><Shield size={24} /> Admin Panel</h1>
-
+        {/* Analytics button — always visible */}
+        <div className="admin-panel__actions">
+          <Link to="/admin/analytics" className="admin-analytics-btn">
+            <BarChart2 size={16} /> Analytics
+          </Link>
+        </div>
       </div>
 
       {/* Tabs */}
@@ -381,9 +370,9 @@ export default function AdminPanel() {
       {/* ── Users tab ── */}
       {activeTab === 'users' && (
         <section className="admin-panel__section">
-          <div className="users-page__filters" style={{ marginBottom: '1rem' }}>
-            <input className="reg-page__search" placeholder="Search users…" value={uSearch}
-              onChange={e => setUSearch(e.target.value)} style={{ flex: 1 }} />
+          <div style={{ marginBottom: '1rem' }}>
+            <input className="reg-page__search" placeholder="Search users by name or email…" value={uSearch}
+              onChange={e => setUSearch(e.target.value)} style={{ width: '100%' }} />
           </div>
           {uLoading ? <div className="admin-panel__loader"><Loader2 size={26} className="spin" /> Loading…</div>
           : users.length === 0 ? <div className="admin-panel__empty"><Users size={36} /><p>No users found</p></div>
@@ -392,7 +381,9 @@ export default function AdminPanel() {
               {users.map(user => (
                 <div key={user._id} className={`user-row${!user.isActive ? ' user-row--inactive' : ''}`}>
                   <div className="user-row__avatar">
-                    {user.avatarUrl ? <img src={user.avatarUrl} alt={user.name} /> : <span>{user.name?.slice(0, 2).toUpperCase()}</span>}
+                    {user.avatarUrl
+                      ? <img src={user.avatarUrl} alt={user.name} />
+                      : <span>{user.name?.slice(0, 2).toUpperCase()}</span>}
                   </div>
                   <div className="user-row__body">
                     <p className="user-row__name">{user.name}</p>
@@ -407,8 +398,11 @@ export default function AdminPanel() {
                     </span>
                   </div>
                   {user.role !== 'admin' && (
-                    <button className={`btn btn--sm ${user.isActive ? 'btn--danger' : 'btn--success'}`}
-                      onClick={() => handleToggleUser(user._id, user.name, user.isActive)}>
+                    <button
+                      className={`btn btn--sm ${user.isActive ? 'btn--danger' : 'btn--success'}`}
+                      onClick={() => handleToggleUser(user._id, user.name, user.isActive)}
+                      style={{ flexShrink: 0 }}
+                    >
                       {user.isActive ? 'Deactivate' : 'Activate'}
                     </button>
                   )}
@@ -422,7 +416,6 @@ export default function AdminPanel() {
       {/* ── Branches tab ── */}
       {activeTab === 'branches' && (
         <section className="admin-panel__section">
-          {/* Create form */}
           <div className="ann-form" style={{ marginBottom: '1.5rem' }}>
             <h3 className="ann-form__title"><Plus size={15} /> Add New Branch</h3>
             <div className="search-filters__grid">
@@ -448,8 +441,6 @@ export default function AdminPanel() {
               {bSubmitting ? <Loader2 size={14} className="spin" /> : <Plus size={14} />} Create Branch
             </button>
           </div>
-
-          {/* Branch list */}
           {bLoading ? <div className="admin-panel__loader"><Loader2 size={26} className="spin" /> Loading…</div>
           : branches.length === 0 ? <div className="admin-panel__empty"><GitBranch size={36} /><p>No branches yet</p></div>
           : (
