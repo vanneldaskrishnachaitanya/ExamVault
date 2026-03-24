@@ -2315,15 +2315,30 @@ YEAR / SEMESTER DRILL-DOWN NAVIGATION
 }
 
 .navbar__notif-dropdown {
-  position: absolute; top: calc(100% + 8px); right: 0;
-  width: 320px;
+  position: fixed;
+  top: 60px;
+  right: 8px;
+  left: 8px;
+  width: auto;
+  max-width: 360px;
+  margin-left: auto;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
   overflow: hidden;
   animation: dropIn 0.18s var(--ease);
-  z-index: 200;
+  z-index: 9999;
+}
+@media (min-width: 480px) {
+  .navbar__notif-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    left: auto;
+    width: 340px;
+    max-width: 340px;
+  }
 }
 .navbar__notif-header {
   display: flex; align-items: center; justify-content: space-between;
