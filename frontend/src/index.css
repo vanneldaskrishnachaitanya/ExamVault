@@ -2143,6 +2143,74 @@ option { background: var(--bg-card); }
 }
 .image-zoom__close:hover { opacity: 0.8; }
 
+/* ══════════════════════════════════════════════════════════════
+   ONBOARDING TOUR
+══════════════════════════════════════════════════════════════ */
+.onboard-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 3000;
+  display: grid; place-items: center; padding: 1rem;
+}
+.onboard-card {
+  position: relative; width: min(520px, 100%); background: var(--bg-card);
+  border: 1px solid var(--border); border-radius: var(--radius-lg);
+  padding: 2.2rem 2rem; box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  animation: heroIn 0.4s var(--ease);
+}
+.onboard-close {
+  position: absolute; top: 1.2rem; right: 1.2rem; background: transparent;
+  border: none; color: var(--text-2); cursor: pointer; padding: 0;
+  width: 30px; height: 30px; display: grid; place-items: center;
+  transition: color 0.15s;
+}
+.onboard-close:hover { color: var(--text-1); }
+
+.onboard-dots {
+  display: flex; justify-content: center; gap: 0.6rem; margin-bottom: 1.8rem;
+}
+.onboard-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--border); transition: all 0.3s var(--ease);
+  cursor: pointer;
+}
+.onboard-dot:hover { background: var(--text-3); }
+.onboard-dot--active {
+  width: 24px; background: var(--amber); border-radius: 100px;
+}
+.onboard-dot--done { background: var(--success); }
+
+.onboard-emoji {
+  font-size: 3.5rem; text-align: center; margin-bottom: 1rem;
+  display: block; animation: bounce 0.6s var(--ease);
+}
+.onboard-title {
+  font-family: var(--font-display); font-size: 1.4rem; font-weight: 900;
+  color: var(--text-1); margin: 0 0 0.6rem 0; text-align: center;
+  background: linear-gradient(135deg, var(--text-1) 0%, var(--amber) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.onboard-desc {
+  font-size: 0.95rem; color: var(--text-2); line-height: 1.7;
+  margin: 0 0 1.8rem 0; text-align: center;
+}
+
+.onboard-actions {
+  display: flex; gap: 0.8rem; align-items: center; margin-bottom: 1rem;
+}
+.onboard-actions .btn { min-width: fit-content; }
+
+.onboard-skip {
+  width: 100%; padding: 0.55rem; background: transparent; border: 1px solid var(--border);
+  border-radius: var(--radius-sm); color: var(--text-3); font-size: 0.82rem;
+  cursor: pointer; transition: all 0.15s; font-weight: 600;
+}
+.onboard-skip:hover { color: var(--text-1); background: var(--bg-raised); }
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
 .admin-panel__actions {
   display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.5rem;
 }
