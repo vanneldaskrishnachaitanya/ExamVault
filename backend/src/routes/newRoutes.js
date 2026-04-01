@@ -18,6 +18,11 @@ const {
 const { getBranches, getAllBranches, createBranch, updateBranch, deleteBranch } = require('../controllers/branchController');
 const { getFeedback, createFeedback, upvoteFeedback, reviewFeedback, deleteFeedback } = require('../controllers/feedbackController');
 const {
+  getTodayQuotes, getSettings, toggleEnabled,
+  getSections, createSection, updateSection, deleteSection,
+  getQuotesBySection, createQuote, updateQuote, deleteQuote,
+} = require('../controllers/quoteController');
+const {
   upload: syllabusUpload,
   getSyllabus, uploadSyllabus, deleteSyllabus,
   getTimetable, uploadTimetable, deleteTimetable,
@@ -89,6 +94,10 @@ feedbackRouter.get('/',              protect, getFeedback);
 feedbackRouter.post('/',             protect, createFeedback);
 feedbackRouter.patch('/:id/upvote', protect, upvoteFeedback);
 
+// ── Quotes (public-ish — auth required) ──────────────────────
+const quoteRouter = express.Router();
+quoteRouter.get('/today', protect, getTodayQuotes);
+
 // ── Admin extras ──────────────────────────────────────────────
 const adminExtrasRouter = express.Router();
 adminExtrasRouter.get('/analytics',              protect, restrictTo('admin'), getAnalytics);
@@ -119,6 +128,18 @@ adminExtrasRouter.get('/feedback',               protect, restrictTo('admin'), g
 adminExtrasRouter.patch('/feedback/:id',         protect, restrictTo('admin'), reviewFeedback);
 adminExtrasRouter.delete('/feedback/:id',        protect, restrictTo('admin'), deleteFeedback);
 
+// ── Admin Quotes ──────────────────────────────────────────────
+adminExtrasRouter.get('/quotes/settings',              protect, restrictTo('admin'), getSettings);
+adminExtrasRouter.patch('/quotes/settings/toggle',     protect, restrictTo('admin'), toggleEnabled);
+adminExtrasRouter.get('/quotes/sections',              protect, restrictTo('admin'), getSections);
+adminExtrasRouter.post('/quotes/sections',             protect, restrictTo('admin'), createSection);
+adminExtrasRouter.patch('/quotes/sections/:id',        protect, restrictTo('admin'), updateSection);
+adminExtrasRouter.delete('/quotes/sections/:id',       protect, restrictTo('admin'), deleteSection);
+adminExtrasRouter.get('/quotes/sections/:sectionId/quotes',  protect, restrictTo('admin'), getQuotesBySection);
+adminExtrasRouter.post('/quotes',                      protect, restrictTo('admin'), createQuote);
+adminExtrasRouter.patch('/quotes/:id',                 protect, restrictTo('admin'), updateQuote);
+adminExtrasRouter.delete('/quotes/:id',                protect, restrictTo('admin'), deleteQuote);
+
 module.exports = {
   notificationRouter,
   announcementRouter,
@@ -134,4 +155,5 @@ module.exports = {
   timetableRouter,
   statsRouter,
   feedbackRouter,
+  quoteRouter,
 };

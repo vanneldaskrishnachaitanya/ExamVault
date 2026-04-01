@@ -130,4 +130,17 @@ export const upvoteFeedback      = async (id)          => { const { data } = awa
 export const reviewFeedback      = async (id, payload) => { const { data } = await api.patch(`/admin/feedback/${id}`, payload); return data.data; };
 export const deleteFeedbackAdmin = async (id)          => { const { data } = await api.delete(`/admin/feedback/${id}`); return data; };
 
+// ── Quotes ────────────────────────────────────────────────────
+export const fetchTodayQuotes    = async ()          => { const { data } = await api.get('/quotes/today'); return data.data; };
+export const fetchQuoteSettings  = async ()          => { const { data } = await api.get('/admin/quotes/settings'); return data.data; };
+export const toggleQuoteEnabled  = async ()          => { const { data } = await api.patch('/admin/quotes/settings/toggle'); return data.data; };
+export const fetchQuoteSections  = async ()          => { const { data } = await api.get('/admin/quotes/sections'); return data.data; };
+export const createQuoteSection  = async (payload)   => { const { data } = await api.post('/admin/quotes/sections', payload); return data.data; };
+export const updateQuoteSection  = async (id, payload) => { const { data } = await api.patch(`/admin/quotes/sections/${id}`, payload); return data.data; };
+export const deleteQuoteSection  = async (id)        => { const { data } = await api.delete(`/admin/quotes/sections/${id}`); return data; };
+export const fetchQuotesBySection= async (secId)     => { const { data } = await api.get(`/admin/quotes/sections/${secId}/quotes`); return data.data; };
+export const createQuote         = async (payload)   => { const { data } = await api.post('/admin/quotes', payload); return data.data; };
+export const updateQuote         = async (id, payload) => { const { data } = await api.patch(`/admin/quotes/${id}`, payload); return data.data; };
+export const deleteQuote         = async (id)        => { const { data } = await api.delete(`/admin/quotes/${id}`); return data; };
+
 export default api;

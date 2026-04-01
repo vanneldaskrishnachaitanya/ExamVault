@@ -1,4 +1,5 @@
 import RecentlyViewed from '../components/RecentlyViewed';
+import QuoteBanner from '../components/QuoteBanner';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import { fetchPublicStats } from '../api/apiClient';
@@ -112,6 +113,9 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard">
+
+      {/* ── Daily Quote Banner ───────────────────────────── */}
+      <QuoteBanner />
 
       {/* ── Hero banner ──────────────────────────────────── */}
       <section className="dash-hero">

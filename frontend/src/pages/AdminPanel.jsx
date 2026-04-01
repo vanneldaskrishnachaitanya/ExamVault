@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import {
   Check, Flag, Loader2, RefreshCw, Shield,
   Trash2, X, Megaphone, Plus, BarChart2,
-  Users, GitBranch, CheckCircle, XCircle, GraduationCap,
+  Users, GitBranch, CheckCircle, XCircle, GraduationCap, Quote,
 } from 'lucide-react';
 import {
   approveFile, deleteFile, fetchPendingFiles,
@@ -12,6 +12,7 @@ import {
   fetchAllBranches, createBranch, updateBranch, deleteBranch,
 } from '../api/apiClient';
 import FileCard from '../components/FileCard';
+import QuoteAdmin from '../components/QuoteAdmin';
 import { useNavigate, Link } from 'react-router-dom';
 
 const TABS = [
@@ -20,6 +21,7 @@ const TABS = [
   { id: 'announcements', label: 'Announcements',  icon: <Megaphone size={14} /> },
   { id: 'users',         label: 'Users',          icon: <Users size={14} />     },
   { id: 'branches',      label: 'Branches',       icon: <GitBranch size={14} /> },
+  { id: 'quotes',        label: 'Quotes',         icon: <Quote size={14} />     },
 ];
 
 function RejectDialog({ file, onConfirm, onCancel }) {
@@ -469,6 +471,7 @@ export default function AdminPanel() {
       )}
 
       {rejectTarget && <RejectDialog file={rejectTarget} onConfirm={handleRejectConfirm} onCancel={() => setRejectTarget(null)} />}
+      {activeTab === 'quotes' && <QuoteAdmin />}
       {toastMsg && <div className="toast">{toastMsg}</div>}
     </div>
   );
