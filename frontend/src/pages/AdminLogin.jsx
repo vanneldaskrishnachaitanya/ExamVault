@@ -69,26 +69,29 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="admin-login">
-      <div className="admin-login__bg" aria-hidden="true">
-        <div className="admin-login__bg-grid" />
-        <div className="admin-login__bg-blob" />
+    <div className="admin-login-page">
+      <div className="admin-login-page__bg" aria-hidden="true">
+        <div className="admin-login-page__grid" />
+        <div className="admin-login-page__blob admin-login-page__blob--1" />
+        <div className="admin-login-page__blob admin-login-page__blob--2" />
       </div>
 
-      <div className="admin-login__card">
-        <Link to="/login" className="admin-login__back">
+      <div className="admin-login-card">
+        <Link to="/login" className="admin-login-card__student-link">
           <ArrowLeft size={14} /> Student Login
         </Link>
 
-        <div className="admin-login__header">
-          <div className="admin-login__shield">
-            <Shield size={36} strokeWidth={1.5} />
+        <div className="admin-login-card__header">
+          <div className="admin-login-card__icon">
+            <Shield size={32} strokeWidth={1.5} />
           </div>
-          <h1 className="admin-login__title">Admin Portal</h1>
-          <p className="admin-login__subtitle">VNRVJIET Academic Repository</p>
+          <div>
+            <h1 className="admin-login-card__title">Admin Portal</h1>
+            <p className="admin-login-card__sub">VNRVJIET Academic Repository</p>
+          </div>
         </div>
 
-        <div className="admin-login__body">
+        <div className="admin-login-card__form">
           <p className="admin-login__desc">
             This portal is exclusively for authorised admins only.
             Unauthorised access attempts are logged and monitored.
@@ -102,14 +105,14 @@ export default function AdminLogin() {
           )}
 
           {error && (
-            <div className="admin-login__error" role="alert">
+            <div className="admin-login-card__error" role="alert">
               <AlertCircle size={16} className="admin-login__error-icon" />
               <p className="admin-login__error-text">{error}</p>
             </div>
           )}
 
           <button
-            className="admin-login__btn"
+            className="admin-login-card__submit"
             onClick={handleAdminSignIn}
             disabled={loading}
           >
@@ -128,7 +131,7 @@ export default function AdminLogin() {
             )}
           </button>
 
-          <div className="admin-login__hint">
+          <div className="admin-login-card__note">
             <Shield size={12} /> For authorised VNRVJIET administrators only.
           </div>
         </div>

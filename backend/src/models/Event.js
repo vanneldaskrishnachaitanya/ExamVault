@@ -15,6 +15,7 @@ const EventSchema = new mongoose.Schema({
   registrationStart: { type: Date, default: null },
   registrationEnd:   { type: Date, default: null },
   eventDate:         { type: Date, required: true },
+  eventEnd:          { type: Date, default: null },
   venue:             { type: String, default: '', trim: true },
   prize:             { type: String, default: '', trim: true },
   imageUrl:          { type: String, default: '' },

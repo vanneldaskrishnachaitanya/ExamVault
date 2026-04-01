@@ -40,12 +40,13 @@ export default function EventsPage() {
   const [filterDone,   setFilterDone]   = useState(false);
   const [toast,        setToast]        = useState('');
   const [imgPreview,   setImgPreview]   = useState(null);
+  const [selectedEvent,setSelectedEvent]= useState(null);
   const [submitting,   setSubmitting]   = useState(false);
 
   const [form, setForm] = useState({
     title:'', description:'', clubName:'', organizerName:'',
     eventType:'technical', registrationLink:'', registrationStart:'',
-    registrationEnd:'', eventDate:'', venue:'', prize:'', image: null,
+    registrationEnd:'', eventDate:'', eventEnd:'', venue:'', prize:'', image: null,
   });
 
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(''), 3500); };
@@ -156,6 +157,10 @@ export default function EventsPage() {
               <input className="modal__input" type="date" value={form.eventDate}
                 onChange={e => setForm(p=>({...p,eventDate:e.target.value}))} />
             </label>
+            <label className="modal__label">Event End Date
+              <input className="modal__input" type="date" value={form.eventEnd}
+                onChange={e => setForm(p=>({...p,eventEnd:e.target.value}))} />
+            </label>
             <label className="modal__label">Venue
               <input className="modal__input" placeholder="e.g. Seminar Hall" value={form.venue}
                 onChange={e => setForm(p=>({...p,venue:e.target.value}))} />
@@ -244,7 +249,7 @@ export default function EventsPage() {
             <div className="events-section">
               <h2 className="events-section__title">Upcoming Events <span className="events-section__count">{upcoming.length}</span></h2>
               <div className="events-grid">
-                {upcoming.map(ev => <EventCard key={ev._id} ev={ev} isAdmin={isAdmin} onComplete={handleComplete} onDelete={handleDelete}/>)}
+                {upcoming.map(ev => <EventCard key={ev._id} ev={ev} isAdmin={isAdmin} onView={setSelectedEvent} onComplete={handleComplete} onDelete={handleDelete}/>)}
               </div>
             </div>
           )}
@@ -252,19 +257,40 @@ export default function EventsPage() {
             <div className="events-section" style={{marginTop:'2rem'}}>
               <h2 className="events-section__title" style={{color:'var(--text-3)'}}>Completed <span className="events-section__count">{completed.length}</span></h2>
               <div className="events-grid">
-                {completed.map(ev => <EventCard key={ev._id} ev={ev} isAdmin={isAdmin} onComplete={handleComplete} onDelete={handleDelete}/>)}
+                {completed.map(ev => <EventCard key={ev._id} ev={ev} isAdmin={isAdmin} onView={setSelectedEvent} onComplete={handleComplete} onDelete={handleDelete}/>)}
               </div>
             </div>
           )}
         </>
       )}
 
+      {selectedEvent && (
+        <div className="event-detail-modal-overlay" onClick={() => setSelectedEvent(null)}>
+          <div className="event-detail-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="event-detail-row" style={{justifyContent:'space-between'}}>
+              <h3 style={{margin:0}}>{selectedEvent.title}</h3>
+              <button className="btn btn--ghost btn--sm" onClick={() => setSelectedEvent(null)}>Close</button>
+            </div>
+            <p style={{color:'var(--text-2)', margin:'0.4rem 0 0.8rem'}}>{selectedEvent.description || 'No description provided.'}</p>
+            <div className="event-detail-row"><strong>Club:</strong><span>{selectedEvent.clubName || '-'}</span></div>
+            <div className="event-detail-row"><strong>Organizer:</strong><span>{selectedEvent.organizerName || '-'}</span></div>
+            <div className="event-detail-row"><strong>Type:</strong><span>{getType(selectedEvent.eventType).label}</span></div>
+            <div className="event-detail-row"><strong>Venue:</strong><span>{selectedEvent.venue || '-'}</span></div>
+            <div className="event-detail-row"><strong>Prize:</strong><span>{selectedEvent.prize || '-'}</span></div>
+            <div className="event-detail-row"><strong>Event starts:</strong><span>{fmt(selectedEvent.eventDate)}</span></div>
+            {selectedEvent.eventEnd && <div className="event-detail-row"><strong>Event ends:</strong><span>{fmt(selectedEvent.eventEnd)}</span></div>}
+            <div className="event-detail-row"><strong>Registration opens:</strong><span>{selectedEvent.registrationStart ? fmt(selectedEvent.registrationStart) : '-'}</span></div>
+            <div className="event-detail-row"><strong>Registration closes:</strong><span>{selectedEvent.registrationEnd ? fmt(selectedEvent.registrationEnd) : '-'}</span></div>
+            {selectedEvent.registrationLink && <div className="event-detail-row"><strong>Register:</strong><a href={selectedEvent.registrationLink} target="_blank" rel="noreferrer">Open link</a></div>}
+          </div>
+        </div>
+      )}
       {toast && <div className="toast">{toast}</div>}
     </div>
   );
 }
 
-function EventCard({ ev, isAdmin, onComplete, onDelete }) {
+function EventCard({ ev, isAdmin, onView, onComplete, onDelete }) {
   const type   = getType(ev.eventType);
   const regOpen = isRegOpen(ev);
   const isPast  = new Date(ev.eventDate) < new Date();
@@ -279,7 +305,7 @@ function EventCard({ ev, isAdmin, onComplete, onDelete }) {
         </div>
       )}
 
-      <div className="event-card__body">
+      <div className="event-card__body" onClick={() => onView && onView(ev)} style={{ cursor: 'pointer' }}>
         {/* Type + Club badges */}
         <div className="event-card__badges">
           <span className="event-card__badge" style={{color:type.color, background:type.color+'18', border:`1px solid ${type.color}30`}}>
@@ -336,10 +362,10 @@ function EventCard({ ev, isAdmin, onComplete, onDelete }) {
           {isAdmin && (
             <>
               <button className={`btn btn--sm ${ev.isCompleted ? 'btn--ghost' : 'btn--success'}`}
-                onClick={() => onComplete(ev._id)}>
+                onClick={(e) => { e.stopPropagation(); onComplete(ev._id); }}>
                 <CheckCircle size={13}/> {ev.isCompleted ? 'Reopen' : 'Mark Done'}
               </button>
-              <button className="btn btn--danger btn--sm" onClick={() => onDelete(ev._id)}>
+              <button className="btn btn--danger btn--sm" onClick={(e) => { e.stopPropagation(); onDelete(ev._id); }}>
                 <Trash2 size={13}/>
               </button>
             </>

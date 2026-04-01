@@ -45,7 +45,7 @@ const createEvent = async (req, res, next) => {
     const {
       title, description, clubName, organizerName, eventType,
       registrationLink, registrationStart, registrationEnd,
-      eventDate, venue, prize,
+      eventDate, eventEnd, venue, prize,
     } = req.body;
 
     if (!title || !clubName || !eventDate) {
@@ -63,7 +63,7 @@ const createEvent = async (req, res, next) => {
     const event = await Event.create({
       title, description, clubName, organizerName, eventType,
       registrationLink, registrationStart, registrationEnd,
-      eventDate, venue, prize, imageUrl,
+      eventDate, eventEnd, venue, prize, imageUrl,
       createdBy: req.user._id,
     });
 

@@ -761,7 +761,8 @@ a.breadcrumb__item:hover { color: var(--amber); background: var(--amber-dim); }
 .reg-card {
   position: relative; overflow: hidden;
   display: flex; flex-direction: column;
-  padding: 1.85rem;
+  padding: 1.35rem;
+  min-height: 180px;
   background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-raised) 100%);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -1509,6 +1510,7 @@ option { background: var(--bg-card); }
 .admin-login-card__student-link { font-size: 0.85rem; color: var(--blue); transition: color 0.15s; }
 .admin-login-card__student-link:hover { color: var(--text-1); }
 .admin-login-card__note { font-size: 0.75rem; color: var(--text-3); text-align: center; }
+.admin-login__desc { color: var(--text-2); font-size: 0.9rem; margin-bottom: 0.4rem; }
 .admin-login__step { display: flex; align-items: center; gap: 0.5rem; padding: 0.65rem 1rem; margin-bottom: 1rem; background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.2); border-radius: var(--radius-sm); color: #c084fc; font-size: 0.85rem; }
 .admin-login__checklist { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1.35rem; padding: 0.8rem 1.05rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: var(--radius-sm); }
 .admin-login__check { display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; color: var(--text-3); font-family: var(--font-mono); }
@@ -1615,6 +1617,37 @@ option { background: var(--bg-card); }
 .event-card__regdates { display: flex; gap: 0.8rem; flex-wrap: wrap; align-items: center; font-size: 0.72rem; color: var(--text-3); font-family: var(--font-mono); padding: 0.42rem 0.65rem; background: var(--bg-raised); border-radius: var(--radius-sm); }
 .event-card__actions { display: flex; gap: 0.45rem; flex-wrap: wrap; margin-top: auto; padding-top: 0.55rem; }
 .event-form { background: var(--bg-raised); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.35rem; margin-bottom: 1.5rem; }
+
+/* ══════════════════════════════════════════════════════════════
+   CGPA CALCULATOR
+══════════════════════════════════════════════════════════════ */
+.cgpa-page { max-width: 620px; margin: 0 auto; animation: pageIn 0.4s var(--ease); }
+.cgpa-hero { display: flex; flex-direction: column; gap: 0.5rem; padding: 1rem 1.2rem; margin-bottom: 1rem; background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-raised) 100%); border:1px solid var(--border); border-radius: var(--radius-lg); }
+.cgpa-hero__icon { color: var(--amber); }
+.cgpa-hero__title { font-family: var(--font-display); font-size: 1.4rem; font-weight: 900; color: var(--text-1); }
+.cgpa-hero__sub { color: var(--text-2); font-size: 0.92rem; }
+.cgpa-result-card { display: grid; grid-template-columns: auto 1fr; gap: 0.6rem; align-items: center; padding: 1rem; background: var(--bg-card); border:1px solid var(--border); border-radius: var(--radius-lg); margin-bottom: 0.8rem; }
+.cgpa-result__val { font-family: var(--font-display); font-size: 2.4rem; font-weight: 900; }
+.cgpa-result__label { color: var(--text-3); font-weight: 700; }
+.cgpa-result__tag { font-size: 0.75rem; border-radius: 999px; padding: 0.2rem 0.55rem; font-weight: 700; }
+.cgpa-result__sems { color: var(--text-3); font-size: 0.84rem; }
+.cgpa-legend { display: flex; gap: 0.7rem; flex-wrap: wrap; margin-bottom: 0.9rem; }
+.cgpa-legend__item { font-size: 0.8rem; font-weight: 700; }
+.cgpa-inputs { display: flex; flex-direction: column; gap: 0.65rem; }
+.cgpa-sem-row { display: grid; grid-template-columns: 100px 1fr auto auto; align-items: center; gap: 0.45rem; }
+.cgpa-sem-row__label { font-weight: 700; color: var(--text-2); }
+.cgpa-sem-row__input { max-width: 130px; }
+.cgpa-sem-row__badge { font-size: 0.8rem; border-radius: var(--radius-sm); padding: 0.22rem 0.5rem; }
+.cgpa-sem-row__remove { background: transparent; border: none; color: var(--text-3); cursor: pointer; }
+
+/* ══════════════════════════════════════════════════════════════
+   EVENT CARD DETAILS
+══════════════════════════════════════════════════════════════ */
+.event-detail-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.56); z-index: 2100; display: grid; place-items: center; padding: 1rem; }
+.event-detail-modal { width: min(620px, 100%); background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.1rem; box-shadow: 0 15px 40px rgba(0,0,0,0.5); }
+.event-detail-row { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0.45rem; }
+.event-detail-row strong { font-weight: 700; color: var(--text-1); }
+.event-detail-row span { color: var(--text-2); }
 .event-form__title { font-family: var(--font-display); font-size: 0.95rem; font-weight: 800; color: var(--text-2); margin-bottom: 0.9rem; }
 .event-form__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.7rem; }
 .event-form__imgbox { display: flex; align-items: center; justify-content: center; border: 2px dashed var(--border); border-radius: var(--radius); padding: 1rem; cursor: pointer; min-height: 120px; transition: border-color 0.18s; overflow: hidden; }
@@ -2046,8 +2079,23 @@ option { background: var(--bg-card); }
   flex-shrink: 0;
 }
 .dash-hero__online {
-  margin-top: 0.85rem;
+  margin-top: 1.25rem;
 }
+
+.online-modal-overlay {
+  position: fixed; inset: 0; z-index: 2000;
+  background: rgba(0,0,0,0.55); display: grid; place-items: center;
+  padding: 1rem;
+}
+.online-modal {
+  width: min(500px, 100%); background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 1rem; box-shadow: 0 12px 26px rgba(0,0,0,0.4);
+}
+.online-modal__header { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.75rem; }
+.online-modal__header h3 { margin:0; font-size: 1rem; }
+.online-modal__list { margin: 0; padding: 0.1rem 0; list-style: none; max-height: 260px; overflow-y: auto; }
+.online-modal__list li { padding: 0.45rem 0.45rem; border-bottom: 1px solid var(--border); color: var(--text-2); }
+.online-modal__list li:last-child { border-bottom: none; }
 
 /* ══════════════════════════════════════════════════════════════
    ADMIN PANEL — Analytics + online user fixes

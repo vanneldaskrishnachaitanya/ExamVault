@@ -35,39 +35,57 @@ const REGULATIONS = [
   },
 ];
 
-// Simple online user tracker using localStorage heartbeat
-function useOnlineCount() {
-  const [count, setCount] = useState(1);
+// Simple online user tracker using localStorage heartbeat and name tagging
+function useOnlineCount(name) {
+  const [onlineData, setOnlineData] = useState({ count: 1, users: [] });
   const keyRef = useRef(`ev_user_${Math.random().toString(36).slice(2)}`);
 
   useEffect(() => {
     const key = keyRef.current;
     const heartbeat = () => {
-      localStorage.setItem(key, Date.now().toString());
+      const payload = JSON.stringify({ ts: Date.now(), name: name || 'Guest' });
+      localStorage.setItem(key, payload);
     };
     heartbeat();
-    const interval = setInterval(() => {
+
+    const refresh = () => {
       heartbeat();
-      // Count active users (heartbeat within last 2 minutes)
       const now = Date.now();
-      let active = 0;
+      const active = [];
+
       for (let i = 0; i < localStorage.length; i++) {
         const k = localStorage.key(i);
         if (k && k.startsWith('ev_user_')) {
-          const ts = parseInt(localStorage.getItem(k) || '0', 10);
-          if (now - ts < 120000) active++;
+          try {
+            const raw = localStorage.getItem(k);
+            if (!raw) continue;
+            const item = JSON.parse(raw);
+            if (item && item.ts && now - item.ts < 120000) {
+              active.push({ key: k, name: item.name || 'Anonymous' });
+            }
+          } catch {
+            // fallback old timestamp format
+            const ts = parseInt(localStorage.getItem(k) || '0', 10);
+            if (now - ts < 120000) active.push({ key: k, name: 'Anonymous' });
+          }
         }
       }
-      setCount(Math.max(1, active));
-    }, 15000);
+
+      const uniqueUsers = Array.from(new Map(active.map(u => [u.name || u.key, u])).values());
+      setOnlineData({ count: Math.max(1, uniqueUsers.length), users: uniqueUsers });
+    };
+
+    refresh();
+    const interval = setInterval(refresh, 15000);
 
     return () => {
       clearInterval(interval);
       localStorage.removeItem(key);
+      refresh();
     };
-  }, []);
+  }, [name]);
 
-  return count;
+  return onlineData;
 }
 
 export default function Dashboard() {
@@ -76,7 +94,8 @@ export default function Dashboard() {
   const isAdmin = backendUser?.role === 'admin';
   const firstName = backendUser?.name?.split(' ')[0] || 'there';
   const [stats, setStats] = useState(null);
-  const onlineCount = useOnlineCount();
+  const [showOnlineDetails, setShowOnlineDetails] = useState(false);
+  const { count: onlineCount, users: onlineUsers } = useOnlineCount(firstName);
 
   useEffect(() => {
     fetchPublicStats().then(d => setStats(d)).catch(() => {});
@@ -103,11 +122,32 @@ export default function Dashboard() {
 
           {/* Online users — visible to admin only */}
           {isAdmin && (
-            <div className="dash-hero__online">
+            <div
+              className="dash-hero__online"
+              onClick={() => setShowOnlineDetails(true)}
+              style={{ cursor: 'pointer' }}
+              title="Click to view active admins/students"
+            >
               <span className="online-badge">
                 <span className="online-badge__dot" />
                 {onlineCount} {onlineCount === 1 ? 'user' : 'users'} online now
               </span>
+            </div>
+          )}
+          {showOnlineDetails && (
+            <div className="online-modal-overlay" onClick={() => setShowOnlineDetails(false)}>
+              <div className="online-modal" onClick={(e) => e.stopPropagation()}>
+                <div className="online-modal__header">
+                  <h3>Online users</h3>
+                  <button className="btn btn--ghost btn--sm" onClick={() => setShowOnlineDetails(false)}>Close</button>
+                </div>
+                <ul className="online-modal__list">
+                  {onlineUsers.length === 0 && <li>No active users right now.</li>}
+                  {onlineUsers.map((u, idx) => (
+                    <li key={u.key || idx}>{u.name || 'Anonymous'}</li>
+                  ))}
+                </ul>
+              </div>
             </div>
           )}
         </div>
