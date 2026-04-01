@@ -35,15 +35,20 @@ const REGULATIONS = [
   },
 ];
 
-// Simple online user tracker using localStorage heartbeat and name tagging
-function useOnlineCount(name) {
+// Simple online user tracker using localStorage heartbeat with role & name
+function useOnlineCount(name, role, userId) {
   const [onlineData, setOnlineData] = useState({ count: 1, users: [] });
   const keyRef = useRef(`ev_user_${Math.random().toString(36).slice(2)}`);
 
   useEffect(() => {
     const key = keyRef.current;
     const heartbeat = () => {
-      const payload = JSON.stringify({ ts: Date.now(), name: name || 'Guest' });
+      const payload = JSON.stringify({ 
+        ts: Date.now(), 
+        name: name || 'Guest',
+        role: role || 'student',
+        userId: userId || 'anonymous'
+      });
       localStorage.setItem(key, payload);
     };
     heartbeat();
@@ -61,17 +66,21 @@ function useOnlineCount(name) {
             if (!raw) continue;
             const item = JSON.parse(raw);
             if (item && item.ts && now - item.ts < 120000) {
-              active.push({ key: k, name: item.name || 'Anonymous' });
+              active.push({ 
+                key: k, 
+                name: item.name || 'Anonymous',
+                role: item.role || 'student',
+                userId: item.userId
+              });
             }
           } catch {
-            // fallback old timestamp format
             const ts = parseInt(localStorage.getItem(k) || '0', 10);
-            if (now - ts < 120000) active.push({ key: k, name: 'Anonymous' });
+            if (now - ts < 120000) active.push({ key: k, name: 'Anonymous', role: 'student' });
           }
         }
       }
 
-      const uniqueUsers = Array.from(new Map(active.map(u => [u.name || u.key, u])).values());
+      const uniqueUsers = Array.from(new Map(active.map(u => [u.userId || u.key, u])).values());
       setOnlineData({ count: Math.max(1, uniqueUsers.length), users: uniqueUsers });
     };
 
@@ -83,7 +92,7 @@ function useOnlineCount(name) {
       localStorage.removeItem(key);
       refresh();
     };
-  }, [name]);
+  }, [name, role, userId]);
 
   return onlineData;
 }
@@ -95,7 +104,7 @@ export default function Dashboard() {
   const firstName = backendUser?.name?.split(' ')[0] || 'there';
   const [stats, setStats] = useState(null);
   const [showOnlineDetails, setShowOnlineDetails] = useState(false);
-  const { count: onlineCount, users: onlineUsers } = useOnlineCount(firstName);
+  const { count: onlineCount, users: onlineUsers } = useOnlineCount(firstName, backendUser?.role, backendUser?._id);
 
   useEffect(() => {
     fetchPublicStats().then(d => setStats(d)).catch(() => {});
@@ -138,15 +147,21 @@ export default function Dashboard() {
             <div className="online-modal-overlay" onClick={() => setShowOnlineDetails(false)}>
               <div className="online-modal" onClick={(e) => e.stopPropagation()}>
                 <div className="online-modal__header">
-                  <h3>Online users</h3>
-                  <button className="btn btn--ghost btn--sm" onClick={() => setShowOnlineDetails(false)}>Close</button>
+                  <h3>👥 Active users ({onlineCount})</h3>
+                  <button className="btn btn--ghost btn--sm" onClick={() => setShowOnlineDetails(false)}>✕</button>
                 </div>
-                <ul className="online-modal__list">
-                  {onlineUsers.length === 0 && <li>No active users right now.</li>}
+                <div className="online-modal__list">
+                  {onlineUsers.length === 0 && <p className="online-modal__empty">No active users right now.</p>}
                   {onlineUsers.map((u, idx) => (
-                    <li key={u.key || idx}>{u.name || 'Anonymous'}</li>
+                    <div key={u.key || idx} className="online-user-item">
+                      <div className="online-user-item__avatar">{u.name?.charAt(0)?.toUpperCase() || '?'}</div>
+                      <div className="online-user-item__info">
+                        <div className="online-user-item__name">{u.name || 'Anonymous'}</div>
+                        <div className="online-user-item__role">{u.role === 'admin' ? '🔑 Admin' : '👤 Student'}</div>
+                      </div>
+                    </div>
                   ))}
-                </ul>
+                </div>
               </div>
             </div>
           )}

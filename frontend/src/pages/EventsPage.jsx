@@ -41,6 +41,7 @@ export default function EventsPage() {
   const [toast,        setToast]        = useState('');
   const [imgPreview,   setImgPreview]   = useState(null);
   const [selectedEvent,setSelectedEvent]= useState(null);
+  const [imageZoom,    setImageZoom]    = useState(null);
   const [submitting,   setSubmitting]   = useState(false);
 
   const [form, setForm] = useState({
@@ -267,21 +268,74 @@ export default function EventsPage() {
       {selectedEvent && (
         <div className="event-detail-modal-overlay" onClick={() => setSelectedEvent(null)}>
           <div className="event-detail-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="event-detail-row" style={{justifyContent:'space-between'}}>
-              <h3 style={{margin:0}}>{selectedEvent.title}</h3>
-              <button className="btn btn--ghost btn--sm" onClick={() => setSelectedEvent(null)}>Close</button>
+            <div className="event-detail-modal__header">
+              <h2 className="event-detail-modal__title">{selectedEvent.title}</h2>
+              <button className="event-detail-modal__close" onClick={() => setSelectedEvent(null)}>✕</button>
             </div>
-            <p style={{color:'var(--text-2)', margin:'0.4rem 0 0.8rem'}}>{selectedEvent.description || 'No description provided.'}</p>
-            <div className="event-detail-row"><strong>Club:</strong><span>{selectedEvent.clubName || '-'}</span></div>
-            <div className="event-detail-row"><strong>Organizer:</strong><span>{selectedEvent.organizerName || '-'}</span></div>
-            <div className="event-detail-row"><strong>Type:</strong><span>{getType(selectedEvent.eventType).label}</span></div>
-            <div className="event-detail-row"><strong>Venue:</strong><span>{selectedEvent.venue || '-'}</span></div>
-            <div className="event-detail-row"><strong>Prize:</strong><span>{selectedEvent.prize || '-'}</span></div>
-            <div className="event-detail-row"><strong>Event starts:</strong><span>{fmt(selectedEvent.eventDate)}</span></div>
-            {selectedEvent.eventEnd && <div className="event-detail-row"><strong>Event ends:</strong><span>{fmt(selectedEvent.eventEnd)}</span></div>}
-            <div className="event-detail-row"><strong>Registration opens:</strong><span>{selectedEvent.registrationStart ? fmt(selectedEvent.registrationStart) : '-'}</span></div>
-            <div className="event-detail-row"><strong>Registration closes:</strong><span>{selectedEvent.registrationEnd ? fmt(selectedEvent.registrationEnd) : '-'}</span></div>
-            {selectedEvent.registrationLink && <div className="event-detail-row"><strong>Register:</strong><a href={selectedEvent.registrationLink} target="_blank" rel="noreferrer">Open link</a></div>}
+            
+            {selectedEvent.imageUrl && (
+              <div className="event-detail-modal__image-container">
+                <img src={selectedEvent.imageUrl} alt={selectedEvent.title} className="event-detail-modal__image" onClick={() => setImageZoom(selectedEvent.imageUrl)} style={{cursor:'zoom-in'}} />
+              </div>
+            )}
+            
+            <p className="event-detail-modal__description">{selectedEvent.description || 'No description provided.'}</p>
+            
+            <div className="event-detail-section">
+              <div className="event-detail-item">
+                <span className="event-detail-item__label">Club:</span>
+                <span className="event-detail-item__value">{selectedEvent.clubName || '-'}</span>
+              </div>
+              <div className="event-detail-item">
+                <span className="event-detail-item__label">Organizer:</span>
+                <span className="event-detail-item__value">{selectedEvent.organizerName || '-'}</span>
+              </div>
+              <div className="event-detail-item">
+                <span className="event-detail-item__label">Type:</span>
+                <span className="event-detail-item__value">{getType(selectedEvent.eventType).label}</span>
+              </div>
+              <div className="event-detail-item">
+                <span className="event-detail-item__label">Venue:</span>
+                <span className="event-detail-item__value">{selectedEvent.venue || '-'}</span>
+              </div>
+              <div className="event-detail-item">
+                <span className="event-detail-item__label">Prize:</span>
+                <span className="event-detail-item__value">{selectedEvent.prize || '-'}</span>
+              </div>
+              <div className="event-detail-item">
+                <span className="event-detail-item__label">Event starts:</span>
+                <span className="event-detail-item__value">{fmt(selectedEvent.eventDate)}</span>
+              </div>
+              {selectedEvent.eventEnd && (
+                <div className="event-detail-item">
+                  <span className="event-detail-item__label">Event ends:</span>
+                  <span className="event-detail-item__value">{fmt(selectedEvent.eventEnd)}</span>
+                </div>
+              )}
+              <div className="event-detail-item">
+                <span className="event-detail-item__label">Registration opens:</span>
+                <span className="event-detail-item__value">{selectedEvent.registrationStart ? fmt(selectedEvent.registrationStart) : '-'}</span>
+              </div>
+              <div className="event-detail-item">
+                <span className="event-detail-item__label">Registration closes:</span>
+                <span className="event-detail-item__value">{selectedEvent.registrationEnd ? fmt(selectedEvent.registrationEnd) : '-'}</span>
+              </div>
+            </div>
+            
+            {selectedEvent.registrationLink && (
+              <button className="btn btn--primary" style={{width:'100%', marginTop:'0.75rem'}} onClick={() => window.open(selectedEvent.registrationLink, '_blank')}>
+                <ExternalLink size={14}/> Register Now
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+      
+      {imageZoom && (
+        <div className="image-zoom-overlay" onClick={() => setImageZoom(null)}>
+          <div className="image-zoom-container" onClick={(e) => e.stopPropagation()}>
+            <button className="image-zoom__close" onClick={() => setImageZoom(null)}>✕</button>
+            <img src={imageZoom} alt="Event poster" className="image-zoom__image" />
           </div>
         </div>
       )}

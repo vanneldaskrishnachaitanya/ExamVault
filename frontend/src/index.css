@@ -1643,11 +1643,7 @@ option { background: var(--bg-card); }
 /* ══════════════════════════════════════════════════════════════
    EVENT CARD DETAILS
 ══════════════════════════════════════════════════════════════ */
-.event-detail-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.56); z-index: 2100; display: grid; place-items: center; padding: 1rem; }
-.event-detail-modal { width: min(620px, 100%); background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.1rem; box-shadow: 0 15px 40px rgba(0,0,0,0.5); }
-.event-detail-row { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0.45rem; }
-.event-detail-row strong { font-weight: 700; color: var(--text-1); }
-.event-detail-row span { color: var(--text-2); }
+/* (Styles handled in comprehensive section below) */
 .event-form__title { font-family: var(--font-display); font-size: 0.95rem; font-weight: 800; color: var(--text-2); margin-bottom: 0.9rem; }
 .event-form__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.7rem; }
 .event-form__imgbox { display: flex; align-items: center; justify-content: center; border: 2px dashed var(--border); border-radius: var(--radius); padding: 1rem; cursor: pointer; min-height: 120px; transition: border-color 0.18s; overflow: hidden; }
@@ -2089,17 +2085,64 @@ option { background: var(--bg-card); }
 }
 .online-modal {
   width: min(500px, 100%); background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: var(--radius-lg); padding: 1rem; box-shadow: 0 12px 26px rgba(0,0,0,0.4);
+  border-radius: var(--radius-lg); padding: 1.2rem; box-shadow: 0 12px 26px rgba(0,0,0,0.4);
 }
-.online-modal__header { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.75rem; }
-.online-modal__header h3 { margin:0; font-size: 1rem; }
-.online-modal__list { margin: 0; padding: 0.1rem 0; list-style: none; max-height: 260px; overflow-y: auto; }
-.online-modal__list li { padding: 0.45rem 0.45rem; border-bottom: 1px solid var(--border); color: var(--text-2); }
-.online-modal__list li:last-child { border-bottom: none; }
+.online-modal__header { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 1rem; }
+.online-modal__header h3 { margin: 0; font-size: 1.1rem; font-weight: 800; }
+.online-modal__list { margin: 0; padding: 0; list-style: none; max-height: 320px; overflow-y: auto; }
+.online-modal__empty { margin: 0; padding: 1rem; text-align: center; color: var(--text-3); }
+.online-user-item { display: flex; align-items: center; gap: 0.8rem; padding: 0.65rem 0; border-bottom: 1px solid var(--border); }
+.online-user-item:last-child { border-bottom: none; }
+.online-user-item__avatar { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--amber-dim); color: var(--amber); font-weight: 800; flex-shrink: 0; }
+.online-user-item__info { flex: 1; }
+.online-user-item__name { font-weight: 700; color: var(--text-1); font-size: 0.9rem; }
+.online-user-item__role { font-size: 0.8rem; color: var(--text-3); }
 
 /* ══════════════════════════════════════════════════════════════
-   ADMIN PANEL — Analytics + online user fixes
+   EVENT DETAIL MODAL STYLING
 ══════════════════════════════════════════════════════════════ */
+.event-detail-modal-overlay { 
+  position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 2100; 
+  display: grid; place-items: center; padding: 1rem; overflow: auto;
+}
+.event-detail-modal { 
+  width: min(620px, 100%); background: var(--bg-card); border: 1px solid var(--border); 
+  border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+  max-height: 90vh; overflow-y: auto;
+}
+.event-detail-modal__header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+.event-detail-modal__title { margin: 0; font-size: 1.3rem; font-weight: 900; color: var(--text-1); }
+.event-detail-modal__close { background: transparent; border: none; color: var(--text-2); cursor: pointer; font-size: 1.8rem; padding: 0; width: 32px; height: 32px; display: grid; place-items: center; transition: color 0.15s; }
+.event-detail-modal__close:hover { color: var(--text-1); }
+.event-detail-modal__image-container { width: 100%; margin: 0.75rem 0 1.2rem 0; border-radius: var(--radius-lg); overflow: hidden; }
+.event-detail-modal__image { width: 100%; height: auto; max-height: 280px; object-fit: cover; display: block; }
+.event-detail-modal__description { margin: 0 0 1rem 0; color: var(--text-2); line-height: 1.65; font-size: 0.95rem; }
+.event-detail-section { display: flex; flex-direction: column; gap: 0; margin-bottom: 1.25rem; }
+.event-detail-item { display: flex; gap: 0.5rem; padding: 0.55rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.event-detail-item:last-child { border-bottom: none; }
+.event-detail-item__label { font-weight: 700; color: var(--text-1); min-width: 140px; flex-shrink: 0; }
+.event-detail-item__value { color: var(--text-2); flex: 1; }
+
+/* ══════════════════════════════════════════════════════════════
+   IMAGE ZOOM MODAL
+══════════════════════════════════════════════════════════════ */
+.image-zoom-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2200;
+  display: grid; place-items: center; padding: 1rem; cursor: zoom-out;
+}
+.image-zoom-container {
+  position: relative; max-width: 90vw; max-height: 90vh; cursor: default;
+}
+.image-zoom__image {
+  width: 100%; height: 100%; max-width: 90vw; max-height: 90vh; object-fit: contain;
+}
+.image-zoom__close {
+  position: absolute; top: -40px; right: 0; background: transparent; border: none; 
+  color: #fff; font-size: 2rem; cursor: pointer; padding: 0; width: 44px; height: 44px;
+  display: grid; place-items: center; transition: opacity 0.15s;
+}
+.image-zoom__close:hover { opacity: 0.8; }
+
 .admin-panel__actions {
   display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.5rem;
 }
