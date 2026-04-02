@@ -18,7 +18,7 @@ const {
 const { getBranches, getAllBranches, createBranch, updateBranch, deleteBranch } = require('../controllers/branchController');
 const { getFeedback, createFeedback, upvoteFeedback, reviewFeedback, deleteFeedback } = require('../controllers/feedbackController');
 const {
-  getTodayQuotes, getSettings, toggleEnabled,
+  getTodayQuotes, getSettings, toggleEnabled, toggleAutoFallback,
   getSections, createSection, updateSection, deleteSection,
   getQuotesBySection, createQuote, updateQuote, deleteQuote,
 } = require('../controllers/quoteController');
@@ -129,8 +129,9 @@ adminExtrasRouter.patch('/feedback/:id',         protect, restrictTo('admin'), r
 adminExtrasRouter.delete('/feedback/:id',        protect, restrictTo('admin'), deleteFeedback);
 
 // ── Admin Quotes ──────────────────────────────────────────────
-adminExtrasRouter.get('/quotes/settings',              protect, restrictTo('admin'), getSettings);
-adminExtrasRouter.patch('/quotes/settings/toggle',     protect, restrictTo('admin'), toggleEnabled);
+adminExtrasRouter.get('/quotes/settings',                   protect, restrictTo('admin'), getSettings);
+adminExtrasRouter.patch('/quotes/settings/toggle',          protect, restrictTo('admin'), toggleEnabled);
+adminExtrasRouter.patch('/quotes/settings/toggle-auto',     protect, restrictTo('admin'), toggleAutoFallback);
 adminExtrasRouter.get('/quotes/sections',              protect, restrictTo('admin'), getSections);
 adminExtrasRouter.post('/quotes/sections',             protect, restrictTo('admin'), createSection);
 adminExtrasRouter.patch('/quotes/sections/:id',        protect, restrictTo('admin'), updateSection);

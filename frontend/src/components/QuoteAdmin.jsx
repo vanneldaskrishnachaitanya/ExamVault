@@ -3,29 +3,28 @@ import { useCallback, useEffect, useState } from 'react';
 import {
   Quote, Plus, Trash2, Eye, EyeOff, Loader2,
   ChevronDown, ChevronRight, Sparkles, X, Check,
-  ToggleLeft, ToggleRight, Edit3,
+  ToggleLeft, ToggleRight,
 } from 'lucide-react';
 import {
-  fetchQuoteSettings, toggleQuoteEnabled,
+  fetchQuoteSettings, toggleQuoteEnabled, toggleQuoteAutoFallback,
   fetchQuoteSections, createQuoteSection, updateQuoteSection, deleteQuoteSection,
   fetchQuotesBySection, createQuote, deleteQuote, updateQuote,
 } from '../api/apiClient';
 
-// ── Small toast helper ────────────────────────────────────────
 function useToast() {
   const [msg, setMsg] = useState('');
   const show = (m) => { setMsg(m); setTimeout(() => setMsg(''), 3000); };
   return { msg, show };
 }
 
-// ── Section row with expand/collapse quotes ───────────────────
+// ── Section row with expandable quotes ───────────────────────
 function SectionRow({ sec, onDelete, onToggle, toast }) {
   const [open,    setOpen]    = useState(false);
   const [quotes,  setQuotes]  = useState([]);
   const [qLoad,   setQLoad]   = useState(false);
   const [showAdd, setShowAdd] = useState(false);
-  const [form, setForm] = useState({ text: '', author: '', bgImageUrl: '', scheduledFor: '' });
-  const [saving, setSaving] = useState(false);
+  const [form,    setForm]    = useState({ text: '', author: '', bgImageUrl: '', scheduledFor: '' });
+  const [saving,  setSaving]  = useState(false);
 
   const loadQuotes = useCallback(async () => {
     setQLoad(true);
@@ -70,7 +69,6 @@ function SectionRow({ sec, onDelete, onToggle, toast }) {
 
   return (
     <div className={`qs-section-row${!sec.active ? ' qs-section-row--hidden' : ''}`}>
-      {/* Section header */}
       <div className="qs-section-row__head">
         <button className="qs-section-row__expand" onClick={handleExpand}>
           {open ? <ChevronDown size={15} /> : <ChevronRight size={15} />}
@@ -78,11 +76,8 @@ function SectionRow({ sec, onDelete, onToggle, toast }) {
           <span className="qs-section-row__count">{sec.quoteCount ?? 0} quotes</span>
         </button>
         <div className="qs-section-row__actions">
-          <button
-            className={`btn btn--sm ${sec.active ? 'btn--warning' : 'btn--success'}`}
-            title={sec.active ? 'Hide from students' : 'Show to students'}
-            onClick={() => onToggle(sec)}
-          >
+          <button className={`btn btn--sm ${sec.active ? 'btn--warning' : 'btn--success'}`}
+            onClick={() => onToggle(sec)}>
             {sec.active ? <><EyeOff size={13} /> Hide</> : <><Eye size={13} /> Show</>}
           </button>
           <button className="btn btn--sm btn--danger" onClick={() => onDelete(sec)}>
@@ -91,10 +86,8 @@ function SectionRow({ sec, onDelete, onToggle, toast }) {
         </div>
       </div>
 
-      {/* Expanded quotes */}
       {open && (
         <div className="qs-quotes-panel">
-          {/* Add quote form toggle */}
           <button className="btn btn--primary btn--sm" style={{ marginBottom: '0.85rem' }}
             onClick={() => setShowAdd(s => !s)}>
             <Plus size={13} /> Add Quote
@@ -103,19 +96,14 @@ function SectionRow({ sec, onDelete, onToggle, toast }) {
           {showAdd && (
             <div className="qs-add-quote-form">
               <label className="modal__label">Quote text *
-                <textarea
-                  className="modal__input"
-                  rows={3}
+                <textarea className="modal__input" rows={3}
                   placeholder="Enter the inspirational quote…"
-                  value={form.text}
-                  onChange={e => setForm(f => ({ ...f, text: e.target.value }))}
-                  maxLength={600}
-                  style={{ resize: 'vertical' }}
-                />
+                  value={form.text} onChange={e => setForm(f => ({ ...f, text: e.target.value }))}
+                  maxLength={600} style={{ resize: 'vertical' }} />
               </label>
               <div className="qs-add-quote-form__row">
                 <label className="modal__label">Author
-                  <input className="modal__input" placeholder="e.g. Rumi, Anonymous…"
+                  <input className="modal__input" placeholder="e.g. Swami Vivekananda"
                     value={form.author} onChange={e => setForm(f => ({ ...f, author: e.target.value }))} />
                 </label>
                 <label className="modal__label">Schedule for date
@@ -123,8 +111,9 @@ function SectionRow({ sec, onDelete, onToggle, toast }) {
                     value={form.scheduledFor} onChange={e => setForm(f => ({ ...f, scheduledFor: e.target.value }))} />
                 </label>
               </div>
-              <label className="modal__label">Background image URL <span style={{ color: 'var(--text-3)', fontSize: '0.72rem' }}>(optional — will appear dimmed)</span>
-                <input className="modal__input" placeholder="https://… (Cloudinary, Unsplash etc.)"
+              <label className="modal__label">
+                Background image URL <span style={{ color: 'var(--text-3)', fontSize: '0.72rem' }}>(optional — shown dimly)</span>
+                <input className="modal__input" placeholder="https://… (Cloudinary, Unsplash, etc.)"
                   value={form.bgImageUrl} onChange={e => setForm(f => ({ ...f, bgImageUrl: e.target.value }))} />
               </label>
               <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.75rem' }}>
@@ -136,13 +125,12 @@ function SectionRow({ sec, onDelete, onToggle, toast }) {
             </div>
           )}
 
-          {/* Quotes list */}
           {qLoad ? (
             <div style={{ display: 'flex', justifyContent: 'center', padding: '1rem' }}>
               <Loader2 size={20} className="spin" style={{ color: 'var(--amber)' }} />
             </div>
           ) : quotes.length === 0 ? (
-            <p className="qs-empty">No quotes yet — auto-fallback quotes will show until you add some.</p>
+            <p className="qs-empty">No quotes yet — auto-fallback quotes will show if enabled.</p>
           ) : (
             <div className="qs-quote-list">
               {quotes.map(q => (
@@ -160,11 +148,8 @@ function SectionRow({ sec, onDelete, onToggle, toast }) {
                     </p>
                   </div>
                   <div className="qs-quote-item__actions">
-                    <button
-                      className={`btn btn--sm ${q.active ? 'btn--warning' : 'btn--success'}`}
-                      onClick={() => handleToggleQuote(q)}
-                      title={q.active ? 'Hide' : 'Show'}
-                    >
+                    <button className={`btn btn--sm ${q.active ? 'btn--warning' : 'btn--success'}`}
+                      onClick={() => handleToggleQuote(q)} title={q.active ? 'Hide' : 'Show'}>
                       {q.active ? <EyeOff size={12} /> : <Eye size={12} />}
                     </button>
                     <button className="btn btn--sm btn--danger" onClick={() => handleDeleteQuote(q._id)}>
@@ -181,17 +166,18 @@ function SectionRow({ sec, onDelete, onToggle, toast }) {
   );
 }
 
-// ── Main QuoteAdmin component ────────────────────────────────
+// ── Main QuoteAdmin ───────────────────────────────────────────
 export default function QuoteAdmin() {
   const toast = useToast();
 
-  const [settings,    setSettings]    = useState(null);
-  const [sections,    setSections]    = useState([]);
-  const [loading,     setLoading]     = useState(true);
-  const [toggling,    setToggling]    = useState(false);
-  const [showNewSec,  setShowNewSec]  = useState(false);
-  const [newSec,      setNewSec]      = useState({ name: '', description: '' });
-  const [creating,    setCreating]    = useState(false);
+  const [settings,   setSettings]   = useState(null);
+  const [sections,   setSections]   = useState([]);
+  const [loading,    setLoading]    = useState(true);
+  const [toggling,   setToggling]   = useState(false);
+  const [togglingAuto, setTogglingAuto] = useState(false);
+  const [showNewSec, setShowNewSec] = useState(false);
+  const [newSec,     setNewSec]     = useState({ name: '', description: '' });
+  const [creating,   setCreating]   = useState(false);
 
   const loadAll = useCallback(async () => {
     setLoading(true);
@@ -213,6 +199,16 @@ export default function QuoteAdmin() {
       toast.show(d.enabled ? 'Quote section shown to students ✓' : 'Quote section hidden from students');
     } catch (e) { toast.show(`Error: ${e.message}`); }
     finally { setToggling(false); }
+  };
+
+  const handleToggleAutoFallback = async () => {
+    setTogglingAuto(true);
+    try {
+      const d = await toggleQuoteAutoFallback();
+      setSettings(d);
+      toast.show(d.autoFallback ? 'Auto Hindu quotes enabled ✓' : 'Auto quotes disabled — only manual quotes will show');
+    } catch (e) { toast.show(`Error: ${e.message}`); }
+    finally { setTogglingAuto(false); }
   };
 
   const handleCreateSection = async () => {
@@ -254,40 +250,61 @@ export default function QuoteAdmin() {
   return (
     <section className="admin-panel__section qs-admin">
 
-      {/* Global toggle */}
+      {/* Header row — title + visibility toggle */}
       <div className="qs-admin__header">
         <div className="qs-admin__title-row">
-          <Quote size={20} style={{ color: 'var(--amber)' }} />
+          <Quote size={20} style={{ color: 'var(--amber)', flexShrink: 0, marginTop: 2 }} />
           <div>
             <h2 className="qs-admin__title">Daily Quotes</h2>
             <p className="qs-admin__sub">
-              Manage inspirational quote sections shown to students on the home page.
-              When no quotes are added, auto-curated quotes appear daily.
+              Inspirational quotes shown to students on the home page every day.
+              Add your own — or let auto-quotes run.
             </p>
           </div>
         </div>
+
+        {/* Show/hide toggle */}
         <button
           className={`qs-toggle-btn${settings?.enabled ? ' qs-toggle-btn--on' : ''}`}
-          onClick={handleToggleEnabled}
-          disabled={toggling}
-          title={settings?.enabled ? 'Click to hide from students' : 'Click to show to students'}
+          onClick={handleToggleEnabled} disabled={toggling}
+          title={settings?.enabled ? 'Hide from students' : 'Show to students'}
         >
-          {toggling ? <Loader2 size={15} className="spin" /> :
-            settings?.enabled ? <><ToggleRight size={18} /> Visible to students</> : <><ToggleLeft size={18} /> Hidden from students</>
+          {toggling
+            ? <Loader2 size={15} className="spin" />
+            : settings?.enabled
+              ? <><ToggleRight size={18} /> Visible to students</>
+              : <><ToggleLeft size={18} /> Hidden from students</>
           }
         </button>
       </div>
 
-      {/* Auto-quote notice */}
-      <div className="qs-auto-notice">
-        <Sparkles size={14} />
-        <span>
-          <strong>Auto mode active:</strong> If a section has no quotes, curated fallback quotes automatically
-          rotate daily — one per day, cycling through Motivational, Spiritual, Academic and Mindfulness themes.
-        </span>
+      {/* Auto-fallback toggle row */}
+      <div className="qs-autofallback-row">
+        <div className="qs-autofallback-row__info">
+          <Sparkles size={14} style={{ color: 'var(--amber)', flexShrink: 0 }} />
+          <div>
+            <strong>Auto Hindu Quotes</strong>
+            <span style={{ color: 'var(--text-3)', marginLeft: '0.4rem', fontSize: '0.78rem' }}>
+              — When a section has no quotes, the system automatically shows daily quotes from
+              the Bhagavad Gita, Upanishads, Swami Vivekananda, Ramana Maharshi, Adi Shankaracharya and Thirukkural.
+            </span>
+          </div>
+        </div>
+        <button
+          className={`qs-toggle-btn qs-toggle-btn--sm${settings?.autoFallback ? ' qs-toggle-btn--on' : ''}`}
+          onClick={handleToggleAutoFallback} disabled={togglingAuto}
+          title={settings?.autoFallback ? 'Turn off auto quotes' : 'Turn on auto quotes'}
+        >
+          {togglingAuto
+            ? <Loader2 size={13} className="spin" />
+            : settings?.autoFallback
+              ? <><ToggleRight size={16} /> Auto ON</>
+              : <><ToggleLeft size={16} /> Auto OFF</>
+          }
+        </button>
       </div>
 
-      {/* Sections */}
+      {/* Sections header */}
       <div className="qs-sections-header">
         <h3 className="qs-sections-title">Sections ({sections.length})</h3>
         <button className="btn btn--primary btn--sm" onClick={() => setShowNewSec(s => !s)}>
@@ -300,20 +317,17 @@ export default function QuoteAdmin() {
         <div className="qs-new-section-form">
           <label className="modal__label">Section name *
             <input className="modal__input"
-              placeholder="e.g. Spiritual, Motivational, Study Tips…"
+              placeholder="e.g. Bhagavad Gita, Spiritual, Study Motivation…"
               value={newSec.name}
               onChange={e => setNewSec(f => ({ ...f, name: e.target.value }))}
-              maxLength={100}
-              autoFocus
-            />
+              maxLength={100} autoFocus />
           </label>
           <label className="modal__label" style={{ marginTop: '0.5rem' }}>Description (optional)
             <input className="modal__input"
-              placeholder="Short description shown to admin"
+              placeholder="Short description for admin reference"
               value={newSec.description}
               onChange={e => setNewSec(f => ({ ...f, description: e.target.value }))}
-              maxLength={300}
-            />
+              maxLength={300} />
           </label>
           <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.75rem' }}>
             <button className="btn btn--primary btn--sm" onClick={handleCreateSection} disabled={creating}>
@@ -330,19 +344,18 @@ export default function QuoteAdmin() {
           <Quote size={36} style={{ opacity: 0.3 }} />
           <p>No sections yet.</p>
           <p style={{ fontSize: '0.82rem', color: 'var(--text-3)' }}>
-            Auto-fallback quotes are showing. Create a section and add your own quotes!
+            {settings?.autoFallback
+              ? 'Auto Hindu quotes are showing to students. Create a section to add your own.'
+              : 'Auto quotes are OFF and no sections exist — students see no quotes.'}
           </p>
         </div>
       ) : (
         <div className="qs-sections-list">
           {sections.map(sec => (
-            <SectionRow
-              key={sec._id}
-              sec={sec}
+            <SectionRow key={sec._id} sec={sec}
               onDelete={handleDeleteSection}
               onToggle={handleToggleSection}
-              toast={toast}
-            />
+              toast={toast} />
           ))}
         </div>
       )}

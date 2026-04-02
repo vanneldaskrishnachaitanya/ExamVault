@@ -132,8 +132,9 @@ export const deleteFeedbackAdmin = async (id)          => { const { data } = awa
 
 // ── Quotes ────────────────────────────────────────────────────
 export const fetchTodayQuotes    = async ()          => { const { data } = await api.get('/quotes/today'); return data.data; };
-export const fetchQuoteSettings  = async ()          => { const { data } = await api.get('/admin/quotes/settings'); return data.data; };
-export const toggleQuoteEnabled  = async ()          => { const { data } = await api.patch('/admin/quotes/settings/toggle'); return data.data; };
+export const fetchQuoteSettings      = async ()          => { const { data } = await api.get('/admin/quotes/settings'); return data.data; };
+export const toggleQuoteEnabled      = async ()          => { const { data } = await api.patch('/admin/quotes/settings/toggle'); return data.data; };
+export const toggleQuoteAutoFallback = async ()          => { const { data } = await api.patch('/admin/quotes/settings/toggle-auto'); return data.data; };
 export const fetchQuoteSections  = async ()          => { const { data } = await api.get('/admin/quotes/sections'); return data.data; };
 export const createQuoteSection  = async (payload)   => { const { data } = await api.post('/admin/quotes/sections', payload); return data.data; };
 export const updateQuoteSection  = async (id, payload) => { const { data } = await api.patch(`/admin/quotes/sections/${id}`, payload); return data.data; };
