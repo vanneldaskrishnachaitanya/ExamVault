@@ -58,7 +58,7 @@ function AppLoader() {
   return (
     <div className="app-loader">
       <div className="app-loader__ring" />
-      <span className="app-loader__text">Tamso Maa Jyotirgamay</span>
+      <span className="app-loader__text">Tamso Maa Jyotirgamaya</span>
     </div>
   );
 }
