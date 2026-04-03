@@ -19,11 +19,12 @@ function useToast() {
 
 // ── Poll Admin Panel ──────────────────────────────────────────
 function PollAdmin({ toast }) {
-  const [polls,    setPolls]    = useState([]);
-  const [loading,  setLoading]  = useState(true);
-  const [showForm, setShowForm] = useState(false);
-  const [form,     setForm]     = useState({ question: '', options: ['', ''], multiSelect: false, durationDays: 3 });
-  const [saving,   setSaving]   = useState(false);
+  const [polls,         setPolls]         = useState([]);
+  const [loading,       setLoading]       = useState(true);
+  const [showForm,      setShowForm]      = useState(false);
+  const [form,          setForm]          = useState({ question: '', options: ['', ''], multiSelect: false, durationDays: 3 });
+  const [saving,        setSaving]        = useState(false);
+  const [expandedPollId,setExpandedPollId]= useState(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -177,10 +178,28 @@ function PollAdmin({ toast }) {
                     onClick={() => handleToggle(p._id)} disabled={expired}>
                     {p.active && !expired ? <><EyeOff size={12} /> Hide</> : <><Eye size={12} /> Show</>}
                   </button>
+                  <button className="btn btn--sm btn--ghost" onClick={() => setExpandedPollId(expandedPollId === p._id ? null : p._id)}>
+                    <User size={12} /> {expandedPollId === p._id ? 'Hide voters' : 'Show voters'}
+                  </button>
                   <button className="btn btn--sm btn--danger" onClick={() => handleDelete(p._id)}>
                     <Trash2 size={12} />
                   </button>
                 </div>
+
+                {expandedPollId === p._id && (
+                  <div className="poll-admin__voters">
+                    <strong>Voters:</strong>
+                    {p.options?.flatMap(o => o.voters || []).length > 0 ? (
+                      <ul>
+                        {p.options.flatMap(o => o.voters || []).map(voter => (
+                          <li key={`${p._id}-${voter._id}`}>{voter.name || voter.email || 'Unknown'}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p>No votes yet.</p>
+                    )}
+                  </div>
+                )}
               </div>
             );
           })}
@@ -279,7 +298,7 @@ function SectionRow({ sec, onDelete, onToggle, toast }) {
                 <textarea className="modal__input" rows={4}
                   placeholder="Explain the meaning, context or significance of this quote…"
                   value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
-                  maxLength={1000} style={{ resize: 'vertical' }} />
+                  style={{ resize: 'vertical' }} />
               </label>
               <label className="modal__label">
                 Background image URL <span style={{ color: 'var(--text-3)', fontSize: '0.72rem' }}>(optional)</span>
