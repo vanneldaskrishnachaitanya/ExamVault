@@ -1,5 +1,6 @@
 'use strict';
 
+const mongoose = require('mongoose');
 const { QuoteSection, Quote, QuoteSettings, Poll } = require('../models/Quote');
 const User = require('../models/User');
 
@@ -231,7 +232,7 @@ exports.getAllPolls = async (req, res) => {
     const allVoterIds = [
       ...new Set(polls.flatMap(p => p.options.flatMap(o => o.votes.map(v => v.toString())))),
     ];
-    const users = await User.find({ _id: { $in: allVoterIds } }).lean();
+    const users = await User.find({ _id: { $in: allVoterIds.map(id => new mongoose.Types.ObjectId(id)) } }).lean();
     const userMap = users.reduce((acc, u) => { acc[u._id.toString()] = u; return acc; }, {});
 
     const out = polls.map(p => {
