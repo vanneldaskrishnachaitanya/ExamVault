@@ -1,6 +1,7 @@
 'use strict';
 
 const { QuoteSection, Quote, QuoteSettings, Poll } = require('../models/Quote');
+const User = require('../models/User');
 
 // ── Fallback quotes (Hindu philosophical only, no Vivekananda) ────────────
 const FALLBACK_QUOTES = [
@@ -162,23 +163,30 @@ exports.deleteQuote = async (req, res) => {
 exports.getActivePolls = async (req, res) => {
   try {
     const now   = new Date();
-    const polls = await Poll.find({ active: true, expiresAt: { $gt: now } }).sort({ createdAt: -1 }).lean();
     const userId= req.user._id.toString();
-    const out   = polls.map(p => ({
-      _id:         p._id,
-      question:    p.question,
-      multiSelect: p.multiSelect,
-      expiresAt:   p.expiresAt,
-      createdAt:   p.createdAt,
-      options: p.options.map(o => ({
-        _id:       o._id,
-        text:      o.text,
-        votes:     o.votes.length,
-        voted:     o.votes.map(v => v.toString()).includes(userId),
-      })),
-      totalVotes: p.options.reduce((s, o) => s + o.votes.length, 0),
-      userVoted:  p.options.some(o => o.votes.map(v => v.toString()).includes(userId)),
-    }));
+    const polls = await Poll.find({ active: true }).sort({ createdAt: -1 }).lean();
+
+    const out = polls
+      .filter(p => p.expiresAt > now || p.options.some(o => o.votes.some(v => v.toString() === userId)))
+      .map(p => {
+        const userVoted = p.options.some(o => o.votes.some(v => v.toString() === userId));
+        return {
+          _id:         p._id,
+          question:    p.question,
+          multiSelect: p.multiSelect,
+          expiresAt:   p.expiresAt,
+          createdAt:   p.createdAt,
+          options: p.options.map(o => ({
+            _id:       o._id,
+            text:      o.text,
+            votes:     o.votes.length,
+            voted:     o.votes.some(v => v.toString() === userId),
+          })),
+          totalVotes: p.options.reduce((s, o) => s + o.votes.length, 0),
+          userVoted,
+        };
+      });
+
     res.json({ success: true, data: out });
   } catch (e) { res.status(500).json({ success: false, message: e.message }); }
 };
@@ -220,7 +228,31 @@ exports.votePoll = async (req, res) => {
 exports.getAllPolls = async (req, res) => {
   try {
     const polls = await Poll.find().sort({ createdAt: -1 }).lean();
-    const out   = polls.map(p => ({ ...p, totalVotes: p.options.reduce((s, o) => s + o.votes.length, 0), expired: p.expiresAt < new Date() }));
+    const allVoterIds = [
+      ...new Set(polls.flatMap(p => p.options.flatMap(o => o.votes.map(v => v.toString())))),
+    ];
+    const users = await User.find({ _id: { $in: allVoterIds } }).lean();
+    const userMap = users.reduce((acc, u) => { acc[u._id.toString()] = u; return acc; }, {});
+
+    const out = polls.map(p => {
+      const totalVotes = p.options.reduce((s, o) => s + o.votes.length, 0);
+      return {
+        ...p,
+        totalVotes,
+        expired: p.expiresAt < new Date(),
+        options: p.options.map(o => ({
+          _id:    o._id,
+          text:   o.text,
+          votes:  o.votes.length,
+          voters: o.votes.map(v => ({
+            _id:   v,
+            name:  userMap[v.toString()]?.name || 'Unknown',
+            email: userMap[v.toString()]?.email || undefined,
+          })),
+        })),
+      };
+    });
+
     res.json({ success: true, data: out });
   } catch (e) { res.status(500).json({ success: false, message: e.message }); }
 };

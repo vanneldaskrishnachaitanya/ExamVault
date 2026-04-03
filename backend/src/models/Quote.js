@@ -16,7 +16,7 @@ QuoteSectionSchema.index({ active: 1, order: 1 });
 const QuoteSchema = new mongoose.Schema({
   text:         { type: String, required: true, maxlength: 600 },    // no trim — preserve newlines
   author:       { type: String, trim: true, maxlength: 150, default: '' },
-  description:  { type: String, maxlength: 1000, default: '' },      // optional learn-more text
+  description:  { type: String, default: '' },      // optional learn-more text (no max limit)
   section:      { type: mongoose.Schema.Types.ObjectId, ref: 'QuoteSection', required: true },
   bgImageUrl:   { type: String, default: '' },
   active:       { type: Boolean, default: true },
