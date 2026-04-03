@@ -18,9 +18,10 @@ const {
 const { getBranches, getAllBranches, createBranch, updateBranch, deleteBranch } = require('../controllers/branchController');
 const { getFeedback, createFeedback, upvoteFeedback, reviewFeedback, deleteFeedback } = require('../controllers/feedbackController');
 const {
-  getTodayQuotes, getSettings, toggleEnabled, toggleAutoFallback,
+  getTodayQuotes, getSettings, toggleEnabled, toggleAutoFallback, toggleShowAuthor,
   getSections, createSection, updateSection, deleteSection,
   getQuotesBySection, createQuote, updateQuote, deleteQuote,
+  getActivePolls, votePoll, getAllPolls, createPoll, togglePoll, deletePoll,
 } = require('../controllers/quoteController');
 const {
   upload: syllabusUpload,
@@ -98,6 +99,11 @@ feedbackRouter.patch('/:id/upvote', protect, upvoteFeedback);
 const quoteRouter = express.Router();
 quoteRouter.get('/today', protect, getTodayQuotes);
 
+// ── Polls (public — auth required) ───────────────────────────
+const pollRouter = express.Router();
+pollRouter.get('/',           protect, getActivePolls);
+pollRouter.post('/:id/vote',  protect, votePoll);
+
 // ── Admin extras ──────────────────────────────────────────────
 const adminExtrasRouter = express.Router();
 adminExtrasRouter.get('/analytics',              protect, restrictTo('admin'), getAnalytics);
@@ -132,6 +138,7 @@ adminExtrasRouter.delete('/feedback/:id',        protect, restrictTo('admin'), d
 adminExtrasRouter.get('/quotes/settings',                   protect, restrictTo('admin'), getSettings);
 adminExtrasRouter.patch('/quotes/settings/toggle',          protect, restrictTo('admin'), toggleEnabled);
 adminExtrasRouter.patch('/quotes/settings/toggle-auto',     protect, restrictTo('admin'), toggleAutoFallback);
+adminExtrasRouter.patch('/quotes/settings/toggle-author',   protect, restrictTo('admin'), toggleShowAuthor);
 adminExtrasRouter.get('/quotes/sections',              protect, restrictTo('admin'), getSections);
 adminExtrasRouter.post('/quotes/sections',             protect, restrictTo('admin'), createSection);
 adminExtrasRouter.patch('/quotes/sections/:id',        protect, restrictTo('admin'), updateSection);
@@ -141,20 +148,16 @@ adminExtrasRouter.post('/quotes',                      protect, restrictTo('admi
 adminExtrasRouter.patch('/quotes/:id',                 protect, restrictTo('admin'), updateQuote);
 adminExtrasRouter.delete('/quotes/:id',                protect, restrictTo('admin'), deleteQuote);
 
+// ── Admin Polls ───────────────────────────────────────────────
+adminExtrasRouter.get('/polls',           protect, restrictTo('admin'), getAllPolls);
+adminExtrasRouter.post('/polls',          protect, restrictTo('admin'), createPoll);
+adminExtrasRouter.patch('/polls/:id',     protect, restrictTo('admin'), togglePoll);
+adminExtrasRouter.delete('/polls/:id',    protect, restrictTo('admin'), deletePoll);
+
 module.exports = {
-  notificationRouter,
-  announcementRouter,
-  bookmarkRouter,
-  adminExtrasRouter,
-  ratingRouter,
-  historyRouter,
-  searchRouter,
-  branchRouter,
-  eventRouter,
-  codingRouter,
-  syllabusRouter,
-  timetableRouter,
-  statsRouter,
-  feedbackRouter,
-  quoteRouter,
+  notificationRouter, announcementRouter, bookmarkRouter,
+  adminExtrasRouter, ratingRouter, historyRouter, searchRouter,
+  branchRouter, eventRouter, codingRouter, syllabusRouter,
+  timetableRouter, statsRouter, feedbackRouter,
+  quoteRouter, pollRouter,
 };

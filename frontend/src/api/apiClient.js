@@ -135,6 +135,7 @@ export const fetchTodayQuotes    = async ()          => { const { data } = await
 export const fetchQuoteSettings      = async ()          => { const { data } = await api.get('/admin/quotes/settings'); return data.data; };
 export const toggleQuoteEnabled      = async ()          => { const { data } = await api.patch('/admin/quotes/settings/toggle'); return data.data; };
 export const toggleQuoteAutoFallback = async ()          => { const { data } = await api.patch('/admin/quotes/settings/toggle-auto'); return data.data; };
+export const toggleQuoteShowAuthor   = async ()          => { const { data } = await api.patch('/admin/quotes/settings/toggle-author'); return data.data; };
 export const fetchQuoteSections  = async ()          => { const { data } = await api.get('/admin/quotes/sections'); return data.data; };
 export const createQuoteSection  = async (payload)   => { const { data } = await api.post('/admin/quotes/sections', payload); return data.data; };
 export const updateQuoteSection  = async (id, payload) => { const { data } = await api.patch(`/admin/quotes/sections/${id}`, payload); return data.data; };
@@ -143,5 +144,13 @@ export const fetchQuotesBySection= async (secId)     => { const { data } = await
 export const createQuote         = async (payload)   => { const { data } = await api.post('/admin/quotes', payload); return data.data; };
 export const updateQuote         = async (id, payload) => { const { data } = await api.patch(`/admin/quotes/${id}`, payload); return data.data; };
 export const deleteQuote         = async (id)        => { const { data } = await api.delete(`/admin/quotes/${id}`); return data; };
+
+// ── Polls ─────────────────────────────────────────────────────
+export const fetchActivePolls  = async ()            => { const { data } = await api.get('/polls'); return data.data; };
+export const votePoll          = async (id, optionIds) => { const { data } = await api.post(`/polls/${id}/vote`, { optionIds }); return data.data; };
+export const fetchAllPolls     = async ()            => { const { data } = await api.get('/admin/polls'); return data.data; };
+export const createPoll        = async (payload)     => { const { data } = await api.post('/admin/polls', payload); return data.data; };
+export const togglePoll        = async (id)          => { const { data } = await api.patch(`/admin/polls/${id}`); return data.data; };
+export const deletePoll        = async (id)          => { const { data } = await api.delete(`/admin/polls/${id}`); return data; };
 
 export default api;
