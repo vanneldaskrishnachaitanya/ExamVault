@@ -122,6 +122,19 @@ export default function Dashboard() {
         <div className="dash-hero__glow" aria-hidden="true" />
         <div className="dash-hero__glow dash-hero__glow--2" aria-hidden="true" />
 
+        {/* ── SVG: Floating star constellation ── */}
+        <svg style={{position:'absolute',top:12,right:16,width:120,height:90,pointerEvents:'none',opacity:0.18}} aria-hidden="true" viewBox="0 0 120 90">
+          <circle cx="20" cy="20" r="1.5" fill="var(--amber)"><animate attributeName="opacity" values="0.3;1;0.3" dur="2.5s" repeatCount="indefinite"/></circle>
+          <circle cx="60" cy="10" r="1"   fill="var(--blue)"><animate attributeName="opacity" values="0.2;1;0.2" dur="3.2s" repeatCount="indefinite" begin="0.5s"/></circle>
+          <circle cx="100" cy="30" r="2"  fill="var(--amber)"><animate attributeName="opacity" values="0.4;1;0.4" dur="1.9s" repeatCount="indefinite" begin="1s"/></circle>
+          <circle cx="40" cy="50" r="1.2" fill="var(--teal)"><animate attributeName="opacity" values="0.2;0.8;0.2" dur="4s" repeatCount="indefinite" begin="0.3s"/></circle>
+          <circle cx="90" cy="60" r="1.5" fill="var(--purple)"><animate attributeName="opacity" values="0.3;1;0.3" dur="2.1s" repeatCount="indefinite" begin="1.5s"/></circle>
+          <circle cx="15" cy="70" r="1"   fill="var(--blue)"><animate attributeName="opacity" values="0.2;0.9;0.2" dur="3.5s" repeatCount="indefinite" begin="0.8s"/></circle>
+          <line x1="20" y1="20" x2="60" y2="10" stroke="var(--amber)" strokeWidth="0.4" opacity="0.3"/>
+          <line x1="60" y1="10" x2="100" y2="30" stroke="var(--blue)" strokeWidth="0.4" opacity="0.3"/>
+          <line x1="40" y1="50" x2="90" y2="60" stroke="var(--teal)" strokeWidth="0.4" opacity="0.25"/>
+        </svg>
+
         <div className="dash-hero__content">
           <GraduationCap size={36} className="dash-hero__icon" />
           <h1 className="dash-hero__title">

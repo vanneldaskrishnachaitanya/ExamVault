@@ -3,6 +3,8 @@ import RecentlyViewed from '../components/RecentlyViewed';
 import BottomNav from '../components/BottomNav';
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
+import '../effects.css';
+import { initEffects, initTilt, initMagnetic, initCounters, initKinetic } from '../hooks/useEffects';
 import Navbar from '../components/Navbar';
 import { fetchAnnouncements } from '../api/apiClient';
 import { X, Megaphone } from 'lucide-react';
@@ -32,6 +34,32 @@ export default function MainLayout() {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('ev-theme', theme);
   }, [theme]);
+
+  // ── Init all next-level effects ──────────────────────────
+  useEffect(() => {
+    const cleanCursor   = initEffects();
+    const cleanTilt     = initTilt();
+    const cleanMagnetic = initMagnetic();
+    const cleanCounters = initCounters();
+
+    // Kinetic runs after a short delay so DOM is ready
+    const kTimer = setTimeout(initKinetic, 200);
+
+    // Re-run kinetic + tilt on route changes
+    const routeObs = new MutationObserver(() => {
+      initKinetic();
+    });
+    routeObs.observe(document.getElementById('root') || document.body, { childList: true, subtree: false });
+
+    return () => {
+      cleanCursor();
+      cleanTilt();
+      cleanMagnetic();
+      cleanCounters();
+      clearTimeout(kTimer);
+      routeObs.disconnect();
+    };
+  }, []);
 
   const toggleTheme = () => setTheme(t => t === 'dark' ? 'light' : 'dark');
 

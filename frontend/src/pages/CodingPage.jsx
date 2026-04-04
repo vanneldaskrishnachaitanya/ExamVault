@@ -101,6 +101,27 @@ export default function CodingPage() {
     <div className="coding-page">
       <div className="coding-hero">
         <div className="coding-hero__glow" />
+
+        {/* ── SVG Animation: Orbiting rings ── */}
+        <svg className="ev-hero-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="100" cy="100" r="70" fill="none" stroke="var(--amber)" strokeWidth="0.8" strokeDasharray="6 4" opacity="0.5">
+            <animateTransform attributeName="transform" type="rotate" from="0 100 100" to="360 100 100" dur="14s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="100" cy="100" r="48" fill="none" stroke="var(--blue)" strokeWidth="0.6" strokeDasharray="3 5" opacity="0.4">
+            <animateTransform attributeName="transform" type="rotate" from="360 100 100" to="0 100 100" dur="9s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="100" cy="30" r="5" fill="var(--amber)" opacity="0.8">
+            <animateTransform attributeName="transform" type="rotate" from="0 100 100" to="360 100 100" dur="14s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="100" cy="52" r="4" fill="var(--blue)" opacity="0.7">
+            <animateTransform attributeName="transform" type="rotate" from="360 100 100" to="0 100 100" dur="9s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="100" cy="100" r="10" fill="none" stroke="var(--teal)" strokeWidth="1" opacity="0.3">
+            <animate attributeName="r" values="10;14;10" dur="3s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.3;0.6;0.3" dur="3s" repeatCount="indefinite"/>
+          </circle>
+        </svg>
+
         <Code size={36} className="coding-hero__icon" />
         <h1 className="coding-hero__title">Competitive Programming</h1>
         <p className="coding-hero__sub">Platforms, resources, and tools to level up your coding skills.</p>
