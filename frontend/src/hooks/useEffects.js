@@ -58,13 +58,22 @@ export function initTilt() {
       '.stat-card',
       '.platform-card',
       '.event-card',
-      '.analytics-card:not(.analytics-card--wide)',
+      '.analytics-card',
       '.feedback-card',
       '.feedback-item',
       '.quote-banner',
       '.poll-card',
       '.dash-hero__stat',
       '.coding-stat',
+      '.dash-hero',
+      '.branch-accordion',
+      '.syllabus-card',
+      '.syllabus-item',
+      '.file-card',
+      '.admin-card',
+      '.admin-stat-card',
+      '.resource-card',
+      '.contest-card'
     ].join(', ');
 
     document.querySelectorAll(tiltSelectors).forEach(card => {
@@ -99,12 +108,9 @@ export function initTilt() {
 
     // Light only (no tilt) — subject folders, branch accordions, file cards, etc
     const lightOnlySelectors = [
-      '.branch-accordion',
       '.subject-folder',
       '.subject-item',
-      '.file-card',
       '.history-item',
-      '.syllabus-item',
       '.suggest-item',
       '.ann-item',
       '.coding-manage-row',
@@ -153,7 +159,6 @@ export function initMagnetic() {
     '.navbar__upload-btn',
     '.navbar__signout-btn',
     '.navbar__avatar-btn',
-    '.navbar__brand',
     // Generic buttons
     '.btn--primary', '.btn--ghost', '.btn--success', '.btn--danger',
     '.btn--warning',
@@ -299,22 +304,7 @@ export function initKinetic() {
     if (el._evKinetic) return;
     el._evKinetic = true;
 
-    // Check if element has child elements (mixed JSX content)
-    const hasChildElements = el.querySelector('span, svg, a, strong, em, br, div, button, img, i');
-
-    if (hasChildElements) {
-      // SAFE MODE: Animate the whole element with a CSS slide-up, don't touch innerHTML
-      el.classList.add('ev-kinetic-container');
-    } else {
-      // PURE TEXT MODE: Can safely word-split
-      const text = el.textContent.trim();
-      if (!text) return;
-      const words = text.split(/\s+/);
-      let html = '';
-      words.forEach((word, i) => {
-        html += `<span class="ev-kinetic" style="display:inline-block;overflow:hidden;vertical-align:bottom"><span class="ev-kinetic__word" style="animation-delay:${i * 0.09}s">${word}</span></span> `;
-      });
-      el.innerHTML = html;
-    }
+    // VERY SAFE MODE: Just apply the container animation so we never conflict with React.
+    el.classList.add('ev-kinetic-container');
   });
 }
