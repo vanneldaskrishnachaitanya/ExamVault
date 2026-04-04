@@ -26,7 +26,7 @@ export function initEffects() {
 
     // Enlarge on interactive elements
     const hoverEls = () => document.querySelectorAll(
-      'a, button, [data-magnetic], .platform-card, .reg-card, .stat-card, .ev-tilt, input, select, textarea, [role="button"]'
+      'a, button, [data-magnetic], .platform-card, .reg-card, .stat-card, .ev-tilt, .quote-banner, .poll-card, input, select, textarea, [role="button"]'
     );
     let hoverInterval = setInterval(() => {
       hoverEls().forEach(el => {
@@ -52,8 +52,21 @@ export function initEffects() {
 // ── 3. 3D TILT + MOUSE-REACTIVE LIGHT ────────────────────────
 export function initTilt() {
   const apply = () => {
-    // Tilt cards
-    const tiltSelectors = '.reg-card, .stat-card, .platform-card, .event-card, .analytics-card:not(.analytics-card--wide), .feedback-card, .feedback-item';
+    // Tilt cards — ALL cards that need 3D tilt
+    const tiltSelectors = [
+      '.reg-card',
+      '.stat-card',
+      '.platform-card',
+      '.event-card',
+      '.analytics-card:not(.analytics-card--wide)',
+      '.feedback-card',
+      '.feedback-item',
+      '.quote-banner',
+      '.poll-card',
+      '.dash-hero__stat',
+      '.coding-stat',
+    ].join(', ');
+
     document.querySelectorAll(tiltSelectors).forEach(card => {
       if (card._evTilt) return;
       card._evTilt = true;
@@ -84,8 +97,19 @@ export function initTilt() {
       });
     });
 
-    // Light only (no tilt)
-    const lightOnlySelectors = '.branch-accordion, .subject-item, .file-card, .history-item, .syllabus-item, .suggest-item, .ann-item, .coding-manage-row';
+    // Light only (no tilt) — subject folders, branch accordions, file cards, etc
+    const lightOnlySelectors = [
+      '.branch-accordion',
+      '.subject-folder',
+      '.subject-item',
+      '.file-card',
+      '.history-item',
+      '.syllabus-item',
+      '.suggest-item',
+      '.ann-item',
+      '.coding-manage-row',
+    ].join(', ');
+
     document.querySelectorAll(lightOnlySelectors).forEach(card => {
       if (card._evLight) return;
       card._evLight = true;
@@ -123,8 +147,13 @@ export function initMagnetic() {
     // File action buttons
     '.fc-btn--share', '.fc-btn--download', '.fc-btn--preview',
     '.fc-btn--delete', '.fc-btn--rate', '.fc-btn--flag',
-    // Nav buttons
-    '.navbar__upload-btn', '.navbar__signout-btn',
+    // Nav buttons — ALL navigation links + icon buttons
+    '.navbar__link',
+    '.navbar__icon-btn',
+    '.navbar__upload-btn',
+    '.navbar__signout-btn',
+    '.navbar__avatar-btn',
+    '.navbar__brand',
     // Generic buttons
     '.btn--primary', '.btn--ghost', '.btn--success', '.btn--danger',
     '.btn--warning',
@@ -144,6 +173,8 @@ export function initMagnetic() {
     '.branch-accordion__new-btn',
     // Admin
     '.admin-analytics-btn',
+    // Bottom nav
+    '.bottom-nav__link',
     '[data-magnetic]'
   ].join(', ');
 
@@ -214,7 +245,7 @@ export function initCounters() {
       }
 
       // Gradient bar
-      const cell = el.closest('.stat-card, .dash-hero__stat, .dash-stat');
+      const cell = el.closest('.stat-card, .dash-hero__stat, .dash-stat, .coding-stat');
       if (cell && !cell._evBar) {
         cell._evBar = true;
         cell.style.position = 'relative';
@@ -231,13 +262,15 @@ export function initCounters() {
   const io = new IntersectionObserver(tryAnimate, { threshold: 0.3 });
 
   const watch = () => {
-    // All stat value elements across dashboard and analytics
+    // All stat value elements across dashboard, analytics, and coding
     const selectors = [
       '.stat-card__value',
       '.stat-card p:first-child',
       '.dash-stat__value',
       '.dash-hero__stat > div > div:first-child',
-      '[data-target]'
+      '.coding-stat > span',
+      '[data-target]',
+      '[data-ev-count]'
     ].join(', ');
 
     document.querySelectorAll(selectors).forEach(el => {
@@ -254,27 +287,34 @@ export function initCounters() {
   return () => { io.disconnect(); obs.disconnect(); };
 }
 
-// ── 2. KINETIC TYPOGRAPHY (once per page load) ─────────────────
+// ── 2. KINETIC TYPOGRAPHY (safe for React — CSS-only approach) ──
 export function initKinetic() {
-  // Target hero titles only once
+  // SAFE approach: We use CSS class-based animation. For titles with mixed
+  // content (JSX children like <span>), we add a CSS animation class to the
+  // container. For pure-text titles we wrap each word.
+
   const selectors = '.dash-hero__title, .coding-hero__title, .feedback-hero__title, .analytics-page__title';
+
   document.querySelectorAll(selectors).forEach(el => {
     if (el._evKinetic) return;
     el._evKinetic = true;
 
-    const text = el.innerHTML;
-    // Wrap each word in a span, preserving HTML tags
-    const words = text.split(/(\s+)/);
-    let html = '';
-    let delay = 0;
-    words.forEach(part => {
-      if (part.trim() && !part.startsWith('<')) {
-        html += `<span class="ev-kinetic" style="display:inline-block;overflow:hidden;vertical-align:bottom"><span class="ev-kinetic__word" style="animation-delay:${delay}s">${part}</span></span>`;
-        delay += 0.09;
-      } else {
-        html += part;
-      }
-    });
-    el.innerHTML = html;
+    // Check if element has child elements (mixed JSX content)
+    const hasChildElements = el.querySelector('span, svg, a, strong, em, br, div, button, img, i');
+
+    if (hasChildElements) {
+      // SAFE MODE: Animate the whole element with a CSS slide-up, don't touch innerHTML
+      el.classList.add('ev-kinetic-container');
+    } else {
+      // PURE TEXT MODE: Can safely word-split
+      const text = el.textContent.trim();
+      if (!text) return;
+      const words = text.split(/\s+/);
+      let html = '';
+      words.forEach((word, i) => {
+        html += `<span class="ev-kinetic" style="display:inline-block;overflow:hidden;vertical-align:bottom"><span class="ev-kinetic__word" style="animation-delay:${i * 0.09}s">${word}</span></span> `;
+      });
+      el.innerHTML = html;
+    }
   });
 }

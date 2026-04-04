@@ -774,10 +774,9 @@ a.breadcrumb__item:hover { color: var(--amber); background: var(--amber-dim); }
 .reg-grid .reg-card:nth-child(2) { animation-delay: 0.1s; }
 .reg-grid .reg-card:nth-child(3) { animation-delay: 0.15s; }
 .reg-card:hover {
-  transform: translateY(-6px) scale(1.01);
   box-shadow: 0 16px 48px rgba(0,0,0,0.5), 0 0 0 1px var(--amber-border), 0 0 40px rgba(245,166,35,0.08);
+  border-color: var(--amber-border);
 }
-.reg-card:active { transform: translateY(-2px) scale(0.99); }
 /* shimmer on hover */
 .reg-card::after {
   content: '';
@@ -1563,7 +1562,7 @@ option { background: var(--bg-card); }
 .evt-filter-btn--active { background: var(--amber-dim); border-color: var(--amber-border); color: var(--amber); }
 .events-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 1.1rem; }
 .event-card { background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-raised) 100%); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; transition: border-color 0.2s, transform 0.22s var(--ease), box-shadow 0.22s; display: flex; flex-direction: column; }
-.event-card:hover { border-color: var(--amber-border); transform: translateY(-4px); box-shadow: 0 12px 36px rgba(0,0,0,0.4), 0 0 16px var(--amber-glow); }
+.event-card:hover { border-color: var(--amber-border); box-shadow: 0 12px 36px rgba(0,0,0,0.4), 0 0 16px var(--amber-glow); }
 .event-card--done { opacity: 0.7; }
 .event-card--done:hover { transform: none; border-color: rgba(16,185,129,0.3); }
 .event-card__img { position: relative; height: 165px; overflow: hidden; background: var(--bg-raised); }

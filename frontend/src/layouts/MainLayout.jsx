@@ -43,13 +43,15 @@ export default function MainLayout() {
     const cleanCounters = initCounters();
 
     // Kinetic runs after a short delay so DOM is ready
-    const kTimer = setTimeout(initKinetic, 200);
+    const kTimer = setTimeout(initKinetic, 300);
 
-    // Re-run kinetic + tilt on route changes
+    // Re-run kinetic on route changes (debounced)
+    let kDebounce = null;
     const routeObs = new MutationObserver(() => {
-      initKinetic();
+      clearTimeout(kDebounce);
+      kDebounce = setTimeout(initKinetic, 150);
     });
-    routeObs.observe(document.getElementById('root') || document.body, { childList: true, subtree: false });
+    routeObs.observe(document.getElementById('root') || document.body, { childList: true, subtree: true });
 
     return () => {
       cleanCursor();

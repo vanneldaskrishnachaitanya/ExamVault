@@ -99,6 +99,27 @@ export default function FeedbackPage() {
       {/* Hero */}
       <div className="feedback-hero">
         <div className="feedback-hero__glow" />
+
+        {/* SVG: Floating speech bubbles constellation */}
+        <svg style={{position:'absolute',top:10,right:16,width:140,height:100,pointerEvents:'none',opacity:0.15}} aria-hidden="true" viewBox="0 0 140 100">
+          <circle cx="30" cy="25" r="1.5" fill="var(--blue)"><animate attributeName="opacity" values="0.3;1;0.3" dur="2.8s" repeatCount="indefinite"/></circle>
+          <circle cx="70" cy="15" r="1" fill="var(--amber)"><animate attributeName="opacity" values="0.2;1;0.2" dur="3.5s" repeatCount="indefinite" begin="0.4s"/></circle>
+          <circle cx="110" cy="35" r="2" fill="var(--purple)"><animate attributeName="opacity" values="0.4;1;0.4" dur="2s" repeatCount="indefinite" begin="1s"/></circle>
+          <circle cx="50" cy="55" r="1.2" fill="var(--teal)"><animate attributeName="opacity" values="0.2;0.8;0.2" dur="3.8s" repeatCount="indefinite" begin="0.6s"/></circle>
+          <circle cx="95" cy="70" r="1.5" fill="var(--amber)"><animate attributeName="opacity" values="0.3;1;0.3" dur="2.2s" repeatCount="indefinite" begin="1.2s"/></circle>
+          <circle cx="20" cy="80" r="1" fill="var(--blue)"><animate attributeName="opacity" values="0.2;0.9;0.2" dur="3.3s" repeatCount="indefinite" begin="0.8s"/></circle>
+          <line x1="30" y1="25" x2="70" y2="15" stroke="var(--blue)" strokeWidth="0.4" opacity="0.25"/>
+          <line x1="70" y1="15" x2="110" y2="35" stroke="var(--amber)" strokeWidth="0.4" opacity="0.25"/>
+          <line x1="50" y1="55" x2="95" y2="70" stroke="var(--teal)" strokeWidth="0.4" opacity="0.2"/>
+          {/* Pulsing speech bubble outline */}
+          <rect x="80" y="8" width="24" height="16" rx="4" fill="none" stroke="var(--amber)" strokeWidth="0.5" opacity="0.4">
+            <animate attributeName="opacity" values="0.2;0.6;0.2" dur="3s" repeatCount="indefinite"/>
+          </rect>
+          <rect x="18" y="42" width="20" height="14" rx="3" fill="none" stroke="var(--purple)" strokeWidth="0.5" opacity="0.3">
+            <animate attributeName="opacity" values="0.15;0.5;0.15" dur="4s" repeatCount="indefinite" begin="1.5s"/>
+          </rect>
+        </svg>
+
         <MessageSquare size={34} className="feedback-hero__icon" />
         <h1 className="feedback-hero__title">Feedback & Suggestions</h1>
         <p className="feedback-hero__sub">

@@ -151,7 +151,29 @@ export default function RegulationPage() {
         <span className="breadcrumb__item breadcrumb__item--active">{regulation}</span>
       </nav>
 
-      <div className="reg-page__header">
+      <div className="reg-page__header" style={{position:'relative',overflow:'hidden'}}>
+        {/* SVG: Orbiting book rings */}
+        <svg style={{position:'absolute',top:-10,right:-10,width:160,height:120,pointerEvents:'none',opacity:0.12}} aria-hidden="true" viewBox="0 0 160 120">
+          <circle cx="80" cy="60" r="40" fill="none" stroke="var(--amber)" strokeWidth="0.6" strokeDasharray="4 3" opacity="0.5">
+            <animateTransform attributeName="transform" type="rotate" from="0 80 60" to="360 80 60" dur="16s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="80" cy="60" r="25" fill="none" stroke="var(--blue)" strokeWidth="0.5" strokeDasharray="3 4" opacity="0.4">
+            <animateTransform attributeName="transform" type="rotate" from="360 80 60" to="0 80 60" dur="11s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="80" cy="20" r="3" fill="var(--amber)" opacity="0.7">
+            <animateTransform attributeName="transform" type="rotate" from="0 80 60" to="360 80 60" dur="16s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="80" cy="35" r="2.5" fill="var(--blue)" opacity="0.6">
+            <animateTransform attributeName="transform" type="rotate" from="360 80 60" to="0 80 60" dur="11s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="120" cy="90" r="1.5" fill="var(--teal)">
+            <animate attributeName="opacity" values="0.3;0.8;0.3" dur="2.5s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="30" cy="30" r="1" fill="var(--purple)">
+            <animate attributeName="opacity" values="0.2;0.9;0.2" dur="3s" repeatCount="indefinite" begin="1s"/>
+          </circle>
+        </svg>
+
         <div>
           <h1 className="reg-page__title">Regulation {regulation}</h1>
           <p className="reg-page__sub">Select a branch → year → semester → subject folder</p>

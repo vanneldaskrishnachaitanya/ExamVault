@@ -126,9 +126,9 @@ export default function CodingPage() {
         <h1 className="coding-hero__title">Competitive Programming</h1>
         <p className="coding-hero__sub">Platforms, resources, and tools to level up your coding skills.</p>
         <div className="coding-hero__stats">
-          <div className="coding-stat"><Trophy size={14}/><span>{items.platforms?.length||0} Platforms</span></div>
-          <div className="coding-stat"><BookOpen size={14}/><span>{items.resources?.length||0} Resources</span></div>
-          <div className="coding-stat"><Zap size={14}/><span>{items.contests?.length||0} Contests</span></div>
+          <div className="coding-stat"><Trophy size={14}/><span data-ev-count>{items.platforms?.length||0} Platforms</span></div>
+          <div className="coding-stat"><BookOpen size={14}/><span data-ev-count>{items.resources?.length||0} Resources</span></div>
+          <div className="coding-stat"><Zap size={14}/><span data-ev-count>{items.contests?.length||0} Contests</span></div>
           {suggestions.length > 0 && <div className="coding-stat" style={{color:'var(--warning)'}}><Star size={14}/><span>{suggestions.length} pending</span></div>}
         </div>
       </div>
