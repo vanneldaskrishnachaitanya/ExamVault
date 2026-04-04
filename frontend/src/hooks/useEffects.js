@@ -1,137 +1,154 @@
-// useEffects.js — ExamVault Next-Level CSS Effects
-// Import this in MainLayout and call initEffects() on mount
+// ═══════════════════════════════════════════════════════════════
+// ExamVault — useEffects.js  (complete rewrite)
+// ═══════════════════════════════════════════════════════════════
 
+// ── 1. GLOWING BLUE DOT CURSOR ────────────────────────────────
 export function initEffects() {
-  // ── 1. GLOWING BLUE DOT CURSOR (desktop only) ────────────
-  if (window.matchMedia('(pointer: fine)').matches) {
-    let cur = document.getElementById('ev-cursor');
-    if (!cur) {
-      cur = document.createElement('div');
-      cur.id = 'ev-cursor';
-      document.body.appendChild(cur);
-    }
+  if (!window.matchMedia('(pointer: fine)').matches) return () => {};
 
-    let mx = 0, my = 0;
-    const move = (e) => {
-      mx = e.clientX; my = e.clientY;
-      cur.style.left = mx + 'px';
-      cur.style.top  = my + 'px';
-    };
-    const down = () => cur.classList.add('cursor--click');
-    const up   = () => cur.classList.remove('cursor--click');
-
-    document.addEventListener('mousemove', move, { passive: true });
-    document.addEventListener('mousedown', down);
-    document.addEventListener('mouseup',   up);
-
-    // Enlarge on interactive elements
-    const hoverEls = () => document.querySelectorAll(
-      'a, button, [data-magnetic], .platform-card, .reg-card, .stat-card, .ev-tilt, .quote-banner, .poll-card, input, select, textarea, [role="button"]'
-    );
-    let hoverInterval = setInterval(() => {
-      hoverEls().forEach(el => {
-        if (!el._evCursorBound) {
-          el._evCursorBound = true;
-          el.addEventListener('mouseenter', () => cur.classList.add('cursor--hover'));
-          el.addEventListener('mouseleave', () => cur.classList.remove('cursor--hover'));
-        }
-      });
-    }, 800);
-
-    return () => {
-      document.removeEventListener('mousemove', move);
-      document.removeEventListener('mousedown', down);
-      document.removeEventListener('mouseup', up);
-      clearInterval(hoverInterval);
-      cur?.remove();
-    };
+  let cur = document.getElementById('ev-cursor');
+  if (!cur) {
+    cur = document.createElement('div');
+    cur.id = 'ev-cursor';
+    document.body.appendChild(cur);
   }
-  return () => {};
+
+  const onMove = (e) => {
+    cur.style.left = e.clientX + 'px';
+    cur.style.top  = e.clientY + 'px';
+  };
+  document.addEventListener('mousemove', onMove, { passive: true });
+  document.addEventListener('mousedown', () => cur.classList.add('cursor--click'));
+  document.addEventListener('mouseup',   () => cur.classList.remove('cursor--click'));
+
+  const bindHover = () => {
+    document.querySelectorAll('a,button,input,select,textarea,[role="button"],.platform-card,.reg-card,.stat-card,.ev-tilt,.branch-accordion').forEach(el => {
+      if (el._curHov) return;
+      el._curHov = true;
+      el.addEventListener('mouseenter', () => cur.classList.add('cursor--hover'));
+      el.addEventListener('mouseleave', () => cur.classList.remove('cursor--hover'));
+    });
+  };
+  bindHover();
+  const hObs = new MutationObserver(bindHover);
+  hObs.observe(document.body, { childList: true, subtree: true });
+
+  return () => { hObs.disconnect(); cur?.remove(); };
 }
 
-// ── 3. 3D TILT + MOUSE-REACTIVE LIGHT ────────────────────────
+// ── 2. KINETIC TYPOGRAPHY (CSS-only, never touches React JSX) ─
+// Only wraps elements whose textContent == innerText (pure text, no child elements)
+export function initKinetic() {
+  const SELECTORS = [
+    '.coding-hero__title',
+    '.coding-hero__sub',
+    '.feedback-hero__title',
+  ];
+
+  // For elements with child elements (like dash-hero__title which has <span>s),
+  // we just slide the whole container in — never touch innerHTML
+  const SLIDE_ONLY = [
+    '.dash-hero__title',
+    '.dash-hero__sub',
+    '.analytics-page__title',
+    '.reg-page__title',
+    '.coding-hero__title',
+    '.feedback-hero__title',
+  ];
+
+  SLIDE_ONLY.forEach(sel => {
+    document.querySelectorAll(sel).forEach(el => {
+      if (el._evKinetic) return;
+      el._evKinetic = true;
+      el.classList.add('ev-slide-in');
+    });
+  });
+
+  // Word-split only on guaranteed pure-text elements
+  SELECTORS.forEach(sel => {
+    document.querySelectorAll(sel).forEach(el => {
+      if (el._evWordSplit) return;
+      // Only if no child element nodes
+      if ([...el.childNodes].some(n => n.nodeType === Node.ELEMENT_NODE)) return;
+      el._evWordSplit = true;
+
+      const words = el.textContent.trim().split(/\s+/);
+      const frag = document.createDocumentFragment();
+      words.forEach((word, i) => {
+        const outer = document.createElement('span');
+        outer.style.cssText = 'display:inline-block;overflow:hidden;vertical-align:bottom';
+        const inner = document.createElement('span');
+        inner.className = 'ev-kinetic__word';
+        inner.style.animationDelay = (i * 0.1) + 's';
+        inner.textContent = word;
+        outer.appendChild(inner);
+        frag.appendChild(outer);
+        if (i < words.length - 1) frag.appendChild(document.createTextNode(' '));
+      });
+      el.textContent = '';
+      el.appendChild(frag);
+    });
+  });
+}
+
+// ── 3. 3D TILT + CURSOR LIGHT ─────────────────────────────────
 export function initTilt() {
   const apply = () => {
-    // Tilt cards — ALL cards that need 3D tilt
-    const tiltSelectors = [
+    const TILT_SEL = [
       '.reg-card',
       '.stat-card',
       '.platform-card',
       '.event-card',
-      '.analytics-card',
       '.feedback-card',
       '.feedback-item',
       '.quote-banner',
       '.poll-card',
-      '.dash-hero__stat',
-      '.coding-stat',
-      '.dash-hero',
+      '.analytics-card:not(.analytics-card--wide)',
       '.branch-accordion',
-      '.syllabus-card',
-      '.syllabus-item',
-      '.file-card',
-      '.admin-card',
-      '.admin-stat-card',
-      '.resource-card',
-      '.contest-card'
-    ].join(', ');
+    ].join(',');
 
-    document.querySelectorAll(tiltSelectors).forEach(card => {
+    document.querySelectorAll(TILT_SEL).forEach(card => {
       if (card._evTilt) return;
       card._evTilt = true;
       card.classList.add('ev-tilt');
 
       if (!card.querySelector('.ev-tilt__shine')) {
-        const shine = document.createElement('div');
-        shine.className = 'ev-tilt__shine';
-        card.style.position = 'relative';
-        card.appendChild(shine);
+        const sh = document.createElement('div');
+        sh.className = 'ev-tilt__shine';
+        card.appendChild(sh);
       }
 
       card.addEventListener('mousemove', (e) => {
         const r = card.getBoundingClientRect();
         const x = (e.clientX - r.left) / r.width;
         const y = (e.clientY - r.top)  / r.height;
-        const rx = (y - 0.5) * -14;
-        const ry = (x - 0.5) *  14;
-        card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) scale(1.02)`;
+        card.style.transform = `perspective(900px) rotateX(${(y - 0.5) * -13}deg) rotateY(${(x - 0.5) * 13}deg) scale(1.025)`;
         card.style.setProperty('--mx', x * 100 + '%');
         card.style.setProperty('--my', y * 100 + '%');
         card.style.setProperty('--lx', x * 100 + '%');
         card.style.setProperty('--ly', y * 100 + '%');
       }, { passive: true });
 
-      card.addEventListener('mouseleave', () => {
-        card.style.transform = '';
-      });
+      card.addEventListener('mouseleave', () => { card.style.transform = ''; });
     });
 
-    // Light only (no tilt) — subject folders, branch accordions, file cards, etc
-    const lightOnlySelectors = [
-      '.subject-folder',
+    // Light only
+    const LIGHT_SEL = [
       '.subject-item',
+      '.subject-folder',
+      '.file-card',
       '.history-item',
+      '.syllabus-item',
       '.suggest-item',
-      '.ann-item',
-      '.coding-manage-row',
-    ].join(', ');
+      '.year-card',
+      '.sem-card',
+      '.branch-mgmt-row',
+    ].join(',');
 
-    document.querySelectorAll(lightOnlySelectors).forEach(card => {
+    document.querySelectorAll(LIGHT_SEL).forEach(card => {
       if (card._evLight) return;
       card._evLight = true;
       card.classList.add('ev-light-card');
-      card.style.position = 'relative';
-      card.addEventListener('mousemove', (e) => {
-        const r = card.getBoundingClientRect();
-        card.style.setProperty('--lx', ((e.clientX - r.left) / r.width * 100) + '%');
-        card.style.setProperty('--ly', ((e.clientY - r.top)  / r.height * 100) + '%');
-      }, { passive: true });
-    });
-
-    // Platform cards — light tracking via CSS vars
-    document.querySelectorAll('.platform-card').forEach(card => {
-      if (card._evPlatformLight) return;
-      card._evPlatformLight = true;
       card.addEventListener('mousemove', (e) => {
         const r = card.getBoundingClientRect();
         card.style.setProperty('--lx', ((e.clientX - r.left) / r.width * 100) + '%');
@@ -141,7 +158,6 @@ export function initTilt() {
   };
 
   apply();
-  // Re-apply when DOM changes (accordion opens, etc.)
   const obs = new MutationObserver(apply);
   obs.observe(document.body, { childList: true, subtree: true });
   return () => obs.disconnect();
@@ -149,42 +165,25 @@ export function initTilt() {
 
 // ── 4. MAGNETIC BUTTONS ───────────────────────────────────────
 export function initMagnetic() {
-  const SELECTORS = [
-    // File action buttons
-    '.fc-btn--share', '.fc-btn--download', '.fc-btn--preview',
-    '.fc-btn--delete', '.fc-btn--rate', '.fc-btn--flag',
-    // Nav buttons — ALL navigation links + icon buttons
+  const SEL = [
     '.navbar__link',
     '.navbar__icon-btn',
     '.navbar__upload-btn',
     '.navbar__signout-btn',
     '.navbar__avatar-btn',
-    // Generic buttons
-    '.btn--primary', '.btn--ghost', '.btn--success', '.btn--danger',
-    '.btn--warning',
-    // Modal submit
+    '.fc-btn--share','.fc-btn--download','.fc-btn--preview',
+    '.fc-btn--delete','.fc-btn--rate','.fc-btn--flag',
+    '.btn--primary','.btn--ghost','.btn--success','.btn--danger','.btn--warning',
     '.modal__submit',
-    // Feedback
-    '.feedback-card__upvote', '.feedback-upvote',
-    // Suggestions
-    '.suggest-form .btn', '.suggest-item__actions .btn',
-    // CGPA
-    '.cgpa-page .btn',
-    // Coding page tab buttons
+    '.feedback-upvote','.feedback-card__upvote',
     '.coding-tab',
-    // Bookmark
-    '.bookmark-item__remove',
-    // Branch new folder
-    '.branch-accordion__new-btn',
-    // Admin
     '.admin-analytics-btn',
-    // Bottom nav
-    '.bottom-nav__link',
-    '[data-magnetic]'
-  ].join(', ');
+    '.profile-cgpa-btn',
+    '[data-magnetic]',
+  ].join(',');
 
   const apply = () => {
-    document.querySelectorAll(SELECTORS).forEach(btn => {
+    document.querySelectorAll(SEL).forEach(btn => {
       if (btn._evMag) return;
       btn._evMag = true;
       btn.classList.add('ev-magnetic');
@@ -193,21 +192,19 @@ export function initMagnetic() {
         const r = btn.getBoundingClientRect();
         const dx = e.clientX - (r.left + r.width  / 2);
         const dy = e.clientY - (r.top  + r.height / 2);
-        btn.style.transform = `translate(${dx * 0.28}px, ${dy * 0.28}px)`;
+        btn.style.transform = `translate(${dx * 0.28}px,${dy * 0.28}px)`;
       }, { passive: true });
 
-      btn.addEventListener('mouseleave', () => {
-        btn.style.transform = 'translate(0, 0)';
-      });
+      btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
 
       btn.addEventListener('click', (e) => {
         const r = btn.getBoundingClientRect();
-        const ripple = document.createElement('span');
-        const size = Math.max(r.width, r.height);
-        ripple.className = 'ev-ripple';
-        ripple.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX - r.left - size/2}px;top:${e.clientY - r.top - size/2}px`;
-        btn.appendChild(ripple);
-        setTimeout(() => ripple.remove(), 600);
+        const rip = document.createElement('span');
+        const sz = Math.max(r.width, r.height);
+        rip.className = 'ev-ripple';
+        rip.style.cssText = `width:${sz}px;height:${sz}px;left:${e.clientX-r.left-sz/2}px;top:${e.clientY-r.top-sz/2}px`;
+        btn.appendChild(rip);
+        setTimeout(() => rip.remove(), 600);
       });
     });
   };
@@ -218,16 +215,15 @@ export function initMagnetic() {
   return () => obs.disconnect();
 }
 
-// ── 5. LIVE COUNTER ───────────────────────────────────────────
-export function animateCounter(el, target, duration = 1800, suffix = '') {
-  if (!el || el._evCounting) return;
+// ── 5. LIVE COUNTERS + GRADIENT BARS ──────────────────────────
+export function animateCounter(el, target, dur = 1800) {
+  if (el._evCounting) return;
   el._evCounting = true;
-  let start = null;
-  const step = (ts) => {
-    if (!start) start = ts;
-    const p = Math.min((ts - start) / duration, 1);
+  const t0 = performance.now();
+  const step = (now) => {
+    const p = Math.min((now - t0) / dur, 1);
     const ease = 1 - Math.pow(1 - p, 3);
-    el.textContent = Math.round(ease * target) + suffix;
+    el.textContent = Math.round(ease * target).toLocaleString();
     if (p < 1) requestAnimationFrame(step);
     else el._evCounting = false;
   };
@@ -235,54 +231,45 @@ export function animateCounter(el, target, duration = 1800, suffix = '') {
 }
 
 export function initCounters() {
-  const COLOR_MAP = ['amber','blue','teal','orange','green','red','purple'];
+  const COLORS = ['amber','blue','teal','orange','green','red','purple'];
 
-  const tryAnimate = (entries, observer) => {
+  const onVisible = (entries, observer) => {
     entries.forEach(entry => {
       if (!entry.isIntersecting) return;
       const el = entry.target;
       observer.unobserve(el);
 
-      const raw = el.textContent.replace(/[^0-9.]/g, '');
-      const num = parseFloat(raw);
-      if (!isNaN(num) && num > 0) {
-        animateCounter(el, num, 1800);
-      }
+      const num = parseFloat(el.textContent.replace(/[^0-9.]/g, ''));
+      if (!isNaN(num) && num > 0) animateCounter(el, num);
 
-      // Gradient bar
-      const cell = el.closest('.stat-card, .dash-hero__stat, .dash-stat, .coding-stat');
+      const cell = el.closest('.stat-card,.dash-hero__stat,.dash-stat,.coding-stat');
       if (cell && !cell._evBar) {
         cell._evBar = true;
         cell.style.position = 'relative';
         cell.style.overflow = 'hidden';
         const bar = document.createElement('div');
-        const colorIdx = Array.from(cell.parentElement?.children || []).indexOf(cell) % COLOR_MAP.length;
-        bar.className = `ev-stat-bar ev-stat-bar--${COLOR_MAP[colorIdx]}`;
+        const idx = [...(cell.parentElement?.children || [])].indexOf(cell);
+        bar.className = `ev-stat-bar ev-stat-bar--${COLORS[idx % COLORS.length]}`;
         cell.appendChild(bar);
         requestAnimationFrame(() => requestAnimationFrame(() => bar.classList.add('ev-bar-go')));
       }
     });
   };
 
-  const io = new IntersectionObserver(tryAnimate, { threshold: 0.3 });
+  const io = new IntersectionObserver(onVisible, { threshold: 0.3 });
 
   const watch = () => {
-    // All stat value elements across dashboard, analytics, and coding
-    const selectors = [
+    document.querySelectorAll([
       '.stat-card__value',
-      '.stat-card p:first-child',
       '.dash-stat__value',
       '.dash-hero__stat > div > div:first-child',
-      '.coding-stat > span',
-      '[data-target]',
-      '[data-ev-count]'
-    ].join(', ');
-
-    document.querySelectorAll(selectors).forEach(el => {
-      if (!el._evCountWatched) {
-        el._evCountWatched = true;
-        io.observe(el);
-      }
+      '[data-ev-count]',
+    ].join(',')).forEach(el => {
+      if (el._evW) return; el._evW = true; io.observe(el);
+    });
+    // Coding stats — the number is inside a <span> inside .coding-stat
+    document.querySelectorAll('.coding-stat > span').forEach(el => {
+      if (el._evW) return; el._evW = true; io.observe(el);
     });
   };
 
@@ -290,21 +277,4 @@ export function initCounters() {
   const obs = new MutationObserver(watch);
   obs.observe(document.body, { childList: true, subtree: true });
   return () => { io.disconnect(); obs.disconnect(); };
-}
-
-// ── 2. KINETIC TYPOGRAPHY (safe for React — CSS-only approach) ──
-export function initKinetic() {
-  // SAFE approach: We use CSS class-based animation. For titles with mixed
-  // content (JSX children like <span>), we add a CSS animation class to the
-  // container. For pure-text titles we wrap each word.
-
-  const selectors = '.dash-hero__title, .coding-hero__title, .feedback-hero__title, .analytics-page__title';
-
-  document.querySelectorAll(selectors).forEach(el => {
-    if (el._evKinetic) return;
-    el._evKinetic = true;
-
-    // VERY SAFE MODE: Just apply the container animation so we never conflict with React.
-    el.classList.add('ev-kinetic-container');
-  });
 }

@@ -102,23 +102,23 @@ export default function CodingPage() {
       <div className="coding-hero">
         <div className="coding-hero__glow" />
 
-        {/* ── SVG Animation: Orbiting rings ── */}
-        <svg className="ev-hero-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <circle cx="100" cy="100" r="70" fill="none" stroke="var(--amber)" strokeWidth="0.8" strokeDasharray="6 4" opacity="0.5">
-            <animateTransform attributeName="transform" type="rotate" from="0 100 100" to="360 100 100" dur="14s" repeatCount="indefinite"/>
+        {/* ── SVG: Rotating orbit rings ── */}
+        <svg aria-hidden="true" style={{position:'absolute',top:-10,right:-10,width:180,height:180,pointerEvents:'none',opacity:0.15}} viewBox="0 0 180 180">
+          <ellipse cx="90" cy="90" rx="78" ry="28" fill="none" stroke="var(--amber)" strokeWidth="1" strokeDasharray="5 4">
+            <animateTransform attributeName="transform" type="rotate" from="0 90 90" to="360 90 90" dur="12s" repeatCount="indefinite"/>
+          </ellipse>
+          <ellipse cx="90" cy="90" rx="55" ry="20" fill="none" stroke="var(--blue)" strokeWidth="0.8" strokeDasharray="3 5">
+            <animateTransform attributeName="transform" type="rotate" from="360 90 90" to="0 90 90" dur="8s" repeatCount="indefinite"/>
+          </ellipse>
+          <circle cx="90" cy="12" r="5" fill="var(--amber)" opacity="0.9">
+            <animateTransform attributeName="transform" type="rotate" from="0 90 90" to="360 90 90" dur="12s" repeatCount="indefinite"/>
           </circle>
-          <circle cx="100" cy="100" r="48" fill="none" stroke="var(--blue)" strokeWidth="0.6" strokeDasharray="3 5" opacity="0.4">
-            <animateTransform attributeName="transform" type="rotate" from="360 100 100" to="0 100 100" dur="9s" repeatCount="indefinite"/>
+          <circle cx="90" cy="70" r="4" fill="var(--blue)" opacity="0.8">
+            <animateTransform attributeName="transform" type="rotate" from="360 90 90" to="0 90 90" dur="8s" repeatCount="indefinite"/>
           </circle>
-          <circle cx="100" cy="30" r="5" fill="var(--amber)" opacity="0.8">
-            <animateTransform attributeName="transform" type="rotate" from="0 100 100" to="360 100 100" dur="14s" repeatCount="indefinite"/>
-          </circle>
-          <circle cx="100" cy="52" r="4" fill="var(--blue)" opacity="0.7">
-            <animateTransform attributeName="transform" type="rotate" from="360 100 100" to="0 100 100" dur="9s" repeatCount="indefinite"/>
-          </circle>
-          <circle cx="100" cy="100" r="10" fill="none" stroke="var(--teal)" strokeWidth="1" opacity="0.3">
-            <animate attributeName="r" values="10;14;10" dur="3s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" values="0.3;0.6;0.3" dur="3s" repeatCount="indefinite"/>
+          <circle cx="90" cy="90" r="12" fill="none" stroke="var(--teal)" strokeWidth="1" opacity="0.5">
+            <animate attributeName="r" values="12;16;12" dur="3s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.5;0.9;0.5" dur="3s" repeatCount="indefinite"/>
           </circle>
         </svg>
 
@@ -126,9 +126,9 @@ export default function CodingPage() {
         <h1 className="coding-hero__title">Competitive Programming</h1>
         <p className="coding-hero__sub">Platforms, resources, and tools to level up your coding skills.</p>
         <div className="coding-hero__stats">
-          <div className="coding-stat"><Trophy size={14}/><span data-ev-count>{items.platforms?.length||0} Platforms</span></div>
-          <div className="coding-stat"><BookOpen size={14}/><span data-ev-count>{items.resources?.length||0} Resources</span></div>
-          <div className="coding-stat"><Zap size={14}/><span data-ev-count>{items.contests?.length||0} Contests</span></div>
+          <div className="coding-stat"><Trophy size={14}/><span>{items.platforms?.length||0} Platforms</span></div>
+          <div className="coding-stat"><BookOpen size={14}/><span>{items.resources?.length||0} Resources</span></div>
+          <div className="coding-stat"><Zap size={14}/><span>{items.contests?.length||0} Contests</span></div>
           {suggestions.length > 0 && <div className="coding-stat" style={{color:'var(--warning)'}}><Star size={14}/><span>{suggestions.length} pending</span></div>}
         </div>
       </div>

@@ -122,17 +122,18 @@ export default function Dashboard() {
         <div className="dash-hero__glow" aria-hidden="true" />
         <div className="dash-hero__glow dash-hero__glow--2" aria-hidden="true" />
 
-        {/* ── SVG: Floating star constellation ── */}
-        <svg style={{position:'absolute',top:12,right:16,width:120,height:90,pointerEvents:'none',opacity:0.18}} aria-hidden="true" viewBox="0 0 120 90">
-          <circle cx="20" cy="20" r="1.5" fill="var(--amber)"><animate attributeName="opacity" values="0.3;1;0.3" dur="2.5s" repeatCount="indefinite"/></circle>
-          <circle cx="60" cy="10" r="1"   fill="var(--blue)"><animate attributeName="opacity" values="0.2;1;0.2" dur="3.2s" repeatCount="indefinite" begin="0.5s"/></circle>
-          <circle cx="100" cy="30" r="2"  fill="var(--amber)"><animate attributeName="opacity" values="0.4;1;0.4" dur="1.9s" repeatCount="indefinite" begin="1s"/></circle>
-          <circle cx="40" cy="50" r="1.2" fill="var(--teal)"><animate attributeName="opacity" values="0.2;0.8;0.2" dur="4s" repeatCount="indefinite" begin="0.3s"/></circle>
-          <circle cx="90" cy="60" r="1.5" fill="var(--purple)"><animate attributeName="opacity" values="0.3;1;0.3" dur="2.1s" repeatCount="indefinite" begin="1.5s"/></circle>
-          <circle cx="15" cy="70" r="1"   fill="var(--blue)"><animate attributeName="opacity" values="0.2;0.9;0.2" dur="3.5s" repeatCount="indefinite" begin="0.8s"/></circle>
-          <line x1="20" y1="20" x2="60" y2="10" stroke="var(--amber)" strokeWidth="0.4" opacity="0.3"/>
-          <line x1="60" y1="10" x2="100" y2="30" stroke="var(--blue)" strokeWidth="0.4" opacity="0.3"/>
-          <line x1="40" y1="50" x2="90" y2="60" stroke="var(--teal)" strokeWidth="0.4" opacity="0.25"/>
+        {/* ── SVG: Twinkling star constellation ── */}
+        <svg aria-hidden="true" style={{position:'absolute',top:10,right:14,width:130,height:100,pointerEvents:'none',opacity:0.2}} viewBox="0 0 130 100">
+          <circle cx="22"  cy="18" r="1.5" fill="var(--amber)"><animate attributeName="opacity" values="0.2;1;0.2" dur="2.4s" repeatCount="indefinite"/></circle>
+          <circle cx="65"  cy="8"  r="1"   fill="var(--blue)"><animate attributeName="opacity" values="0.15;1;0.15" dur="3.1s" begin="0.5s" repeatCount="indefinite"/></circle>
+          <circle cx="108" cy="28" r="2"   fill="var(--amber)"><animate attributeName="opacity" values="0.3;1;0.3" dur="1.8s" begin="1s" repeatCount="indefinite"/></circle>
+          <circle cx="44"  cy="55" r="1.2" fill="var(--teal)"><animate attributeName="opacity" values="0.2;0.85;0.2" dur="4.2s" begin="0.3s" repeatCount="indefinite"/></circle>
+          <circle cx="95"  cy="65" r="1.5" fill="var(--purple)"><animate attributeName="opacity" values="0.25;1;0.25" dur="2s" begin="1.5s" repeatCount="indefinite"/></circle>
+          <circle cx="16"  cy="75" r="1"   fill="var(--blue)"><animate attributeName="opacity" values="0.15;0.9;0.15" dur="3.6s" begin="0.8s" repeatCount="indefinite"/></circle>
+          <line x1="22" y1="18" x2="65"  y2="8"  stroke="var(--amber)"  strokeWidth="0.4" opacity="0.25"/>
+          <line x1="65" y1="8"  x2="108" y2="28" stroke="var(--blue)"   strokeWidth="0.4" opacity="0.25"/>
+          <line x1="44" y1="55" x2="95"  y2="65" stroke="var(--teal)"   strokeWidth="0.4" opacity="0.2"/>
+          <line x1="16" y1="75" x2="44"  y2="55" stroke="var(--purple)" strokeWidth="0.4" opacity="0.2"/>
         </svg>
 
         <div className="dash-hero__content">

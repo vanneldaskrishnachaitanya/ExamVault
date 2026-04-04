@@ -6,7 +6,7 @@ const StatCard = ({ icon, label, value, color }) => (
   <div className="stat-card" style={{ borderColor: color + '40' }}>
     <div className="stat-card__icon" style={{ background: color + '15', color }}>{icon}</div>
     <div className="stat-card__body">
-      <p className="stat-card__value" data-target={value}>{value}</p>
+      <p className="stat-card__value" data-ev-count="true">{value}</p>
       <p className="stat-card__label">{label}</p>
     </div>
   </div>
@@ -31,17 +31,17 @@ export default function AnalyticsPage() {
   return (
     <div className="analytics-page">
       <h1 className="analytics-page__title">
-        <BarChart2 size={22} /> Analytics
-        {/* SVG pulse rings */}
-        <svg width="32" height="32" viewBox="0 0 32 32" style={{marginLeft:'0.5rem',flexShrink:0}} aria-hidden="true">
-          <circle cx="16" cy="16" r="6" fill="var(--amber)" opacity="0.9"/>
-          <circle cx="16" cy="16" r="6" fill="none" stroke="var(--amber)" strokeWidth="1.5" opacity="0.7">
-            <animate attributeName="r" from="6" to="14" dur="1.8s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" from="0.7" to="0" dur="1.8s" repeatCount="indefinite"/>
+        <BarChart2 size={22} />
+        Analytics
+        <svg aria-hidden="true" width="28" height="28" viewBox="0 0 28 28" style={{marginLeft:'0.4rem',flexShrink:0}}>
+          <circle cx="14" cy="14" r="5" fill="var(--amber)" opacity="0.95"/>
+          <circle cx="14" cy="14" r="5" fill="none" stroke="var(--amber)" strokeWidth="1.5" opacity="0.8">
+            <animate attributeName="r" from="5" to="13" dur="1.9s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" from="0.8" to="0" dur="1.9s" repeatCount="indefinite"/>
           </circle>
-          <circle cx="16" cy="16" r="6" fill="none" stroke="var(--amber)" strokeWidth="1.5" opacity="0.7">
-            <animate attributeName="r" from="6" to="14" dur="1.8s" begin="0.6s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" from="0.7" to="0" dur="1.8s" begin="0.6s" repeatCount="indefinite"/>
+          <circle cx="14" cy="14" r="5" fill="none" stroke="var(--amber)" strokeWidth="1.5" opacity="0.6">
+            <animate attributeName="r" from="5" to="13" dur="1.9s" begin="0.65s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" from="0.6" to="0" dur="1.9s" begin="0.65s" repeatCount="indefinite"/>
           </circle>
         </svg>
       </h1>

@@ -145,35 +145,26 @@ export default function RegulationPage() {
 
   return (
     <div className="reg-page">
+      {/* SVG: animated circuit / data-flow lines */}
+      <svg aria-hidden="true" style={{position:'fixed',top:80,right:0,width:180,height:280,pointerEvents:'none',opacity:0.07,zIndex:0}} viewBox="0 0 180 280">
+        <path d="M160,10 L160,70 L100,70 L100,130 L140,130 L140,190 L80,190" fill="none" stroke="var(--amber)" strokeWidth="1.5">
+          <animate attributeName="stroke-dasharray" values="0,550;550,0" dur="4s" repeatCount="indefinite"/>
+        </path>
+        <path d="M20,50 L20,110 L70,110 L70,170 L30,170 L30,240" fill="none" stroke="var(--blue)" strokeWidth="1">
+          <animate attributeName="stroke-dasharray" values="0,450;450,0" dur="5.5s" begin="1s" repeatCount="indefinite"/>
+        </path>
+        <circle cx="160" cy="70"  r="3.5" fill="var(--amber)"><animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/></circle>
+        <circle cx="100" cy="130" r="3"   fill="var(--blue)"><animate attributeName="opacity" values="0.3;1;0.3" dur="2.5s" begin="0.5s" repeatCount="indefinite"/></circle>
+        <circle cx="70"  cy="110" r="2.5" fill="var(--teal)"><animate attributeName="opacity" values="0.2;0.9;0.2" dur="3s" begin="1s" repeatCount="indefinite"/></circle>
+      </svg>
+
       <nav className="breadcrumb">
         <Link to="/dashboard" className="breadcrumb__item"><Home size={13} /> Repository</Link>
         <ChevronRight size={13} className="breadcrumb__sep" />
         <span className="breadcrumb__item breadcrumb__item--active">{regulation}</span>
       </nav>
 
-      <div className="reg-page__header" style={{position:'relative',overflow:'hidden'}}>
-        {/* SVG: Orbiting book rings */}
-        <svg style={{position:'absolute',top:-10,right:-10,width:160,height:120,pointerEvents:'none',opacity:0.12}} aria-hidden="true" viewBox="0 0 160 120">
-          <circle cx="80" cy="60" r="40" fill="none" stroke="var(--amber)" strokeWidth="0.6" strokeDasharray="4 3" opacity="0.5">
-            <animateTransform attributeName="transform" type="rotate" from="0 80 60" to="360 80 60" dur="16s" repeatCount="indefinite"/>
-          </circle>
-          <circle cx="80" cy="60" r="25" fill="none" stroke="var(--blue)" strokeWidth="0.5" strokeDasharray="3 4" opacity="0.4">
-            <animateTransform attributeName="transform" type="rotate" from="360 80 60" to="0 80 60" dur="11s" repeatCount="indefinite"/>
-          </circle>
-          <circle cx="80" cy="20" r="3" fill="var(--amber)" opacity="0.7">
-            <animateTransform attributeName="transform" type="rotate" from="0 80 60" to="360 80 60" dur="16s" repeatCount="indefinite"/>
-          </circle>
-          <circle cx="80" cy="35" r="2.5" fill="var(--blue)" opacity="0.6">
-            <animateTransform attributeName="transform" type="rotate" from="360 80 60" to="0 80 60" dur="11s" repeatCount="indefinite"/>
-          </circle>
-          <circle cx="120" cy="90" r="1.5" fill="var(--teal)">
-            <animate attributeName="opacity" values="0.3;0.8;0.3" dur="2.5s" repeatCount="indefinite"/>
-          </circle>
-          <circle cx="30" cy="30" r="1" fill="var(--purple)">
-            <animate attributeName="opacity" values="0.2;0.9;0.2" dur="3s" repeatCount="indefinite" begin="1s"/>
-          </circle>
-        </svg>
-
+      <div className="reg-page__header">
         <div>
           <h1 className="reg-page__title">Regulation {regulation}</h1>
           <p className="reg-page__sub">Select a branch → year → semester → subject folder</p>

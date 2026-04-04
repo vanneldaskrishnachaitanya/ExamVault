@@ -42,16 +42,20 @@ export default function MainLayout() {
     const cleanMagnetic = initMagnetic();
     const cleanCounters = initCounters();
 
-    // Kinetic runs after a short delay so DOM is ready
-    const kTimer = setTimeout(initKinetic, 300);
+    // Kinetic: run after React has painted DOM (two rAF passes)
+    let kTimer;
+    const runKinetic = () => {
+      kTimer = setTimeout(initKinetic, 120);
+    };
+    runKinetic();
 
-    // Re-run kinetic on route changes (debounced)
-    let kDebounce = null;
+    // Re-run kinetic whenever main content changes (page navigation)
+    const mainEl = document.querySelector('.layout__main');
     const routeObs = new MutationObserver(() => {
-      clearTimeout(kDebounce);
-      kDebounce = setTimeout(initKinetic, 150);
+      clearTimeout(kTimer);
+      runKinetic();
     });
-    routeObs.observe(document.getElementById('root') || document.body, { childList: true, subtree: true });
+    if (mainEl) routeObs.observe(mainEl, { childList: true, subtree: false });
 
     return () => {
       cleanCursor();

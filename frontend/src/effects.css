@@ -1,120 +1,109 @@
 /* ═══════════════════════════════════════════════════════════════
-   EXAMVAULT — Next-Level CSS Effects
-   Effects: Cursor · Kinetic Type · 3D Tilt · Magnetic Buttons
-            Live Counters · Breathing Cards · SVG Animations
-            Mouse-Reactive Light Cards
+   ExamVault — effects.css
+   1. Cursor  2. Kinetic  3. 3D Tilt  4. Magnetic  5. Counters
+   6. Breathing Cards  7. SVG Anim  8. Mouse-Reactive Light
 ═══════════════════════════════════════════════════════════════ */
 
-/* ── 1. CUSTOM GLOWING BLUE DOT CURSOR (desktop only) ─────── */
+/* ─────────────────────────────────────────────────────────────
+   1. GLOWING BLUE DOT CURSOR (desktop only)
+───────────────────────────────────────────────────────────── */
 @media (pointer: fine) {
   * { cursor: none !important; }
 
   #ev-cursor {
-    width: 9px; height: 9px;
-    background: #4f8ef7;
-    border-radius: 50%;
     position: fixed;
+    width: 9px; height: 9px;
+    background: var(--blue);
+    border-radius: 50%;
     pointer-events: none;
     z-index: 99999;
     transform: translate(-50%, -50%);
-    transition: transform 0.08s, width 0.2s, height 0.2s, background 0.2s;
-    box-shadow: 0 0 8px #4f8ef7, 0 0 18px rgba(79,142,247,0.6), 0 0 32px rgba(79,142,247,0.25);
-    mix-blend-mode: normal;
+    transition: width 0.18s, height 0.18s, transform 0.07s;
+    box-shadow:
+      0 0 6px var(--blue),
+      0 0 14px rgba(79,142,247,0.7),
+      0 0 28px rgba(79,142,247,0.3);
     will-change: left, top;
   }
-
   #ev-cursor.cursor--hover {
     width: 20px; height: 20px;
-    background: #4f8ef7;
-    box-shadow: 0 0 16px #4f8ef7, 0 0 36px rgba(79,142,247,0.75), 0 0 60px rgba(79,142,247,0.3);
+    box-shadow:
+      0 0 10px var(--blue),
+      0 0 24px rgba(79,142,247,0.8),
+      0 0 48px rgba(79,142,247,0.4);
   }
-
   #ev-cursor.cursor--click {
     transform: translate(-50%, -50%) scale(0.55);
   }
 }
 
-/* ── 2. KINETIC TYPOGRAPHY ────────────────────────────────── */
-/* Word-level animation (for pure-text titles) */
-.ev-kinetic {
-  display: inline-block;
-  overflow: hidden;
-  vertical-align: bottom;
-  line-height: inherit;
+/* ─────────────────────────────────────────────────────────────
+   2. KINETIC TYPOGRAPHY
+   .ev-slide-in  — whole-element slide up (for mixed-content titles)
+   .ev-kinetic__word — per-word (for pure-text elements only)
+───────────────────────────────────────────────────────────── */
+.ev-slide-in {
+  opacity: 0;
+  transform: translateY(24px);
+  animation: evSlideUp 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+.ev-slide-in:nth-child(1) { animation-delay: 0.05s; }
+.ev-slide-in:nth-child(2) { animation-delay: 0.15s; }
+
+@keyframes evSlideUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .ev-kinetic__word {
   display: inline-block;
   transform: translateY(110%);
   opacity: 0;
-  animation: evWordSlide 0.78s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: evWordIn 0.72s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
-@keyframes evWordSlide {
+@keyframes evWordIn {
   to { transform: translateY(0); opacity: 1; }
 }
 
-/* Container-level animation (for titles with mixed JSX content — safe mode) */
-.ev-kinetic-container {
-  animation: evContainerSlide 0.85s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-@keyframes evContainerSlide {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-    filter: blur(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-    filter: blur(0);
-  }
-}
-
-/* Word delay helpers */
-.ev-kinetic__word:nth-child(1) { animation-delay: 0s; }
-.ev-kinetic__word:nth-child(2) { animation-delay: 0.08s; }
-.ev-kinetic__word:nth-child(3) { animation-delay: 0.16s; }
-.ev-kinetic__word:nth-child(4) { animation-delay: 0.24s; }
-.ev-kinetic__word:nth-child(5) { animation-delay: 0.32s; }
-.ev-kinetic__word:nth-child(6) { animation-delay: 0.4s; }
-.ev-kinetic__word:nth-child(7) { animation-delay: 0.48s; }
-.ev-kinetic__word:nth-child(8) { animation-delay: 0.56s; }
-
-/* ── 3. 3D TILT CARDS ─────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────────
+   3. 3D TILT CARDS
+───────────────────────────────────────────────────────────── */
 .ev-tilt {
   transform-style: preserve-3d;
-  transform: perspective(900px) rotateX(0deg) rotateY(0deg);
-  transition: transform 0.12s ease, box-shadow 0.25s ease !important;
+  transition: transform 0.14s ease, box-shadow 0.3s ease !important;
   will-change: transform;
 }
 .ev-tilt:hover {
   box-shadow:
-    0 22px 60px rgba(0,0,0,0.55),
+    0 20px 55px rgba(0,0,0,0.55),
     0 0 0 1px var(--amber-border),
     0 0 40px rgba(245,166,35,0.1) !important;
 }
+
+/* Cursor-tracking light/shine overlay */
 .ev-tilt__shine {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: radial-gradient(
-    circle at var(--mx, 50%) var(--my, 50%),
-    rgba(79,142,247,0.12) 0%,
-    rgba(245,166,35,0.06) 40%,
-    transparent 65%
-  );
   pointer-events: none;
+  z-index: 10;
   opacity: 0;
   transition: opacity 0.3s;
-  z-index: 10;
+  background: radial-gradient(
+    circle at var(--mx, 50%) var(--my, 50%),
+    rgba(79,142,247,0.13) 0%,
+    rgba(245,166,35,0.06) 45%,
+    transparent 65%
+  );
 }
 .ev-tilt:hover .ev-tilt__shine { opacity: 1; }
 
-/* ── 4. MAGNETIC BUTTONS ──────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────────
+   4. MAGNETIC BUTTONS
+───────────────────────────────────────────────────────────── */
 .ev-magnetic {
-  display: inline-flex;
   position: relative;
-  transition: transform 0.35s cubic-bezier(0.23, 1, 0.32, 1) !important;
   overflow: hidden;
+  transition: transform 0.35s cubic-bezier(0.23, 1, 0.32, 1) !important;
 }
 
 /* Ripple */
@@ -123,15 +112,25 @@
   border-radius: 50%;
   background: rgba(255,255,255,0.2);
   transform: scale(0);
-  animation: evRippleAnim 0.55s linear;
   pointer-events: none;
+  animation: evRipple 0.55s linear;
   z-index: 20;
 }
-@keyframes evRippleAnim {
+@keyframes evRipple {
   to { transform: scale(4); opacity: 0; }
 }
 
-/* ── 5. LIVE COUNTER ──────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────────
+   5. LIVE COUNTERS — gradient bar
+───────────────────────────────────────────────────────────── */
+.stat-card,
+.dash-hero__stat,
+.dash-stat,
+.coding-stat {
+  position: relative !important;
+  overflow: hidden !important;
+}
+
 .ev-stat-bar {
   position: absolute;
   bottom: 0; left: 0; right: 0;
@@ -141,102 +140,116 @@
   transform-origin: left;
   transition: transform 1.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
+.ev-stat-bar.ev-bar-go { transform: scaleX(1); }
 .ev-stat-bar--amber  { background: linear-gradient(90deg, var(--amber), var(--amber-bright), transparent); }
 .ev-stat-bar--blue   { background: linear-gradient(90deg, var(--blue), #60a5fa, transparent); }
 .ev-stat-bar--teal   { background: linear-gradient(90deg, var(--teal), #34d399, transparent); }
 .ev-stat-bar--orange { background: linear-gradient(90deg, var(--orange), #fb923c, transparent); }
-.ev-stat-bar--green  { background: linear-gradient(90deg, var(--success), #34d399, transparent); }
+.ev-stat-bar--green  { background: linear-gradient(90deg, var(--success), #4ade80, transparent); }
 .ev-stat-bar--red    { background: linear-gradient(90deg, var(--danger), #f87171, transparent); }
 .ev-stat-bar--purple { background: linear-gradient(90deg, var(--purple), #c084fc, transparent); }
-.ev-stat-bar.ev-bar-go { transform: scaleX(1); }
 
-/* Stat containers need position:relative for the bar */
-.stat-card,
-.dash-hero__stat,
-.dash-stat,
-.coding-stat {
-  position: relative !important;
-  overflow: hidden !important;
-}
-
-/* ── 6. BREATHING / TILT CARDS — Coding platform cards ──── */
+/* ─────────────────────────────────────────────────────────────
+   6. BREATHING PLATFORM CARDS (Coding page)
+      Corner glow expands · Card lifts · Arrow slides · Cursor light
+───────────────────────────────────────────────────────────── */
 .platform-card {
   position: relative;
   overflow: hidden;
   transition:
     border-color 0.25s,
     box-shadow 0.28s,
-    transform 0.3s cubic-bezier(0.16,1,0.3,1) !important;
+    transform 0.32s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 .platform-card:hover {
-  transform: translateY(-8px) scale(1.02) !important;
+  transform: translateY(-10px) scale(1.025) !important;
   border-color: var(--amber-border) !important;
   box-shadow:
-    0 16px 48px rgba(0,0,0,0.45),
+    0 20px 52px rgba(0,0,0,0.48),
     0 0 0 1px var(--amber-border),
-    0 0 36px rgba(245,166,35,0.1) !important;
+    0 0 40px rgba(245,166,35,0.12) !important;
 }
 /* Corner glow blob */
 .platform-card::before {
   content: '';
   position: absolute;
-  top: -55px; right: -55px;
-  width: 140px; height: 140px;
+  top: -60px; right: -60px;
+  width: 150px; height: 150px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(245,166,35,0.2), transparent 70%);
+  background: radial-gradient(circle, rgba(245,166,35,0.22), transparent 70%);
   opacity: 0;
-  transition: opacity 0.35s, transform 0.5s;
+  transition: opacity 0.4s, transform 0.55s;
   pointer-events: none;
   z-index: 0;
 }
 .platform-card:hover::before {
   opacity: 1;
-  transform: scale(1.5);
+  transform: scale(1.6);
 }
-/* Arrow slides */
-.platform-card__ext {
-  transition: transform 0.25s, opacity 0.25s !important;
-}
-.platform-card:hover .platform-card__ext {
-  transform: translateX(5px) !important;
-  opacity: 1 !important;
-}
-/* Cursor light inside platform card */
+/* Cursor-reactive light inside card */
 .platform-card::after {
   content: '';
   position: absolute;
   inset: 0;
   border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.3s;
   background: radial-gradient(
     circle at var(--lx, 50%) var(--ly, 50%),
     rgba(79,142,247,0.1) 0%,
     transparent 60%
   );
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s;
-  z-index: 1;
 }
 .platform-card:hover::after { opacity: 1; }
+/* Arrow slides right on hover */
+.platform-card__ext {
+  transition: transform 0.28s, opacity 0.28s !important;
+}
+.platform-card:hover .platform-card__ext {
+  transform: translateX(6px) !important;
+  opacity: 1 !important;
+}
+/* Ensure content stays above pseudo-elements */
+.platform-card > * { position: relative; z-index: 2; }
 
-/* ── 7. SVG ANIMATIONS ────────────────────────────────────── */
-.ev-hero-svg {
-  position: absolute;
-  top: -20px; right: -20px;
-  width: 200px; height: 200px;
-  pointer-events: none;
-  opacity: 0.12;
+/* ─────────────────────────────────────────────────────────────
+   7. SVG ANIMATIONS
+───────────────────────────────────────────────────────────── */
+/* Used inline on SVG elements */
+@keyframes evOrbit {
+  from { transform: rotate(0deg);   }
+  to   { transform: rotate(360deg); }
+}
+@keyframes evOrbitRev {
+  from { transform: rotate(0deg);    }
+  to   { transform: rotate(-360deg); }
+}
+@keyframes evPulse {
+  0%, 100% { opacity: 0.4; transform: scale(1);   }
+  50%       { opacity: 1;   transform: scale(1.1); }
+}
+@keyframes evFloat {
+  0%, 100% { transform: translateY(0);   }
+  50%       { transform: translateY(-8px); }
+}
+@keyframes evTwinkle {
+  0%, 100% { opacity: 0.15; }
+  50%       { opacity: 1;    }
+}
+@keyframes evDraw {
+  from { stroke-dashoffset: 300; }
+  to   { stroke-dashoffset: 0;   }
+}
+@keyframes evMorph {
+  0%,100% { rx: 50%; ry: 40%; }
+  50%     { rx: 40%; ry: 55%; }
 }
 
-/* SVG inline decorations */
-.ev-svg-inline {
-  display: inline-block;
-  vertical-align: middle;
-  flex-shrink: 0;
-}
-
-/* ── 8. MOUSE-REACTIVE LIGHT CARDS ──────────────────────── */
-/* Applied to: reg-cards, subject folders, branch accordions, stat cards */
+/* ─────────────────────────────────────────────────────────────
+   8. MOUSE-REACTIVE LIGHT CARDS
+───────────────────────────────────────────────────────────── */
 .ev-light-card {
   position: relative;
   overflow: hidden;
@@ -246,58 +259,68 @@
   position: absolute;
   inset: 0;
   border-radius: inherit;
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0;
+  transition: opacity 0.3s;
   background: radial-gradient(
     circle at var(--lx, 50%) var(--ly, 50%),
     rgba(79,142,247,0.1) 0%,
-    transparent 60%
+    transparent 58%
   );
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s;
-  z-index: 5;
 }
 .ev-light-card:hover::after { opacity: 1; }
 
-/* Regulation cards — amber light instead of blue */
-.reg-card.ev-light-card::after {
+/* Subject folders — amber light */
+.subject-folder.ev-light-card::after,
+.subject-item.ev-light-card::after {
   background: radial-gradient(
     circle at var(--lx, 50%) var(--ly, 50%),
-    rgba(245,166,35,0.1) 0%,
+    rgba(245,166,35,0.1) 0%, transparent 60%
+  );
+}
+
+/* Branch accordion — subtle amber */
+.branch-accordion.ev-tilt::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 4;
+  opacity: 0;
+  transition: opacity 0.3s;
+  background: radial-gradient(
+    circle at var(--lx, 50%) var(--ly, 50%),
+    rgba(245,166,35,0.08) 0%, transparent 60%
+  );
+}
+.branch-accordion.ev-tilt:hover::after { opacity: 1; }
+
+/* Reg cards — amber */
+.reg-card.ev-tilt .ev-tilt__shine {
+  background: radial-gradient(
+    circle at var(--mx, 50%) var(--my, 50%),
+    rgba(245,166,35,0.12) 0%,
+    rgba(79,142,247,0.05) 45%,
     transparent 65%
   );
 }
 
-/* Branch accordion light */
-.branch-accordion.ev-light-card::after {
+/* Quote banner + poll card — cooler tones */
+.quote-banner.ev-tilt .ev-tilt__shine,
+.poll-card.ev-tilt .ev-tilt__shine {
   background: radial-gradient(
-    circle at var(--lx, 50%) var(--ly, 50%),
-    rgba(245,166,35,0.07) 0%,
+    circle at var(--mx, 50%) var(--my, 50%),
+    rgba(79,142,247,0.1) 0%,
     transparent 60%
   );
 }
 
-/* Subject folder light — amber glow */
-.subject-folder.ev-light-card::after {
-  background: radial-gradient(
-    circle at var(--lx, 50%) var(--ly, 50%),
-    rgba(245,166,35,0.09) 0%,
-    transparent 65%
-  );
-}
-
-/* File cards — subtle teal light */
-.file-card.ev-light-card::after {
-  background: radial-gradient(
-    circle at var(--lx, 50%) var(--ly, 50%),
-    rgba(0,212,184,0.07) 0%,
-    transparent 60%
-  );
-}
-
-/* ── Prevent double z-index stacking issues ──────────────── */
+/* ─────────────────────────────────────────────────────────────
+   EXTRA: ensure proper stacking context
+───────────────────────────────────────────────────────────── */
 .reg-card,
-.branch-accordion,
-.file-card,
 .stat-card,
 .platform-card,
 .event-card,
@@ -305,42 +328,22 @@
 .feedback-item,
 .quote-banner,
 .poll-card,
-.subject-folder {
+.analytics-card,
+.branch-accordion {
   position: relative;
   overflow: hidden;
 }
 
-/* ── EXTRA: Quote banner & poll tilt fine-tuning ──────────── */
-.quote-banner.ev-tilt {
-  transform-style: preserve-3d;
-}
-.quote-banner.ev-tilt:hover {
-  box-shadow:
-    0 22px 60px rgba(0,0,0,0.45),
-    0 0 0 1px var(--amber-border),
-    0 0 50px rgba(245,166,35,0.08) !important;
-}
-.poll-card.ev-tilt:hover {
-  box-shadow:
-    0 18px 50px rgba(0,0,0,0.45),
-    0 0 0 1px rgba(79,142,247,0.2),
-    0 0 30px rgba(79,142,247,0.08) !important;
-}
-
-/* ── Reduced motion ──────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────────
+   Reduced motion
+───────────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  .ev-kinetic__word,
-  .ev-kinetic-container,
-  .ev-tilt,
-  .ev-stat-bar,
-  .ev-ripple,
-  .platform-card,
-  .ev-light-card::after {
-    animation: none !important;
-    transition: none !important;
-    transform: none !important;
-    opacity: 1 !important;
-  }
+  .ev-slide-in,
+  .ev-kinetic__word { animation: none !important; opacity: 1 !important; transform: none !important; }
+  .ev-tilt { transition: none !important; }
+  .ev-stat-bar { transition: none !important; }
+  .ev-ripple { animation: none !important; }
+  .platform-card { transition: none !important; }
   #ev-cursor { display: none !important; }
   * { cursor: auto !important; }
 }
