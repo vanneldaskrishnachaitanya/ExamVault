@@ -12,7 +12,7 @@ import {
 } from '../api/apiClient';
 import {
   ArrowRight, BellRing, BookOpen, CalendarDays, Clock3, EyeOff,
-  FileUp, GraduationCap, GripVertical, Layers, Search, ShieldCheck, Smartphone, TrendingUp,
+  FileUp, GraduationCap, GripVertical, Layers, Search, ShieldCheck,
   Sparkles, Users,
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
@@ -104,8 +104,6 @@ export default function Dashboard() {
   const isAdmin = backendUser?.role === 'admin';
   const firstName = backendUser?.name?.split(' ')[0] || 'there';
   const roleHome = getRoleHome(backendUser?.role);
-  const heroRef = useRef(null);
-  const phoneRef = useRef(null);
   const eyesRef = useRef(null);
   const dragWidgetRef = useRef(null);
 
@@ -258,48 +256,6 @@ export default function Dashboard() {
     return () => window.removeEventListener('pointermove', onMove);
   }, []);
 
-  useEffect(() => {
-    const heroEl = heroRef.current;
-    const phoneEl = phoneRef.current;
-    if (!heroEl || !phoneEl) return undefined;
-
-    let rafId = null;
-
-    const updatePhone = () => {
-      rafId = null;
-      const rect = heroEl.getBoundingClientRect();
-      const viewportHeight = window.innerHeight || 1;
-      const start = viewportHeight * 0.95;
-      const end = -rect.height * 0.45;
-      const progress = Math.max(0, Math.min(1, (start - rect.top) / (start - end)));
-
-      const rotateY = 28 - progress * 30;
-      const rotateX = 18 - progress * 14;
-      const lift = 70 - progress * 82;
-      const scale = 0.86 + progress * 0.2;
-      const glow = 0.22 + progress * 0.5;
-
-      phoneEl.style.transform = `translate3d(0, ${lift}px, 0) rotateY(${rotateY}deg) rotateX(${rotateX}deg) scale(${scale})`;
-      heroEl.style.setProperty('--phone-glow', glow.toFixed(3));
-      heroEl.style.setProperty('--phone-progress', progress.toFixed(3));
-    };
-
-    const requestTick = () => {
-      if (rafId !== null) return;
-      rafId = window.requestAnimationFrame(updatePhone);
-    };
-
-    requestTick();
-    window.addEventListener('scroll', requestTick, { passive: true });
-    window.addEventListener('resize', requestTick);
-
-    return () => {
-      window.removeEventListener('scroll', requestTick);
-      window.removeEventListener('resize', requestTick);
-      if (rafId !== null) window.cancelAnimationFrame(rafId);
-    };
-  }, []);
-
   const visibleReminders = useMemo(() => {
     const now = Date.now();
     return smartReminders.filter(r => !reminderSnoozes[r.id] || Number(reminderSnoozes[r.id]) <= now);
@@ -365,7 +321,7 @@ export default function Dashboard() {
     <div className="dashboard">
       <QuoteBanner />
 
-      <section className="dash-hero" ref={heroRef}>
+      <section className="dash-hero">
         <div className="dash-hero__glow" aria-hidden="true" />
         <div className="dash-hero__glow dash-hero__glow--2" aria-hidden="true" />
         <div className="dash-eyes" ref={eyesRef} aria-hidden="true">
@@ -377,37 +333,6 @@ export default function Dashboard() {
             <circle className="dash-eyes__pupil dash-eyes__pupil--left" cx="74" cy="58" r="8.5" fill="#111827" />
             <circle className="dash-eyes__pupil dash-eyes__pupil--right" cx="146" cy="58" r="8.5" fill="#111827" />
           </svg>
-        </div>
-
-        <div className="dash-phone-stage" aria-hidden="true">
-          <div className="dash-phone" ref={phoneRef}>
-            <div className="dash-phone__bezel">
-              <div className="dash-phone__notch" />
-              <div className="dash-phone__screen">
-                <div className="dash-phone__screen-head">
-                  <Smartphone size={13} />
-                  <span>ExamVault Assistant</span>
-                </div>
-                <div className="dash-phone__bubble dash-phone__bubble--ai">
-                  3 files added for CSE R22.
-                </div>
-                <div className="dash-phone__bubble dash-phone__bubble--user">
-                  Show me tomorrow exams.
-                </div>
-                <div className="dash-phone__metric">
-                  <TrendingUp size={12} />
-                  <span>Focus streak: 12 days</span>
-                </div>
-                <div className="dash-phone__metric">
-                  <BookOpen size={12} />
-                  <span>Next exam in 3 days</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="dash-phone-chip dash-phone-chip--left">+3 new papers</div>
-          <div className="dash-phone-chip dash-phone-chip--right">Mid-1 this week</div>
         </div>
 
         <div className="dash-hero__content">
