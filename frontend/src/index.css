@@ -1084,6 +1084,22 @@ a.breadcrumb__item:hover { color: var(--amber); background: var(--amber-dim); }
 }
 .widget-toggle:hover { border-color: var(--amber-border); color: var(--amber); }
 .widget-toggle--off { opacity: 0.55; }
+
+@media (hover: hover) and (pointer: fine) {
+  .blur-siblings > * {
+    transition:
+      filter 320ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 320ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .blur-siblings:hover > *:not(:hover) {
+    filter: blur(2.6px) saturate(0.74);
+    opacity: 0.52;
+    transform: scale(0.985);
+  }
+}
+
 .home-role-card {
   text-align: left;
   padding: 0.9rem 1rem;

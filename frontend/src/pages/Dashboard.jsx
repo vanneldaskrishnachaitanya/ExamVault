@@ -456,7 +456,7 @@ export default function Dashboard() {
       <section className="dash-section">
         <h2 className="dash-section-title">Personalized home page</h2>
         <div className="home-role-head"><p className="home-role-head__label">{roleHome.label}</p><p className="home-role-head__sub">Cards are tuned to your role so you can jump faster.</p></div>
-        <div className="home-role-grid">
+        <div className="home-role-grid blur-siblings">
           {roleHome.cards.map((card) => {
             const Icon = card.icon;
             return (
@@ -492,7 +492,7 @@ export default function Dashboard() {
         {widgetLoading ? (
           <div className="dash-widget-grid">{[1, 2, 3, 4].map((slot) => <div key={slot} className="dash-widget dash-widget--loading" />)}</div>
         ) : (
-          <div className="dash-widget-grid">{orderedVisibleWidgets.map(id => widgetMap[id]).filter(Boolean)}</div>
+          <div className="dash-widget-grid blur-siblings">{orderedVisibleWidgets.map(id => widgetMap[id]).filter(Boolean)}</div>
         )}
       </section>
 
@@ -501,7 +501,7 @@ export default function Dashboard() {
         {visibleReminders.length === 0 ? (
           <div className="dash-hub__empty">No active reminders right now.</div>
         ) : (
-          <div className="smart-reminders">
+          <div className="smart-reminders blur-siblings">
             {visibleReminders.map((item) => (
               <div key={item.id} className={`smart-reminder smart-reminder--${item.tone}`}>
                 <button className="smart-reminder__title" onClick={() => navigate(item.to)}>{item.title}</button>
@@ -523,7 +523,7 @@ export default function Dashboard() {
 
       <section className="dash-section">
         <h2 className="dash-section-title">Choose your Regulation</h2>
-        <div className="reg-grid">
+        <div className="reg-grid blur-siblings">
           {REGULATIONS.map((reg) => (
             <button key={reg.id} className={`reg-card ${reg.accent}`} onClick={() => navigate(`/r/${reg.id}`)}>
               <span className="reg-card__note">{reg.note}</span>
