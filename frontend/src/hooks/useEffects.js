@@ -73,6 +73,29 @@ export function initTilt() {
       '.poll-card',
       '.analytics-card:not(.analytics-card--wide)',
       '.branch-accordion',
+      '.home-role-card',
+      '.dash-widget',
+      '.smart-reminder',
+      '.digest-card',
+      '.file-card',
+      '.history-item',
+      '.syllabus-item',
+      '.suggest-item',
+      '.year-card',
+      '.sem-card',
+      '.report-card',
+      '.ann-item',
+      '.profile-card',
+      '.search-hit-card',
+      '.hub-saved-card',
+      '.hub-feed-item',
+      '.hub-reminder-item',
+      '.qs-section-row',
+      '.qs-quote-item',
+      '.qs-control-row',
+      '.exam-item',
+      '.subject-item',
+      '.subject-folder',
     ].join(',');
 
     document.querySelectorAll(TILT).forEach(card => {
@@ -114,9 +137,7 @@ export function initTilt() {
     });
 
     // Light-only (no tilt)
-    ['.subject-item','.subject-folder','.file-card','.history-item',
-     '.syllabus-item','.suggest-item','.year-card','.sem-card',
-     '.branch-mgmt-row','.coding-manage-row'].join(',')
+    ['.branch-mgmt-row','.coding-manage-row'].join(',')
     .split(',').forEach(sel => {
       document.querySelectorAll(sel.trim()).forEach(card => {
         if (card._evLight) return; card._evLight = true;
