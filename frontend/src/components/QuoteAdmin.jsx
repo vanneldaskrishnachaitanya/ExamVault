@@ -17,51 +17,6 @@ function useToast() {
   return { msg, show };
 }
 
-function WavingHelperIllustration() {
-  return (
-    <div className="qs-bot" aria-hidden="true">
-      <svg viewBox="0 0 240 170" className="qs-bot__svg" role="img">
-        <title>Waving helper robot saying hi</title>
-
-        <ellipse cx="122" cy="152" rx="70" ry="12" className="qs-bot__shadow" />
-
-        <g>
-          <rect x="86" y="22" width="72" height="34" rx="16" className="qs-bot__head" />
-          <line x1="109" y1="39" x2="135" y2="39" className="qs-bot__face-line" />
-          <circle cx="104" cy="39" r="3.2" className="qs-bot__eye" />
-          <circle cx="140" cy="39" r="3.2" className="qs-bot__eye" />
-        </g>
-
-        <g>
-          <ellipse cx="122" cy="92" rx="52" ry="36" className="qs-bot__body" />
-          <ellipse cx="122" cy="92" rx="38" ry="24" className="qs-bot__body-shade" />
-          <line x1="122" y1="58" x2="122" y2="126" className="qs-bot__seam" />
-        </g>
-
-        <g className="qs-bot__arm qs-bot__arm--left">
-          <ellipse cx="73" cy="90" rx="16" ry="11" className="qs-bot__body" />
-        </g>
-
-        <g className="qs-bot__arm qs-bot__arm--right">
-          <ellipse cx="170" cy="66" rx="16" ry="11" className="qs-bot__body" />
-          <circle cx="182" cy="52" r="8" className="qs-bot__body" />
-        </g>
-
-        <g>
-          <ellipse cx="102" cy="134" rx="13" ry="9" className="qs-bot__body" />
-          <ellipse cx="141" cy="134" rx="13" ry="9" className="qs-bot__body" />
-        </g>
-
-        <g className="qs-bot__bubble-group">
-          <rect x="154" y="8" width="56" height="26" rx="12" className="qs-bot__bubble" />
-          <polygon points="167,34 162,44 176,35" className="qs-bot__bubble" />
-          <text x="182" y="26" textAnchor="middle" className="qs-bot__bubble-text">Hi!</text>
-        </g>
-      </svg>
-    </div>
-  );
-}
-
 // ── Poll Admin Panel ──────────────────────────────────────────
 function PollAdmin({ toast }) {
   const [polls,         setPolls]         = useState([]);
@@ -465,15 +420,12 @@ export default function QuoteAdmin() {
     <section className="admin-panel__section qs-admin">
       {/* Header */}
       <div className="qs-admin__header">
-        <div className="qs-admin__title-cluster">
-          <div className="qs-admin__title-row">
-            <Quote size={20} style={{ color: 'var(--amber)', flexShrink: 0, marginTop: 2 }} />
-            <div>
-              <h2 className="qs-admin__title">Daily Quotes & Polls</h2>
-              <p className="qs-admin__sub">Manage quotes and polls shown on the student home page.</p>
-            </div>
+        <div className="qs-admin__title-row">
+          <Quote size={20} style={{ color: 'var(--amber)', flexShrink: 0, marginTop: 2 }} />
+          <div>
+            <h2 className="qs-admin__title">Daily Quotes & Polls</h2>
+            <p className="qs-admin__sub">Manage quotes and polls shown on the student home page.</p>
           </div>
-          <WavingHelperIllustration />
         </div>
         <button className={`qs-toggle-btn${settings?.enabled ? ' qs-toggle-btn--on' : ''}`}
           onClick={handleToggleEnabled} disabled={!!toggling}>
