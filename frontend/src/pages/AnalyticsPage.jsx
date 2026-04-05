@@ -31,17 +31,16 @@ export default function AnalyticsPage() {
   return (
     <div className="analytics-page">
       <h1 className="analytics-page__title">
-        <BarChart2 size={22} />
-        Analytics
-        <svg aria-hidden="true" width="28" height="28" viewBox="0 0 28 28" style={{marginLeft:'0.4rem',flexShrink:0}}>
-          <circle cx="14" cy="14" r="5" fill="var(--amber)" opacity="0.95"/>
-          <circle cx="14" cy="14" r="5" fill="none" stroke="var(--amber)" strokeWidth="1.5" opacity="0.8">
-            <animate attributeName="r" from="5" to="13" dur="1.9s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" from="0.8" to="0" dur="1.9s" repeatCount="indefinite"/>
+        <BarChart2 size={22} /> Analytics
+        <svg aria-hidden="true" width="26" height="26" viewBox="0 0 26 26" style={{marginLeft:'0.4rem',flexShrink:0}}>
+          <circle cx="13" cy="13" r="5" fill="var(--amber)" opacity="0.95"/>
+          <circle cx="13" cy="13" r="5" fill="none" stroke="var(--amber)" strokeWidth="1.5">
+            <animate attributeName="r" from="5" to="12" dur="1.8s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" from="0.8" to="0" dur="1.8s" repeatCount="indefinite"/>
           </circle>
-          <circle cx="14" cy="14" r="5" fill="none" stroke="var(--amber)" strokeWidth="1.5" opacity="0.6">
-            <animate attributeName="r" from="5" to="13" dur="1.9s" begin="0.65s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" from="0.6" to="0" dur="1.9s" begin="0.65s" repeatCount="indefinite"/>
+          <circle cx="13" cy="13" r="5" fill="none" stroke="var(--amber)" strokeWidth="1.5">
+            <animate attributeName="r" from="5" to="12" dur="1.8s" begin="0.6s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" from="0.6" to="0" dur="1.8s" begin="0.6s" repeatCount="indefinite"/>
           </circle>
         </svg>
       </h1>

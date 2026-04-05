@@ -2,12 +2,12 @@ import OnboardingTour from '../components/OnboardingTour';
 import RecentlyViewed from '../components/RecentlyViewed';
 import BottomNav from '../components/BottomNav';
 import { useEffect, useState } from 'react';
-import { Outlet } from 'react-router-dom';
-import '../effects.css';
-import { initEffects, initTilt, initMagnetic, initCounters, initKinetic } from '../hooks/useEffects';
+import { Outlet, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { fetchAnnouncements } from '../api/apiClient';
 import { X, Megaphone } from 'lucide-react';
+import '../effects.css';
+import { initEffects, initTilt, initMagnetic, initCounters, initKinetic, initStarfield } from '../hooks/useEffects';
 
 const TYPE_STYLES = {
   info:    { bg: '#3b82f618', border: '#3b82f640', color: '#60a5fa' },
@@ -17,10 +17,10 @@ const TYPE_STYLES = {
 };
 
 export default function MainLayout() {
+  const location = useLocation();
   const [theme, setTheme] = useState(() => {
     const saved = localStorage.getItem('ev-theme');
     if (saved) return saved;
-    // Detect system preference
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   });
   const [announcements, setAnnouncements] = useState([]);
@@ -29,43 +29,27 @@ export default function MainLayout() {
   const [installPrompt, setInstallPrompt] = useState(null);
   const [showInstall, setShowInstall] = useState(false);
 
-  // Apply theme to <html>
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('ev-theme', theme);
-  }, [theme]);
-
-  // ── Init all next-level effects ──────────────────────────
+  // ── Init all effects once ──────────────────────────────────
   useEffect(() => {
     const cleanCursor   = initEffects();
     const cleanTilt     = initTilt();
     const cleanMagnetic = initMagnetic();
     const cleanCounters = initCounters();
-
-    // Kinetic: run after React has painted DOM (two rAF passes)
-    let kTimer;
-    const runKinetic = () => {
-      kTimer = setTimeout(initKinetic, 120);
-    };
-    runKinetic();
-
-    // Re-run kinetic whenever main content changes (page navigation)
-    const mainEl = document.querySelector('.layout__main');
-    const routeObs = new MutationObserver(() => {
-      clearTimeout(kTimer);
-      runKinetic();
-    });
-    if (mainEl) routeObs.observe(mainEl, { childList: true, subtree: false });
-
-    return () => {
-      cleanCursor();
-      cleanTilt();
-      cleanMagnetic();
-      cleanCounters();
-      clearTimeout(kTimer);
-      routeObs.disconnect();
-    };
+    const cleanStars    = initStarfield();
+    return () => { cleanCursor(); cleanTilt(); cleanMagnetic(); cleanCounters(); cleanStars(); };
   }, []);
+
+  // ── Re-run kinetic on every route change ──────────────────
+  useEffect(() => {
+    const timer = setTimeout(initKinetic, 150);
+    return () => clearTimeout(timer);
+  }, [location.pathname]);
+
+  // Apply theme to <html>
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('ev-theme', theme);
+  }, [theme]);
 
   const toggleTheme = () => setTheme(t => t === 'dark' ? 'light' : 'dark');
 

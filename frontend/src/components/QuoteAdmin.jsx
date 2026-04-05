@@ -188,15 +188,32 @@ function PollAdmin({ toast }) {
 
                 {expandedPollId === p._id && (
                   <div className="poll-admin__voters">
-                    <strong>Voters:</strong>
-                    {p.options?.flatMap(o => o.voters || []).length > 0 ? (
-                      <ul>
-                        {p.options.flatMap(o => o.voters || []).map(voter => (
-                          <li key={`${p._id}-${voter._id}`}>{voter.name || voter.email || 'Unknown'}</li>
+                    <p className="poll-admin__voters-title">
+                      Voter breakdown — {p.options?.flatMap(o => o.voters || []).length || 0} vote(s)
+                    </p>
+                    {p.options?.some(o => (o.voters || []).length > 0) ? (
+                      <div className="poll-admin__voters-grid">
+                        {p.options.map(opt => (
+                          (opt.voters || []).length > 0 && (
+                            <div key={opt._id} className="poll-admin__voter-option">
+                              <div className="poll-admin__voter-option-header">
+                                <span className="poll-admin__voter-option-text">"{opt.text}"</span>
+                                <span className="poll-admin__voter-option-count">{opt.voters.length} vote{opt.voters.length !== 1 ? 's' : ''}</span>
+                              </div>
+                              <ul className="poll-admin__voter-list">
+                                {opt.voters.map(voter => (
+                                  <li key={`${opt._id}-${voter._id || voter}`} className="poll-admin__voter-item">
+                                    <span className="poll-admin__voter-dot" />
+                                    {voter.name || voter.email || 'Unknown user'}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )
                         ))}
-                      </ul>
+                      </div>
                     ) : (
-                      <p>No votes yet.</p>
+                      <p className="poll-admin__voters-empty">No votes yet.</p>
                     )}
                   </div>
                 )}

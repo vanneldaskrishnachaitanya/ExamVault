@@ -99,26 +99,16 @@ export default function FeedbackPage() {
       {/* Hero */}
       <div className="feedback-hero">
         <div className="feedback-hero__glow" />
-
-        {/* SVG: floating message bubbles */}
-        <svg aria-hidden="true" style={{position:'absolute',top:8,right:12,width:110,height:90,pointerEvents:'none',opacity:0.15}} viewBox="0 0 110 90">
-          <rect x="10" y="10" width="36" height="24" rx="6" fill="none" stroke="var(--amber)" strokeWidth="1">
-            <animate attributeName="opacity" values="0.3;1;0.3" dur="2.8s" repeatCount="indefinite"/>
-          </rect>
-          <rect x="55" y="28" width="42" height="26" rx="6" fill="none" stroke="var(--blue)" strokeWidth="1">
-            <animate attributeName="opacity" values="0.2;0.9;0.2" dur="3.4s" begin="0.7s" repeatCount="indefinite"/>
-          </rect>
-          <rect x="18" y="52" width="30" height="20" rx="5" fill="none" stroke="var(--teal)" strokeWidth="0.8">
-            <animate attributeName="opacity" values="0.25;0.85;0.25" dur="2.2s" begin="1.2s" repeatCount="indefinite"/>
-          </rect>
-          <circle cx="32" cy="18" r="1.5" fill="var(--amber)"/>
-          <circle cx="40" cy="18" r="1.5" fill="var(--amber)"/>
-          <circle cx="20" cy="60" r="1.2" fill="var(--teal)"/>
-          <circle cx="28" cy="60" r="1.2" fill="var(--teal)"/>
+        {/* SVG: animated message bubbles */}
+        <svg aria-hidden="true" style={{position:'absolute',top:8,right:14,width:110,height:88,pointerEvents:'none',opacity:0.16}} viewBox="0 0 110 88">
+          <rect x="8"  y="8"  width="38" height="22" rx="6" fill="none" stroke="var(--amber)" strokeWidth="1"><animate attributeName="opacity" values="0.3;1;0.3" dur="2.8s" repeatCount="indefinite"/></rect>
+          <rect x="56" y="26" width="44" height="24" rx="6" fill="none" stroke="var(--blue)" strokeWidth="1"><animate attributeName="opacity" values="0.2;0.9;0.2" dur="3.4s" begin="0.7s" repeatCount="indefinite"/></rect>
+          <rect x="16" y="50" width="32" height="20" rx="5" fill="none" stroke="var(--teal)" strokeWidth="0.8"><animate attributeName="opacity" values="0.25;0.85;0.25" dur="2.2s" begin="1.2s" repeatCount="indefinite"/></rect>
+          <circle cx="20" cy="19" r="1.5" fill="var(--amber)"/><circle cx="27" cy="19" r="1.5" fill="var(--amber)"/><circle cx="34" cy="19" r="1.5" fill="var(--amber)"/>
+          <circle cx="24" cy="60" r="1.2" fill="var(--teal)"/><circle cx="31" cy="60" r="1.2" fill="var(--teal)"/>
         </svg>
-
         <MessageSquare size={34} className="feedback-hero__icon" />
-        <h1 className="feedback-hero__title">Feedback &amp; Suggestions</h1>
+        <h1 className="feedback-hero__title">Feedback & Suggestions</h1>
         <p className="feedback-hero__sub">
           Share your ideas, request new features, suggest branches or files.<br />
           Your feedback shapes ExamVault!

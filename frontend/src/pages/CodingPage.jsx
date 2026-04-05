@@ -102,22 +102,22 @@ export default function CodingPage() {
       <div className="coding-hero">
         <div className="coding-hero__glow" />
 
-        {/* ── SVG: Rotating orbit rings ── */}
-        <svg aria-hidden="true" style={{position:'absolute',top:-10,right:-10,width:180,height:180,pointerEvents:'none',opacity:0.15}} viewBox="0 0 180 180">
-          <ellipse cx="90" cy="90" rx="78" ry="28" fill="none" stroke="var(--amber)" strokeWidth="1" strokeDasharray="5 4">
-            <animateTransform attributeName="transform" type="rotate" from="0 90 90" to="360 90 90" dur="12s" repeatCount="indefinite"/>
+        {/* SVG: orbiting rings */}
+        <svg aria-hidden="true" style={{position:'absolute',top:-10,right:-10,width:180,height:180,pointerEvents:'none',opacity:0.14}} viewBox="0 0 180 180">
+          <ellipse cx="90" cy="90" rx="78" ry="26" fill="none" stroke="var(--amber)" strokeWidth="1" strokeDasharray="5 4">
+            <animateTransform attributeName="transform" type="rotate" from="0 90 90" to="360 90 90" dur="14s" repeatCount="indefinite"/>
           </ellipse>
-          <ellipse cx="90" cy="90" rx="55" ry="20" fill="none" stroke="var(--blue)" strokeWidth="0.8" strokeDasharray="3 5">
-            <animateTransform attributeName="transform" type="rotate" from="360 90 90" to="0 90 90" dur="8s" repeatCount="indefinite"/>
+          <ellipse cx="90" cy="90" rx="52" ry="18" fill="none" stroke="var(--blue)" strokeWidth="0.8" strokeDasharray="3 5">
+            <animateTransform attributeName="transform" type="rotate" from="360 90 90" to="0 90 90" dur="9s" repeatCount="indefinite"/>
           </ellipse>
           <circle cx="90" cy="12" r="5" fill="var(--amber)" opacity="0.9">
-            <animateTransform attributeName="transform" type="rotate" from="0 90 90" to="360 90 90" dur="12s" repeatCount="indefinite"/>
+            <animateTransform attributeName="transform" type="rotate" from="0 90 90" to="360 90 90" dur="14s" repeatCount="indefinite"/>
           </circle>
-          <circle cx="90" cy="70" r="4" fill="var(--blue)" opacity="0.8">
-            <animateTransform attributeName="transform" type="rotate" from="360 90 90" to="0 90 90" dur="8s" repeatCount="indefinite"/>
+          <circle cx="90" cy="72" r="4" fill="var(--blue)" opacity="0.8">
+            <animateTransform attributeName="transform" type="rotate" from="360 90 90" to="0 90 90" dur="9s" repeatCount="indefinite"/>
           </circle>
-          <circle cx="90" cy="90" r="12" fill="none" stroke="var(--teal)" strokeWidth="1" opacity="0.5">
-            <animate attributeName="r" values="12;16;12" dur="3s" repeatCount="indefinite"/>
+          <circle cx="90" cy="90" r="11" fill="none" stroke="var(--teal)" strokeWidth="1" opacity="0.5">
+            <animate attributeName="r" values="11;15;11" dur="3s" repeatCount="indefinite"/>
             <animate attributeName="opacity" values="0.5;0.9;0.5" dur="3s" repeatCount="indefinite"/>
           </circle>
         </svg>

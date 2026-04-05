@@ -145,19 +145,18 @@ export default function RegulationPage() {
 
   return (
     <div className="reg-page">
-      {/* SVG: animated circuit / data-flow lines */}
-      <svg aria-hidden="true" style={{position:'fixed',top:80,right:0,width:180,height:280,pointerEvents:'none',opacity:0.07,zIndex:0}} viewBox="0 0 180 280">
-        <path d="M160,10 L160,70 L100,70 L100,130 L140,130 L140,190 L80,190" fill="none" stroke="var(--amber)" strokeWidth="1.5">
-          <animate attributeName="stroke-dasharray" values="0,550;550,0" dur="4s" repeatCount="indefinite"/>
+      {/* SVG: animated circuit lines */}
+      <svg aria-hidden="true" style={{position:'fixed',top:70,right:0,width:160,height:260,pointerEvents:'none',opacity:0.07,zIndex:0}} viewBox="0 0 160 260">
+        <path d="M140,10 L140,70 L90,70 L90,130 L130,130 L130,190 L70,190" fill="none" stroke="var(--amber)" strokeWidth="1.5">
+          <animate attributeName="stroke-dasharray" values="0,500;500,0" dur="4s" repeatCount="indefinite"/>
         </path>
-        <path d="M20,50 L20,110 L70,110 L70,170 L30,170 L30,240" fill="none" stroke="var(--blue)" strokeWidth="1">
-          <animate attributeName="stroke-dasharray" values="0,450;450,0" dur="5.5s" begin="1s" repeatCount="indefinite"/>
+        <path d="M20,40 L20,100 L60,100 L60,160 L25,160 L25,230" fill="none" stroke="var(--blue)" strokeWidth="1">
+          <animate attributeName="stroke-dasharray" values="0,420;420,0" dur="5.5s" begin="1s" repeatCount="indefinite"/>
         </path>
-        <circle cx="160" cy="70"  r="3.5" fill="var(--amber)"><animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/></circle>
-        <circle cx="100" cy="130" r="3"   fill="var(--blue)"><animate attributeName="opacity" values="0.3;1;0.3" dur="2.5s" begin="0.5s" repeatCount="indefinite"/></circle>
-        <circle cx="70"  cy="110" r="2.5" fill="var(--teal)"><animate attributeName="opacity" values="0.2;0.9;0.2" dur="3s" begin="1s" repeatCount="indefinite"/></circle>
+        <circle cx="140" cy="70"  r="3.5" fill="var(--amber)"><animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/></circle>
+        <circle cx="90"  cy="130" r="3"   fill="var(--blue)"><animate attributeName="opacity" values="0.3;1;0.3" dur="2.5s" begin="0.5s" repeatCount="indefinite"/></circle>
+        <circle cx="60"  cy="100" r="2.5" fill="var(--teal)"><animate attributeName="opacity" values="0.2;0.9;0.2" dur="3s" begin="1s" repeatCount="indefinite"/></circle>
       </svg>
-
       <nav className="breadcrumb">
         <Link to="/dashboard" className="breadcrumb__item"><Home size={13} /> Repository</Link>
         <ChevronRight size={13} className="breadcrumb__sep" />
