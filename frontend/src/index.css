@@ -2231,11 +2231,114 @@ option { background: var(--bg-card); }
 .qs-admin__title-row {
   display: flex; align-items: flex-start; gap: 0.75rem;
 }
+.qs-admin__title-cluster {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  flex: 1;
+  min-width: 260px;
+}
 .qs-admin__title {
   font-family: var(--font-display); font-size: 1.1rem; font-weight: 900;
   color: var(--text-1); margin-bottom: 0.2rem;
 }
 .qs-admin__sub { font-size: 0.8rem; color: var(--text-2); line-height: 1.55; max-width: 480px; }
+
+.qs-bot {
+  width: 150px;
+  max-width: 36vw;
+  align-self: flex-end;
+  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.22));
+}
+
+.qs-bot__svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.qs-bot__head,
+.qs-bot__body,
+.qs-bot__bubble {
+  fill: #f8fbff;
+}
+
+.qs-bot__body-shade {
+  fill: #ecf3ff;
+}
+
+.qs-bot__shadow {
+  fill: rgba(16, 24, 40, 0.2);
+}
+
+.qs-bot__eye,
+.qs-bot__face-line,
+.qs-bot__seam {
+  stroke: #202a3b;
+  fill: #202a3b;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.qs-bot__face-line {
+  fill: none;
+}
+
+.qs-bot__bubble {
+  stroke: rgba(18, 32, 56, 0.18);
+  stroke-width: 1;
+}
+
+.qs-bot__bubble-text {
+  font-size: 12px;
+  font-weight: 800;
+  fill: #0f223d;
+  font-family: var(--font-display);
+}
+
+.qs-bot__arm--right {
+  transform-origin: 152px 72px;
+  animation: qsWaveHand 1.8s ease-in-out infinite;
+}
+
+.qs-bot__bubble-group {
+  animation: qsBubbleFloat 2.4s ease-in-out infinite;
+}
+
+@keyframes qsWaveHand {
+  0%, 100% { transform: rotate(0deg); }
+  20% { transform: rotate(-9deg); }
+  40% { transform: rotate(7deg); }
+  60% { transform: rotate(-8deg); }
+  80% { transform: rotate(5deg); }
+}
+
+@keyframes qsBubbleFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+
+@media (max-width: 760px) {
+  .qs-admin__title-cluster {
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .qs-bot {
+    width: 118px;
+  }
+}
+
+@media (max-width: 480px) {
+  .qs-admin__title-cluster {
+    gap: 0.6rem;
+  }
+
+  .qs-bot {
+    width: 95px;
+  }
+}
 
 /* Global enable toggle button */
 .qs-toggle-btn {
