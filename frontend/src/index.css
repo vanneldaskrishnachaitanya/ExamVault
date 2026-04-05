@@ -1914,7 +1914,7 @@ a.breadcrumb__item:hover { color: var(--amber); background: var(--amber-dim); }
 /* Info */
 .file-card__info { flex: 1; min-width: 0; }
 .file-card__title-row { display: flex; align-items: flex-start; flex-wrap: wrap; gap: 0.45rem; margin-bottom: 0.5rem; }
-.file-card__name { font-size: 0.92rem; font-weight: 600; color: var(--text-1); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; word-break: break-word; }
+.file-card__name { font-size: 0.92rem; font-weight: 600; color: var(--text-1); line-height: 1.4; overflow: hidden; display: -webkit-box; line-clamp: 2; -webkit-line-clamp: 2; -webkit-box-orient: vertical; word-break: break-word; }
 .file-card__exam-tag { flex-shrink: 0; padding: 0.1rem 0.5rem; background: var(--amber-dim); border: 1px solid var(--amber-border); border-radius: 100px; font-family: var(--font-mono); font-size: 0.65rem; color: var(--amber); white-space: nowrap; }
 .file-card__important-badge {
   background: linear-gradient(90deg, var(--amber-dim), rgba(245,166,35,0.22), var(--amber-dim));
@@ -2401,7 +2401,7 @@ option { background: var(--bg-card); }
 .event-card__badge--open  { background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.25); color: #34d399; }
 .event-card__badge--closed{ background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.25); color: #f87171; }
 .event-card__title { font-size: 1rem; font-weight: 800; color: var(--text-1); line-height: 1.3; }
-.event-card__desc { font-size: 0.8rem; color: var(--text-2); line-height: 1.65; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.event-card__desc { font-size: 0.8rem; color: var(--text-2); line-height: 1.65; display: -webkit-box; line-clamp: 2; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .event-card__meta { display: flex; flex-wrap: wrap; gap: 0.5rem; font-size: 0.75rem; color: var(--text-3); font-family: var(--font-mono); }
 .event-card__meta span { display: flex; align-items: center; gap: 0.32rem; }
 .event-card__regdates { display: flex; gap: 0.8rem; flex-wrap: wrap; align-items: center; font-size: 0.72rem; color: var(--text-3); font-family: var(--font-mono); padding: 0.42rem 0.65rem; background: var(--bg-raised); border-radius: var(--radius-sm); }
@@ -3108,7 +3108,7 @@ option { background: var(--bg-card); }
 .qs-quote-item__text {
   font-size: 0.875rem; color: var(--text-1); line-height: 1.55;
   font-style: italic; margin-bottom: 0.3rem;
-  display: -webkit-box; -webkit-line-clamp: 3;
+  display: -webkit-box; line-clamp: 3; -webkit-line-clamp: 3;
   -webkit-box-orient: vertical; overflow: hidden;
 }
 .qs-quote-item__meta {
