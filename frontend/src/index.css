@@ -258,6 +258,124 @@ body::after {
 /* Layout z-index fix */
 #root, .layout { position: relative; z-index: 1; }
 
+/* ══════════════════════════════════════════════════════════════
+   MESCU-INSPIRED GLOBAL OVERRIDES
+══════════════════════════════════════════════════════════════ */
+
+:root {
+  --bg: #07090d;
+  --bg-card: #0c0f14;
+  --bg-raised: #11151d;
+  --bg-hover: #151b26;
+  --bg-glass: rgba(12, 16, 22, 0.72);
+  --border: rgba(255, 255, 255, 0.12);
+  --border-lite: rgba(255, 255, 255, 0.08);
+  --text-1: #f2f5ff;
+  --text-2: #a8b2c9;
+  --text-3: #6f7a92;
+  --amber: #9db8ff;
+  --amber-bright: #c6d7ff;
+  --amber-dim: rgba(157, 184, 255, 0.1);
+  --amber-border: rgba(157, 184, 255, 0.34);
+  --amber-glow: rgba(157, 184, 255, 0.2);
+}
+
+body {
+  letter-spacing: 0.01em;
+}
+
+body::before {
+  background:
+    radial-gradient(120% 80% at 50% 0%, rgba(138, 170, 245, 0.14) 0%, rgba(57, 74, 116, 0.04) 44%, transparent 72%),
+    linear-gradient(180deg, #06080d 0%, #06090f 50%, #05070c 100%),
+    repeating-linear-gradient(108deg, rgba(182, 199, 235, 0.1) 0 1px, transparent 1px 26px) !important;
+  opacity: 0.78;
+  animation: none;
+}
+
+body::after {
+  background-image:
+    radial-gradient(1px 1px at 20% 28%, rgba(255,255,255,0.22) 0%, transparent 100%),
+    radial-gradient(1px 1px at 82% 12%, rgba(255,255,255,0.16) 0%, transparent 100%),
+    radial-gradient(1px 1px at 62% 72%, rgba(255,255,255,0.13) 0%, transparent 100%),
+    radial-gradient(1px 1px at 40% 92%, rgba(255,255,255,0.1) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 12% 68%, rgba(149,176,240,0.22) 0%, transparent 100%) !important;
+  opacity: 0.35;
+}
+
+.layout__main {
+  max-width: 1260px;
+  padding: 1.8rem 1.7rem 6rem;
+}
+
+.reg-grid {
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.2rem;
+}
+
+.reg-card,
+.dash-widget,
+.analytics-card,
+.file-card,
+.branch-accordion,
+.digest-card,
+.smart-reminder,
+.home-role-card,
+.subject-item,
+.subject-folder,
+.history-item,
+.hub-saved-card,
+.hub-feed-item,
+.hub-reminder-item,
+.exam-item,
+.profile-card {
+  background: linear-gradient(160deg, rgba(12, 16, 24, 0.9) 0%, rgba(10, 13, 19, 0.82) 58%, rgba(8, 10, 14, 0.92) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.reg-card:hover,
+.dash-widget:hover,
+.file-card:hover,
+.home-role-card:hover,
+.branch-accordion:hover {
+  border-color: rgba(157, 184, 255, 0.42) !important;
+  box-shadow: 0 22px 48px rgba(0, 0, 0, 0.34), 0 0 0 1px rgba(157, 184, 255, 0.16) !important;
+}
+
+.reg--purple,
+.reg--blue,
+.reg--teal,
+.reg--orange,
+.reg--purple:hover,
+.reg--blue:hover,
+.reg--teal:hover,
+.reg--orange:hover {
+  background: linear-gradient(160deg, rgba(12, 16, 24, 0.9) 0%, rgba(10, 13, 19, 0.82) 58%, rgba(8, 10, 14, 0.92) 100%) !important;
+}
+
+.reg--purple .reg-card__id,
+.reg--blue .reg-card__id,
+.reg--teal .reg-card__id,
+.reg--orange .reg-card__id,
+.reg--purple .reg-card__cta,
+.reg--blue .reg-card__cta,
+.reg--teal .reg-card__cta,
+.reg--orange .reg-card__cta {
+  color: #b8ccff;
+}
+
+@media (max-width: 900px) {
+  .layout__main {
+    padding: 1.2rem 1rem 6rem;
+  }
+  .reg-grid {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  }
+}
+
 /* ── Keyframes ──────────────────────────────────────────────── */
 @keyframes meshDrift {
   0%   { transform: translate(0, 0) scale(1); }
