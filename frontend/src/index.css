@@ -275,23 +275,33 @@ body::after {
    NAVBAR — Cosmic glass
 ══════════════════════════════════════════════════════════════ */
 .navbar {
-  position: sticky; top: 0; z-index: 100;
+  position: sticky; top: 0.75rem; z-index: 100;
+  width: min(1180px, calc(100% - 1.5rem));
   height: var(--nav-h);
-  background: rgba(5, 7, 15, 0.82);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-  box-shadow: 0 1px 0 rgba(255,255,255,0.03), 0 8px 32px rgba(0,0,0,0.5);
+  margin: 0.75rem auto 0;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(10, 14, 24, 0.78), rgba(7, 10, 18, 0.62));
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow:
+    0 16px 40px rgba(0,0,0,0.28),
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    0 0 0 1px rgba(245,166,35,0.05);
+  overflow: hidden;
 }
 [data-theme="light"] .navbar {
-  background: rgba(244,246,251,0.85);
-  border-bottom: 1px solid rgba(0,0,0,0.07);
-  box-shadow: 0 1px 0 rgba(255,255,255,0.9), 0 4px 24px rgba(0,0,0,0.08);
+  background: linear-gradient(180deg, rgba(255,255,255,0.78), rgba(244,246,251,0.66));
+  border: 1px solid rgba(255,255,255,0.5);
+  box-shadow:
+    0 16px 36px rgba(0,0,0,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.7),
+    0 0 0 1px rgba(0,0,0,0.04);
 }
 .navbar__inner {
   max-width: 1200px; margin: 0 auto;
-  height: 100%; padding: 0 1.5rem;
-  display: flex; align-items: center; gap: 2rem;
+  height: 100%; padding: 0 1.2rem;
+  display: flex; align-items: center; gap: 1.2rem;
 }
 .navbar__brand {
   display: flex; align-items: center; gap: 0.65rem;
@@ -323,18 +333,18 @@ body::after {
 }
 .navbar__link {
   display: flex; align-items: center; gap: 0.4rem;
-  padding: 0.4rem 0.9rem;
-  border-radius: 10px;
+  padding: 0.48rem 0.95rem;
+  border-radius: 999px;
   font-size: 0.875rem; font-weight: 500;
   color: var(--text-2);
-  transition: color 0.18s, background 0.18s, box-shadow 0.18s;
+  transition: color 0.18s, background 0.18s, box-shadow 0.18s, transform 0.18s;
   position: relative;
 }
-.navbar__link:hover { color: var(--text-1); background: rgba(255,255,255,0.05); }
+.navbar__link:hover { color: var(--text-1); background: rgba(255,255,255,0.07); transform: translateY(-1px); }
 .navbar__link--active {
   color: var(--amber) !important;
-  background: var(--amber-dim) !important;
-  box-shadow: 0 0 14px var(--amber-glow);
+  background: linear-gradient(135deg, rgba(245,166,35,0.16), rgba(245,166,35,0.08)) !important;
+  box-shadow: 0 0 18px var(--amber-glow), inset 0 0 0 1px rgba(245,166,35,0.16);
 }
 .navbar__link--admin { color: var(--purple); }
 .navbar__link--admin.navbar__link--active { color: var(--purple); background: rgba(139,92,246,0.12) !important; box-shadow: 0 0 14px rgba(139,92,246,0.2); }
@@ -344,17 +354,17 @@ body::after {
 .navbar__icon-btn {
   display: flex; align-items: center; justify-content: center;
   width: 36px; height: 36px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  background: var(--bg-card);
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.04);
   color: var(--text-2);
   position: relative; cursor: pointer;
   transition: color 0.18s, background 0.18s, border-color 0.18s, transform 0.18s, box-shadow 0.18s;
 }
 .navbar__icon-btn:hover {
   color: var(--amber);
-  background: var(--amber-dim);
-  border-color: var(--amber-border);
+  background: rgba(245,166,35,0.1);
+  border-color: rgba(245,166,35,0.22);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0,0,0,0.3), 0 0 8px var(--amber-glow);
 }
@@ -399,12 +409,12 @@ body::after {
 .navbar__avatar-btn {
   display: flex; align-items: center; gap: 0.5rem;
   padding: 0.3rem 0.6rem 0.3rem 0.3rem;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  background: var(--bg-card);
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.04);
   transition: border-color 0.18s, background 0.18s, box-shadow 0.18s;
 }
-.navbar__avatar-btn:hover { border-color: var(--amber-border); background: var(--bg-raised); box-shadow: 0 0 12px var(--amber-glow); }
+.navbar__avatar-btn:hover { border-color: rgba(245,166,35,0.22); background: rgba(255,255,255,0.07); box-shadow: 0 0 12px var(--amber-glow); }
 .navbar__avatar-img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
 .navbar__avatar-initials {
   width: 28px; height: 28px; border-radius: 50%;
@@ -1729,6 +1739,13 @@ option { background: var(--bg-card); }
    RESPONSIVE
 ══════════════════════════════════════════════════════════════ */
 @media (max-width: 640px) {
+  .navbar {
+    top: 0.5rem;
+    width: calc(100% - 1rem);
+    margin-top: 0.5rem;
+    border-radius: 24px;
+  }
+  .navbar__inner { padding: 0 0.9rem; gap: 0.75rem; }
   .layout__main { padding: 0.75rem 1rem 5.5rem; }
   .navbar__links { display: none; }
   .navbar__inner { gap: 0.75rem; }
