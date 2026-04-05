@@ -28,7 +28,7 @@ const UserSchema = new mongoose.Schema(
 
     role: {
       type:    String,
-      enum:    ['student', 'admin'],
+      enum:    ['student', 'faculty', 'admin'],
       default: 'student',
     },
 
@@ -45,6 +45,26 @@ const UserSchema = new mongoose.Schema(
     lastLoginAt: {
       type:    Date,
       default: Date.now,
+    },
+
+    lastSeenAt: {
+      type: Date,
+      default: Date.now,
+    },
+
+    preferences: {
+      dashboard: {
+        defaultContext: {
+          regulation: { type: String, default: 'R22' },
+          branch: { type: String, default: 'CSE' },
+          year: { type: String, default: '1' },
+        },
+        widgetOrder: { type: [String], default: ['timetable', 'exam', 'uploads', 'announcements'] },
+        hiddenWidgets: { type: [String], default: [] },
+        digestMode: { type: String, enum: ['off', 'daily', 'weekly'], default: 'daily' },
+        reminderSnoozes: { type: mongoose.Schema.Types.Mixed, default: {} },
+        lastSeenAt: { type: Date, default: null },
+      },
     },
   },
   { timestamps: true }
@@ -68,6 +88,8 @@ UserSchema.methods.toPublicJSON = function () {
     avatarUrl:   this.avatarUrl,
     createdAt:   this.createdAt,
     lastLoginAt: this.lastLoginAt,
+    lastSeenAt:  this.lastSeenAt,
+    preferences: this.preferences || {},
   };
 };
 

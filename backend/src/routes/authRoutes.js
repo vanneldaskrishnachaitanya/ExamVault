@@ -2,7 +2,7 @@
 
 const express    = require('express');
 const router     = express.Router();
-const { login, getMe } = require('../controllers/authController');
+const { login, getMe, updatePreferences } = require('../controllers/authController');
 const { protect }      = require('../middleware/authMiddleware');
 
 /**
@@ -18,5 +18,6 @@ router.post('/login', protect, login);
  * Returns the profile of the currently authenticated user.
  */
 router.get('/me', protect, getMe);
+router.patch('/me/preferences', protect, updatePreferences);
 
 module.exports = router;

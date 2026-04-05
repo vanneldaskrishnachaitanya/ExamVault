@@ -27,6 +27,14 @@ export const loginToBackend = async (idToken) => {
   const { data } = await axios.post(`${BASE_URL}/auth/login`, {}, { headers: { Authorization: `Bearer ${idToken}` } });
   return data.data.user;
 };
+export const fetchMe = async () => {
+  const { data } = await api.get('/auth/me');
+  return data.data.user;
+};
+export const updateMyPreferences = async (dashboard) => {
+  const { data } = await api.patch('/auth/me/preferences', { dashboard });
+  return data.data.user;
+};
 
 // ── Files ─────────────────────────────────────────────────────
 export const fetchFiles      = async (params={}) => { const { data } = await api.get('/files', { params }); return data.data; };

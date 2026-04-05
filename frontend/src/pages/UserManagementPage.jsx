@@ -2,6 +2,21 @@ import { useEffect, useState, useCallback } from 'react';
 import { Users, Search, Loader2, CheckCircle, XCircle, Shield, GraduationCap } from 'lucide-react';
 import { fetchAllUsers, toggleUserActive } from '../api/apiClient';
 
+function formatLastSeen(dateValue) {
+  if (!dateValue) return 'Never';
+  const ts = new Date(dateValue).getTime();
+  if (Number.isNaN(ts)) return 'Never';
+  const diffMs = Date.now() - ts;
+  const mins = Math.floor(diffMs / 60000);
+  if (mins < 1) return 'just now';
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  if (days < 30) return `${days}d ago`;
+  return new Date(dateValue).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
 export default function UserManagementPage() {
   const [users,   setUsers]   = useState([]);
   const [total,   setTotal]   = useState(0);
@@ -48,6 +63,7 @@ export default function UserManagementPage() {
         <select className="modal__select" style={{ width:'auto' }} value={role} onChange={e => setRole(e.target.value)}>
           <option value="">All roles</option>
           <option value="student">Students</option>
+          <option value="faculty">Faculty</option>
           <option value="admin">Admins</option>
         </select>
       </div>
@@ -73,7 +89,12 @@ export default function UserManagementPage() {
                 <span className={`user-row__role user-row__role--${user.role}`}>
                   {user.role === 'admin'
                     ? <><Shield size={11} /> Admin</>
-                    : <><GraduationCap size={11} /> Student</>}
+                    : user.role === 'faculty'
+                      ? <><GraduationCap size={11} /> Faculty</>
+                      : <><GraduationCap size={11} /> Student</>}
+                </span>
+                <span className="user-row__status" title={user.lastSeenAt ? new Date(user.lastSeenAt).toLocaleString('en-IN') : 'Never'}>
+                  Last seen: {formatLastSeen(user.lastSeenAt)}
                 </span>
                 <span className={`user-row__status${user.isActive ? ' user-row__status--active' : ' user-row__status--inactive'}`}>
                   {user.isActive

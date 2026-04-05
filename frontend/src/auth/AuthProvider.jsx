@@ -152,6 +152,8 @@ export function AuthProvider({ children }) {
       error,
       isAuthenticated: Boolean(backendUser),
       isAdmin: backendUser?.role === 'admin',
+      isFaculty: backendUser?.role === 'faculty',
+      isStaff: backendUser?.role === 'admin' || backendUser?.role === 'faculty',
       login,
       logout,
       clearError,

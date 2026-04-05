@@ -80,8 +80,8 @@ statsRouter.get('/', getPublicStats);
 // ── Exams ─────────────────────────────────────────────────────
 const examRouter = express.Router();
 examRouter.get('/', protect, getExams);
-examRouter.post('/', protect, restrictTo('admin'), createExam);
-examRouter.delete('/:id', protect, restrictTo('admin'), deleteExam);
+examRouter.post('/', protect, restrictTo('admin', 'faculty'), createExam);
+examRouter.delete('/:id', protect, restrictTo('admin', 'faculty'), deleteExam);
 
 const eventRouter = express.Router();
 eventRouter.get('/',       protect, getEvents);
@@ -135,13 +135,13 @@ adminExtrasRouter.delete('/coding/:id',          protect, restrictTo('admin'), d
 adminExtrasRouter.patch('/coding/:id',           protect, restrictTo('admin'), toggleCodingItem);
 adminExtrasRouter.get('/coding/suggestions',     protect, restrictTo('admin'), getSuggestions);
 adminExtrasRouter.patch('/coding/suggestions/:id', protect, restrictTo('admin'), reviewSuggestion);
-adminExtrasRouter.post('/syllabus',              protect, restrictTo('admin'), syllabusUpload.single('file'), uploadSyllabus);
-adminExtrasRouter.delete('/syllabus/:id',        protect, restrictTo('admin'), deleteSyllabus);
-adminExtrasRouter.post('/timetable',             protect, restrictTo('admin'), syllabusUpload.single('file'), uploadTimetable);
-adminExtrasRouter.delete('/timetable/:id',       protect, restrictTo('admin'), deleteTimetable);
-adminExtrasRouter.post('/events',            protect, restrictTo('admin'), eventUpload.single('image'), createEvent);
-adminExtrasRouter.patch('/events/:id/complete', protect, restrictTo('admin'), toggleComplete);
-adminExtrasRouter.delete('/events/:id',        protect, restrictTo('admin'), deleteEvent);
+adminExtrasRouter.post('/syllabus',              protect, restrictTo('admin', 'faculty'), syllabusUpload.single('file'), uploadSyllabus);
+adminExtrasRouter.delete('/syllabus/:id',        protect, restrictTo('admin', 'faculty'), deleteSyllabus);
+adminExtrasRouter.post('/timetable',             protect, restrictTo('admin', 'faculty'), syllabusUpload.single('file'), uploadTimetable);
+adminExtrasRouter.delete('/timetable/:id',       protect, restrictTo('admin', 'faculty'), deleteTimetable);
+adminExtrasRouter.post('/events',            protect, restrictTo('admin', 'faculty'), eventUpload.single('image'), createEvent);
+adminExtrasRouter.patch('/events/:id/complete', protect, restrictTo('admin', 'faculty'), toggleComplete);
+adminExtrasRouter.delete('/events/:id',        protect, restrictTo('admin', 'faculty'), deleteEvent);
 
 adminExtrasRouter.get('/feedback',               protect, restrictTo('admin'), getFeedback);
 adminExtrasRouter.patch('/feedback/:id',         protect, restrictTo('admin'), reviewFeedback);

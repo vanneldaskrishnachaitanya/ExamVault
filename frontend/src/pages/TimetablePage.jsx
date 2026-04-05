@@ -15,7 +15,7 @@ const formatBytes = (b) => !b ? '' : b < 1048576 ? `${(b/1024).toFixed(1)} KB` :
 
 export default function TimetablePage() {
   const { backendUser } = useAuth();
-  const isAdmin = backendUser?.role === 'admin';
+  const isStaff = backendUser?.role === 'admin' || backendUser?.role === 'faculty';
   const fileRef = useRef(null);
 
   const [timetables, setTimetables] = useState([]);
@@ -83,7 +83,7 @@ export default function TimetablePage() {
     <div className="syllabus-page">
       <div className="syllabus-page__header">
         <h1 className="syllabus-page__title"><Clock size={22}/> Timetables</h1>
-        {isAdmin && (
+        {isStaff && (
           <button className="btn btn--primary btn--sm" onClick={() => setShowForm(s => !s)}>
             <Plus size={14}/> Upload Timetable
           </button>
@@ -117,7 +117,7 @@ export default function TimetablePage() {
       </div>
 
       {/* Upload Form */}
-      {showForm && isAdmin && (
+      {showForm && isStaff && (
         <div className="syllabus-form">
           <h3 className="syllabus-form__title">Upload Timetable PDF</h3>
           <div className="syllabus-form__grid">
@@ -171,7 +171,7 @@ export default function TimetablePage() {
         <div className="sp-state sp-state--empty">
           <Clock size={40}/>
           <p>No timetables uploaded yet for {regulation} · {branch}</p>
-          {isAdmin && <button className="btn btn--primary btn--sm" onClick={() => setShowForm(true)}><Plus size={14}/> Upload now</button>}
+          {isStaff && <button className="btn btn--primary btn--sm" onClick={() => setShowForm(true)}><Plus size={14}/> Upload now</button>}
         </div>
       ) : (
         <div className="syllabus-list">
@@ -199,7 +199,7 @@ export default function TimetablePage() {
                   }}>
                   <Download size={13}/> Download
                 </button>
-                {isAdmin && (
+                {isStaff && (
                   <button className="fc-btn fc-btn--delete" onClick={() => handleDelete(t._id)}>
                     <Trash2 size={13}/>
                   </button>

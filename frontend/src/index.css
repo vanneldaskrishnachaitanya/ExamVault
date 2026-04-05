@@ -884,6 +884,218 @@ a.breadcrumb__item:hover { color: var(--amber); background: var(--amber-dim); }
   background: linear-gradient(90deg, var(--border), transparent);
 }
 
+.home-role-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.9rem;
+  margin-bottom: 0.9rem;
+  flex-wrap: wrap;
+}
+.home-role-head__label {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--text-1);
+}
+.home-role-head__sub {
+  color: var(--text-3);
+  font-size: 0.8rem;
+}
+
+.home-role-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.dash-context-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.widget-customizer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-bottom: 0.75rem;
+}
+.widget-toggle {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.36rem 0.7rem;
+  background: var(--bg-card);
+  color: var(--text-2);
+  font-size: 0.76rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.widget-toggle:hover { border-color: var(--amber-border); color: var(--amber); }
+.widget-toggle--off { opacity: 0.55; }
+.home-role-card {
+  text-align: left;
+  padding: 0.9rem 1rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: linear-gradient(160deg, var(--bg-card), var(--bg-raised));
+  color: var(--text-1);
+  min-height: 132px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: transform 0.24s var(--ease), border-color 0.24s, box-shadow 0.24s, background 0.24s;
+}
+.home-role-card__icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 11px;
+  display: grid;
+  place-items: center;
+  background: var(--amber-dim);
+  color: var(--amber);
+}
+.home-role-card__title {
+  font-weight: 800;
+  font-size: 0.92rem;
+}
+.home-role-card__desc {
+  color: var(--text-3);
+  font-size: 0.76rem;
+  line-height: 1.5;
+  max-height: 2.2em;
+  overflow: hidden;
+  transition: max-height 0.28s var(--ease), color 0.22s;
+}
+.home-role-card__cta {
+  margin-top: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: var(--amber);
+  transition: gap 0.2s;
+}
+.home-role-card:hover {
+  transform: translateY(-3px) scale(1.01);
+  border-color: var(--amber-border);
+  box-shadow: 0 18px 38px rgba(0,0,0,0.28), 0 0 0 1px rgba(245,166,35,0.12);
+}
+.home-role-card:hover .home-role-card__desc {
+  max-height: 7.5em;
+  color: var(--text-2);
+}
+.home-role-card:hover .home-role-card__cta { gap: 0.52rem; }
+
+.dash-widget-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+.dash-widget {
+  text-align: left;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  padding: 0.9rem;
+  min-height: 138px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  transition: transform 0.22s var(--ease), border-color 0.22s, box-shadow 0.22s;
+}
+.dash-widget__head {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--text-3);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 800;
+}
+.dash-widget__title {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--text-1);
+  line-height: 1.4;
+}
+.dash-widget__meta {
+  color: var(--text-3);
+  font-size: 0.76rem;
+  line-height: 1.55;
+  margin-top: auto;
+}
+.dash-widget:hover {
+  transform: translateY(-3px);
+  border-color: var(--amber-border);
+  box-shadow: 0 16px 34px rgba(0,0,0,0.22);
+}
+.dash-widget--loading {
+  min-height: 138px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: linear-gradient(110deg, var(--bg-card) 8%, var(--bg-raised) 18%, var(--bg-card) 33%);
+  background-size: 220% 100%;
+  animation: shimmerSweep 1.3s linear infinite;
+}
+
+.smart-reminders {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+.smart-reminder {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+  text-align: left;
+  padding: 0.75rem 0.85rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  transition: transform 0.2s var(--ease), border-color 0.2s, box-shadow 0.2s;
+}
+.smart-reminder__title { font-weight: 800; font-size: 0.82rem; color: var(--text-1); }
+.smart-reminder__msg { color: var(--text-2); font-size: 0.75rem; line-height: 1.45; }
+.smart-reminder__actions { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.35rem; }
+.smart-reminder:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.2);
+}
+.smart-reminder--danger { border-color: rgba(239,68,68,0.35); background: rgba(239,68,68,0.08); }
+.smart-reminder--warning { border-color: rgba(245,158,11,0.35); background: rgba(245,158,11,0.08); }
+.smart-reminder--info { border-color: rgba(79,142,247,0.35); background: rgba(79,142,247,0.08); }
+
+.digest-card {
+  border: 1px solid var(--border);
+  background: linear-gradient(160deg, var(--bg-card), var(--bg-raised));
+  border-radius: var(--radius-lg);
+  padding: 0.9rem 1rem;
+}
+.digest-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.45rem;
+}
+.digest-card__title {
+  font-family: var(--font-display);
+  font-size: 0.96rem;
+  font-weight: 800;
+  color: var(--text-1);
+}
+.digest-card__text {
+  color: var(--text-2);
+  font-size: 0.8rem;
+  line-height: 1.55;
+}
+
 /* Regulation grid */
 .reg-grid {
   display: grid;
@@ -3478,6 +3690,12 @@ option { background: var(--bg-card); }
   padding: 1rem;
   box-shadow: 0 18px 46px rgba(0,0,0,0.18);
   backdrop-filter: blur(14px);
+  transition: transform 0.22s var(--ease), border-color 0.22s, box-shadow 0.22s;
+}
+.dash-hub__panel:hover {
+  transform: translateY(-2px);
+  border-color: var(--amber-border);
+  box-shadow: 0 24px 48px rgba(0,0,0,0.22);
 }
 .dash-hub__panel--search { grid-column: 1 / -1; }
 .dash-hub__panel-head {
@@ -3554,11 +3772,25 @@ option { background: var(--bg-card); }
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 0.8rem;
+  transition: transform 0.2s var(--ease), border-color 0.2s, background 0.2s;
 }
 .hub-saved-card__link,
 .hub-feed-item {
   flex: 1;
   min-width: 0;
+}
+.hub-saved-card__link {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  width: 100%;
+  text-align: left;
+}
+.hub-saved-card:hover,
+.hub-reminder-item:hover {
+  transform: translateY(-2px);
+  border-color: var(--amber-border);
+  background: var(--bg-hover);
 }
 .hub-saved-card__icon,
 .hub-feed-item__icon,
@@ -3590,6 +3822,11 @@ option { background: var(--bg-card); }
   display: grid;
   place-items: center;
   flex-shrink: 0;
+  transition: transform 0.18s, background 0.18s;
+}
+.hub-saved-card__remove:hover {
+  transform: scale(1.08);
+  background: rgba(239,68,68,0.18);
 }
 .hub-feed-item {
   text-decoration: none;
@@ -3626,6 +3863,11 @@ option { background: var(--bg-card); }
   white-space: nowrap;
 }
 .hub-reminder-item__icon { background: rgba(79,142,247,0.12); color: var(--blue); }
+
+@keyframes shimmerSweep {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
 
 .search-page__hero {
   display: flex;
@@ -3769,11 +4011,19 @@ option { background: var(--bg-card); }
 .navbar__theme-option--cycle { margin-top: 0.2rem; background: var(--bg-raised); }
 
 @media (max-width: 1100px) {
+  .dash-context-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .home-role-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dash-widget-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .smart-reminders { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .dash-hub__grid { grid-template-columns: 1fr; }
   .dash-hub__search-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 760px) {
+  .home-role-grid,
+  .dash-context-grid,
+  .dash-widget-grid,
+  .smart-reminders { grid-template-columns: 1fr; }
   .search-page__hero { align-items: flex-start; }
   .search-page__source-row { width: 100%; }
   .dash-hub__search-grid { grid-template-columns: 1fr; }

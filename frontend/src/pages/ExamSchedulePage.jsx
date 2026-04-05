@@ -27,7 +27,7 @@ function getFirstDayOfMonth(year, month) {
 
 export default function ExamSchedulePage() {
   const { backendUser } = useAuth();
-  const isAdmin = backendUser?.role === 'admin';
+  const isStaff = backendUser?.role === 'admin' || backendUser?.role === 'faculty';
 
   const today = new Date();
   const [viewYear,  setViewYear]  = useState(today.getFullYear());
@@ -94,7 +94,7 @@ export default function ExamSchedulePage() {
   return (
     <div className="exam-page">
       <div className="exam-page__header">
-        <h1 className="exam-page__title"><Calendar size={22} /> Exam Schedule</h1>
+        {isStaff && (
         {isAdmin && (
           <button className="btn btn--primary btn--sm" onClick={() => setShowForm(s => !s)}>
             <Plus size={14} /> Add Exam
@@ -102,7 +102,7 @@ export default function ExamSchedulePage() {
         )}
       </div>
 
-      {/* Add form */}
+      {showForm && isStaff && (
       {showForm && isAdmin && (
         <div className="exam-form">
           <div className="exam-form__grid">
@@ -217,7 +217,7 @@ export default function ExamSchedulePage() {
                       <p className="exam-item__date">{d.toLocaleDateString('en-IN',{day:'2-digit',month:'short'})}</p>
                       <p className="exam-item__days" style={{color: daysLeft <= 3 ? 'var(--danger)' : daysLeft <= 7 ? 'var(--warning)' : 'var(--text-3)'}}>
                         {daysLeft === 0 ? 'Today!' : daysLeft === 1 ? 'Tomorrow' : `${daysLeft} days`}
-                      </p>
+                      {isStaff && (
                       {isAdmin && (
                         <button className="btn btn--sm btn--danger" style={{padding:'0.2rem 0.4rem'}} onClick={() => handleDelete(ex._id)}>
                           <Trash2 size={12}/>

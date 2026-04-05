@@ -33,7 +33,7 @@ const isRegOpen = (e) => {
 
 export default function EventsPage() {
   const { backendUser } = useAuth();
-  const isAdmin = backendUser?.role === 'admin';
+  const isStaff = backendUser?.role === 'admin' || backendUser?.role === 'faculty';
   const imgRef = useRef(null);
 
   const [events,       setEvents]       = useState([]);
@@ -129,7 +129,7 @@ export default function EventsPage() {
           <h1 className="events-title"><Calendar size={24}/> Events</h1>
           <p className="events-sub">Upcoming college events, workshops, hackathons & more</p>
         </div>
-        {isAdmin && (
+        {isStaff && (
           <button className="btn btn--primary" onClick={() => setShowForm(s => !s)}>
             <Plus size={14}/> Add Event
           </button>
@@ -137,7 +137,7 @@ export default function EventsPage() {
       </div>
 
       {/* Add Event Form */}
-      {showForm && isAdmin && (
+      {showForm && isStaff && (
         <div className="event-form">
           <h3 className="event-form__title">New Event</h3>
           <div className="event-form__grid">
@@ -247,7 +247,7 @@ export default function EventsPage() {
       ) : events.length === 0 ? (
         <div className="sp-state sp-state--empty">
           <Calendar size={40}/>
-          <p>No events yet. {isAdmin ? 'Add the first event!' : 'Check back soon!'}</p>
+          <p>No events yet. {isStaff ? 'Add the first event!' : 'Check back soon!'}</p>
         </div>
       ) : (
         <>
@@ -255,7 +255,7 @@ export default function EventsPage() {
             <div className="events-section">
               <h2 className="events-section__title">Upcoming Events <span className="events-section__count">{upcoming.length}</span></h2>
               <div className="events-grid">
-                {upcoming.map(ev => <EventCard key={ev._id} ev={ev} isAdmin={isAdmin} onView={setSelectedEvent} onComplete={handleComplete} onDelete={handleDelete}/>)}
+                {upcoming.map(ev => <EventCard key={ev._id} ev={ev} isAdmin={isStaff} onView={setSelectedEvent} onComplete={handleComplete} onDelete={handleDelete}/>)}
               </div>
             </div>
           )}
@@ -263,7 +263,7 @@ export default function EventsPage() {
             <div className="events-section" style={{marginTop:'2rem'}}>
               <h2 className="events-section__title" style={{color:'var(--text-3)'}}>Completed <span className="events-section__count">{completed.length}</span></h2>
               <div className="events-grid">
-                {completed.map(ev => <EventCard key={ev._id} ev={ev} isAdmin={isAdmin} onView={setSelectedEvent} onComplete={handleComplete} onDelete={handleDelete}/>)}
+                {completed.map(ev => <EventCard key={ev._id} ev={ev} isAdmin={isStaff} onView={setSelectedEvent} onComplete={handleComplete} onDelete={handleDelete}/>)}
               </div>
             </div>
           )}

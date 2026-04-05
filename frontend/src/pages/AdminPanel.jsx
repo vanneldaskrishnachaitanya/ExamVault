@@ -48,6 +48,21 @@ function RejectDialog({ file, onConfirm, onCancel }) {
   );
 }
 
+function formatLastSeen(dateValue) {
+  if (!dateValue) return 'Never';
+  const ts = new Date(dateValue).getTime();
+  if (Number.isNaN(ts)) return 'Never';
+  const diffMs = Date.now() - ts;
+  const mins = Math.floor(diffMs / 60000);
+  if (mins < 1) return 'just now';
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  if (days < 30) return `${days}d ago`;
+  return new Date(dateValue).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
 export default function AdminPanel() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('pending');
@@ -393,7 +408,14 @@ export default function AdminPanel() {
                   </div>
                   <div className="user-row__meta">
                     <span className={`user-row__role user-row__role--${user.role}`}>
-                      {user.role === 'admin' ? <><Shield size={11} /> Admin</> : <><GraduationCap size={11} /> Student</>}
+                      {user.role === 'admin'
+                        ? <><Shield size={11} /> Admin</>
+                        : user.role === 'faculty'
+                          ? <><GraduationCap size={11} /> Faculty</>
+                          : <><GraduationCap size={11} /> Student</>}
+                    </span>
+                    <span className="user-row__status" title={user.lastSeenAt ? new Date(user.lastSeenAt).toLocaleString('en-IN') : 'Never'}>
+                      Last seen: {formatLastSeen(user.lastSeenAt)}
                     </span>
                     <span className={`user-row__status${user.isActive ? ' user-row__status--active' : ' user-row__status--inactive'}`}>
                       {user.isActive ? <><CheckCircle size={11} /> Active</> : <><XCircle size={11} /> Inactive</>}

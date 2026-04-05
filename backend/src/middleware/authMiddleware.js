@@ -43,8 +43,14 @@ const protect = async (req, res, next) => {
       .map(e => e.trim().toLowerCase())
       .filter(Boolean);
 
+    const FACULTY_EMAILS = (process.env.FACULTY_EMAILS || '')
+      .split(',')
+      .map(e => e.trim().toLowerCase())
+      .filter(Boolean);
+
     const emailLower = email.toLowerCase();
     const isAdmin = ADMIN_EMAILS.includes(emailLower);
+    const isFaculty = FACULTY_EMAILS.includes(emailLower);
 
     // Block non-college users except admins
 
@@ -58,6 +64,12 @@ const protect = async (req, res, next) => {
     }
 
     // ── Upsert user ─────────────────────────
+    const existingUser = await User.findOne({ firebaseUid: uid }).lean();
+    const resolvedRole = isAdmin
+      ? 'admin'
+      : isFaculty
+        ? 'faculty'
+        : (existingUser?.role || 'student');
 
     const user = await User.findOneAndUpdate(
       { firebaseUid: uid },
@@ -67,7 +79,8 @@ const protect = async (req, res, next) => {
           name: name || emailLower.split('@')[0],
           avatarUrl: picture || null,
           lastLoginAt: new Date(),
-          role: isAdmin ? "admin" : "student"
+          lastSeenAt: new Date(),
+          role: resolvedRole,
         },
         $setOnInsert: { firebaseUid: uid }
       },

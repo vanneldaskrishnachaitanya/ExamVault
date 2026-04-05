@@ -11,7 +11,7 @@ const formatBytes = (b) => !b ? '' : b < 1048576 ? `${(b/1024).toFixed(1)} KB` :
 
 export default function SyllabusPage() {
   const { backendUser } = useAuth();
-  const isAdmin = backendUser?.role === 'admin';
+  const isStaff = backendUser?.role === 'admin' || backendUser?.role === 'faculty';
   const fileRef = useRef(null);
 
   const [syllabi,    setSyllabi]    = useState([]);
@@ -84,7 +84,7 @@ export default function SyllabusPage() {
     <div className="syllabus-page">
       <div className="syllabus-page__header">
         <h1 className="syllabus-page__title"><BookOpen size={22}/> Syllabus</h1>
-        {isAdmin && (
+        {isStaff && (
           <button className="btn btn--primary btn--sm" onClick={() => setShowForm(s => !s)}>
             <Plus size={14}/> Upload Syllabus
           </button>
@@ -115,7 +115,7 @@ export default function SyllabusPage() {
       </div>
 
       {/* Upload Form */}
-      {showForm && isAdmin && (
+      {showForm && isStaff && (
         <div className="syllabus-form">
           <h3 className="syllabus-form__title">Upload Syllabus PDF</h3>
           <div className="syllabus-form__grid">
@@ -167,7 +167,7 @@ export default function SyllabusPage() {
         <div className="sp-state sp-state--empty">
           <BookOpen size={40}/>
           <p>No syllabi uploaded yet for {regulation} · {branch}{year ? ` · Year ${year}` : ''}</p>
-          {isAdmin && <button className="btn btn--primary btn--sm" onClick={() => setShowForm(true)}><Plus size={14}/> Upload now</button>}
+          {isStaff && <button className="btn btn--primary btn--sm" onClick={() => setShowForm(true)}><Plus size={14}/> Upload now</button>}
         </div>
       ) : (
         Object.entries(grouped).sort().map(([yearLabel, items]) => (
@@ -198,7 +198,7 @@ export default function SyllabusPage() {
                     }}>
                       <Download size={13}/> Download
                     </button>
-                    {isAdmin && (
+                    {isStaff && (
                       <button className="fc-btn fc-btn--delete" onClick={() => handleDelete(s._id)}>
                         <Trash2 size={13}/>
                       </button>
