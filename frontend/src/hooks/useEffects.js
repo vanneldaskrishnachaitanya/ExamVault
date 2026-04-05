@@ -92,16 +92,25 @@ export function initTilt() {
         const maxTilt = isRegCard ? 20 : 13;
         const rotateX = (y - 0.5) * -maxTilt;
         const rotateY = (x - 0.5) * maxTilt;
-        const lift = isRegCard ? -8 : 0;
-        const scale = isRegCard ? 1.035 : 1.022;
-        const perspective = isRegCard ? 1100 : 900;
-        card.style.transform = `perspective(${perspective}px) translateY(${lift}px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(${scale})`;
+        if (isRegCard) {
+          card.style.setProperty('--rx', `${rotateX}deg`);
+          card.style.setProperty('--ry', `${rotateY}deg`);
+        } else {
+          card.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.022)`;
+        }
         card.style.setProperty('--mx', x*100+'%');
         card.style.setProperty('--my', y*100+'%');
         card.style.setProperty('--lx', x*100+'%');
         card.style.setProperty('--ly', y*100+'%');
       }, { passive: true });
-      card.addEventListener('pointerleave', () => { card.style.transform = ''; });
+      card.addEventListener('pointerleave', () => {
+        if (isRegCard) {
+          card.style.setProperty('--rx', '0deg');
+          card.style.setProperty('--ry', '0deg');
+        } else {
+          card.style.transform = '';
+        }
+      });
     });
 
     // Light-only (no tilt)
