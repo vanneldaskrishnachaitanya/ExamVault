@@ -23,13 +23,15 @@
 
 /* ── 2. KINETIC ───────────────────────────────────────────── */
 .ev-slide-in {
-  opacity: 0; transform: translateY(22px);
-  animation: evSlideUp .72s cubic-bezier(.16,1,.3,1) forwards;
+  animation: evSlideUp .65s cubic-bezier(.16,1,.3,1) both;
 }
-@keyframes evSlideUp { to { opacity:1; transform:translateY(0); } }
+@keyframes evSlideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 .ev-kinetic__word {
   display: inline-block; transform: translateY(110%); opacity: 0;
-  animation: evWordIn .72s cubic-bezier(.16,1,.3,1) forwards;
+  animation: evWordIn .65s cubic-bezier(.16,1,.3,1) both;
 }
 @keyframes evWordIn { to { transform:translateY(0); opacity:1; } }
 
@@ -161,15 +163,13 @@
   flex-shrink: 0;
   transition: color .18s, background .18s, border-color .18s;
   z-index: 110;
+  cursor: pointer;
 }
 .navbar__hamburger:hover { color: var(--amber); background: var(--amber-dim); border-color: var(--amber-border); }
-
-.navbar__dl-btn { /* hide on mobile, show in drawer instead */ }
 
 @media (max-width: 640px) {
   .navbar__hamburger { display: flex; }
   .navbar__links { display: none; }
-  .navbar__dl-btn { display: none; }
 }
 
 /* Overlay */
