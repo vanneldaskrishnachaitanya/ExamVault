@@ -5,7 +5,10 @@ import {
    Pin,
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
-import { fetchEvents, fetchEventClubs, createEvent, toggleEventComplete, deleteEvent } from '../api/apiClient';
+import {
+  fetchEvents, fetchEventClubs, createEvent, toggleEventComplete, deleteEvent,
+  addSavedItem, removeSavedItem as removeSavedItemApi,
+} from '../api/apiClient';
   import { isSavedItem, toggleSavedItem } from '../utils/featureStorage';
 
 const EVENT_TYPES = [
@@ -352,16 +355,35 @@ function EventCard({ ev, isAdmin, onView, onComplete, onDelete }) {
   const isPast  = new Date(ev.eventDate) < new Date();
   const [saved, setSaved] = useState(isSavedItem({ type: 'event', id: ev._id }));
 
+  useEffect(() => {
+    const sync = () => setSaved(isSavedItem({ type: 'event', id: ev._id }));
+    window.addEventListener('ev:saved-changed', sync);
+    return () => window.removeEventListener('ev:saved-changed', sync);
+  }, [ev._id]);
+
   const handlePin = (e) => {
     e.stopPropagation();
-    const next = toggleSavedItem({
+    const payload = {
       type: 'event',
       id: ev._id,
       title: ev.title,
       subtitle: `${ev.clubName || 'Event'} · ${fmt(ev.eventDate)}`,
       href: '/events',
-    });
-    setSaved(next.some(entry => entry.type === 'event' && entry.id === ev._id));
+    };
+
+    const sync = async () => {
+      try {
+        if (saved) {
+          await removeSavedItemApi({ type: 'event', itemId: String(ev._id) });
+        } else {
+          await addSavedItem({ type: 'event', itemId: String(ev._id), title: payload.title, subtitle: payload.subtitle, href: payload.href });
+        }
+        const next = toggleSavedItem(payload);
+        setSaved(next.some(entry => entry.type === 'event' && String(entry.id) === String(ev._id)));
+      } catch {}
+    };
+
+    sync();
   };
 
   return (

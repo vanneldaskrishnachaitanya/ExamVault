@@ -69,6 +69,11 @@ export const fetchBookmarks  = async ()        => { const { data } = await api.g
 export const addBookmark     = async (payload) => { const { data } = await api.post('/bookmarks', payload); return data.data; };
 export const removeBookmark  = async (payload) => { const { data } = await api.delete('/bookmarks', { data: payload }); return data; };
 
+// ── Saved items (persistent pins) ───────────────────────────
+export const fetchSavedItems = async ()        => { const { data } = await api.get('/saved-items'); return data.data; };
+export const addSavedItem    = async (payload) => { const { data } = await api.post('/saved-items', payload); return data.data; };
+export const removeSavedItem = async (payload) => { const { data } = await api.delete('/saved-items', { data: payload }); return data; };
+
 // ── Analytics ──────────────────────────────────────────────────
 export const fetchAnalytics   = async () => { const { data } = await api.get('/admin/analytics'); return data.data; };
 export const fetchPublicStats = async () => { const { data } = await api.get('/stats'); return data.data; };

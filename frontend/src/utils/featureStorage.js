@@ -25,7 +25,7 @@ function notify(name) {
 }
 
 function makeKey(item) {
-  return `${item.type}:${item.id}`;
+  return `${item.type}:${item.id ?? item.itemId}`;
 }
 
 export function getSavedItems() {

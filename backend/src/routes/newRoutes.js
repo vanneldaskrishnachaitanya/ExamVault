@@ -7,6 +7,7 @@ const { restrictTo }  = require('../middleware/roleMiddleware');
 const { getNotifications, markAllRead, markOneRead, deleteNotification } = require('../controllers/notificationController');
 const { getAnnouncements, createAnnouncement, deleteAnnouncement, toggleAnnouncement } = require('../controllers/announcementController');
 const { getBookmarks, addBookmark, removeBookmark } = require('../controllers/bookmarkController');
+const { getSavedItems, addSavedItem, removeSavedItem } = require('../controllers/savedItemController');
 const { getAnalytics, getPublicStats } = require('../controllers/analyticsController');
 const { getFileRatings, rateFile, deleteRating } = require('../controllers/ratingController');
 const { getDownloadHistory, recordDownloadFromFrontend, globalSearch, getAllUsers, toggleUserActive } = require('../controllers/extraController');
@@ -46,6 +47,12 @@ const bookmarkRouter = express.Router();
 bookmarkRouter.get('/',    protect, getBookmarks);
 bookmarkRouter.post('/',   protect, addBookmark);
 bookmarkRouter.delete('/', protect, removeBookmark);
+
+// ── Saved items (persistent pins) ───────────────────────────
+const savedItemRouter = express.Router();
+savedItemRouter.get('/',    protect, getSavedItems);
+savedItemRouter.post('/',   protect, addSavedItem);
+savedItemRouter.delete('/', protect, removeSavedItem);
 
 // ── Ratings ───────────────────────────────────────────────────
 const ratingRouter = express.Router();
@@ -161,7 +168,7 @@ adminExtrasRouter.patch('/polls/:id',     protect, restrictTo('admin'), togglePo
 adminExtrasRouter.delete('/polls/:id',    protect, restrictTo('admin'), deletePoll);
 
 module.exports = {
-  notificationRouter, announcementRouter, bookmarkRouter,
+  notificationRouter, announcementRouter, bookmarkRouter, savedItemRouter,
   adminExtrasRouter, ratingRouter, historyRouter, searchRouter,
   branchRouter, eventRouter, codingRouter, syllabusRouter,
   timetableRouter, statsRouter, feedbackRouter, examRouter,

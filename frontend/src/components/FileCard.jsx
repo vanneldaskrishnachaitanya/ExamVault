@@ -1,11 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Download, Eye, FileText, Flag, Image, Presentation,
   FileSpreadsheet, Calendar, User, Clock, TrendingDown,
   CheckCircle, AlertCircle, Timer, Trash2, Star, Share2, Pin,
   X, Loader2,
 } from 'lucide-react';
-import api, { getFileRatings, rateFile, recordDownloadApi, toggleImportant } from '../api/apiClient';
+import api, {
+  getFileRatings, rateFile, recordDownloadApi, toggleImportant,
+  addSavedItem, removeSavedItem as removeSavedItemApi,
+} from '../api/apiClient';
 import { useAuth } from '../hooks/useAuth';
 import StarRating from './StarRating';
 import { isSavedItem, toggleSavedItem } from '../utils/featureStorage';
@@ -68,6 +71,12 @@ export default function FileCard({ file, showStatus = false, onReport, compact =
   const [important,     setImportant]     = useState(file.isImportant || false);
   const [saved,         setSaved]         = useState(isSavedItem({ type: 'file', id: file._id }));
 
+  useEffect(() => {
+    const sync = () => setSaved(isSavedItem({ type: 'file', id: file._id }));
+    window.addEventListener('ev:saved-changed', sync);
+    return () => window.removeEventListener('ev:saved-changed', sync);
+  }, [file._id]);
+
   const canPreview = file.mimeType === 'application/pdf' || file.mimeType?.startsWith('image/')
     || file.mimeType?.includes('word') || file.mimeType?.includes('powerpoint')
     || file.mimeType?.includes('presentation') || file.mimeType?.includes('spreadsheet')
@@ -119,7 +128,7 @@ export default function FileCard({ file, showStatus = false, onReport, compact =
   };
 
   const handlePin = () => {
-    const next = toggleSavedItem({
+    const payload = {
       type: 'file',
       id: file._id,
       title: file.originalName,
@@ -127,8 +136,21 @@ export default function FileCard({ file, showStatus = false, onReport, compact =
       href: file.regulation && file.branch && file.subject
         ? `/r/${file.regulation}/${file.branch}/${encodeURIComponent(file.subject)}`
         : '/dashboard',
-    });
-    setSaved(next.some(entry => entry.type === 'file' && entry.id === file._id));
+    };
+
+    const sync = async () => {
+      try {
+        if (saved) {
+          await removeSavedItemApi({ type: 'file', itemId: String(file._id) });
+        } else {
+          await addSavedItem({ type: 'file', itemId: String(file._id), title: payload.title, subtitle: payload.subtitle, href: payload.href });
+        }
+        const next = toggleSavedItem(payload);
+        setSaved(next.some(entry => entry.type === 'file' && String(entry.id) === String(file._id)));
+      } catch {}
+    };
+
+    sync();
   };
 
   const handleDelete = async () => {

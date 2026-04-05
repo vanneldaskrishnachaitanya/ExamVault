@@ -4,7 +4,10 @@ import {
   Quote, Sparkles, ChevronLeft, ChevronRight, RefreshCw,
   BookOpen, X, Check, BarChart2, Clock, Pin,
 } from 'lucide-react';
-import { fetchTodayQuotes, fetchActivePolls, votePoll as apiVotePoll } from '../api/apiClient';
+import {
+  fetchTodayQuotes, fetchActivePolls, votePoll as apiVotePoll,
+  addSavedItem, removeSavedItem as removeSavedItemApi,
+} from '../api/apiClient';
 import { isSavedItem, toggleSavedItem } from '../utils/featureStorage';
 
 const BG_PATTERNS = [
@@ -195,16 +198,39 @@ export default function QuoteBanner() {
     setSaved(isSavedItem({ type: 'quote', id: q._id }));
   }, [isQuoteCard, q._id]);
 
+  useEffect(() => {
+    const sync = () => {
+      if (!isQuoteCard || !q._id) return;
+      setSaved(isSavedItem({ type: 'quote', id: q._id }));
+    };
+    window.addEventListener('ev:saved-changed', sync);
+    return () => window.removeEventListener('ev:saved-changed', sync);
+  }, [isQuoteCard, q._id]);
+
   const handleSaveQuote = () => {
     if (!q._id) return;
-    const next = toggleSavedItem({
+    const query = encodeURIComponent(q.author || q.sectionName || q.text?.slice(0, 28) || 'quote');
+    const payload = {
       type: 'quote',
       id: q._id,
       title: q.sectionName ? `${q.sectionName} quote` : 'Daily quote',
       subtitle: q.author || q.text?.slice(0, 60) || 'Inspirational quote',
-      href: '/dashboard',
-    });
-    setSaved(next.some(entry => entry.type === 'quote' && entry.id === q._id));
+      href: `/search?source=quotes&q=${query}`,
+    };
+
+    const sync = async () => {
+      try {
+        if (saved) {
+          await removeSavedItemApi({ type: 'quote', itemId: String(q._id) });
+        } else {
+          await addSavedItem({ type: 'quote', itemId: String(q._id), title: payload.title, subtitle: payload.subtitle, href: payload.href });
+        }
+        const next = toggleSavedItem(payload);
+        setSaved(next.some(entry => entry.type === 'quote' && String(entry.id) === String(q._id)));
+      } catch {}
+    };
+
+    sync();
   };
 
   return (

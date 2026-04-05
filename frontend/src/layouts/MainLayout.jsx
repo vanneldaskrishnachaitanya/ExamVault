@@ -4,7 +4,7 @@ import BottomNav from '../components/BottomNav';
 import { useEffect, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-import { fetchAnnouncements } from '../api/apiClient';
+import { fetchAnnouncements, fetchSavedItems } from '../api/apiClient';
 import { X, Megaphone } from 'lucide-react';
 import '../effects.css';
 import { initEffects, initTilt, initMagnetic, initCounters, initKinetic, initStarfield } from '../hooks/useEffects';
@@ -88,6 +88,24 @@ export default function MainLayout() {
   useEffect(() => {
     fetchAnnouncements()
       .then(d => setAnnouncements(d.announcements || []))
+      .catch(() => {});
+  }, []);
+
+  // Keep saved items persistent per user by hydrating local cache from backend.
+  useEffect(() => {
+    fetchSavedItems()
+      .then(d => {
+        const normalized = (d.savedItems || []).map(item => ({
+          type: item.type,
+          id: item.itemId,
+          title: item.title,
+          subtitle: item.subtitle,
+          href: item.href,
+          savedAt: item.createdAt,
+        }));
+        localStorage.setItem('ev-saved-items-v1', JSON.stringify(normalized));
+        window.dispatchEvent(new Event('ev:saved-changed'));
+      })
       .catch(() => {});
   }, []);
 

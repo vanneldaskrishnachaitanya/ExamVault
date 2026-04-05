@@ -283,8 +283,6 @@ export default function Dashboard() {
         </div>
       </section>
 
-      <DashboardHub />
-
       {/* ── Regulation picker ─────────────────────────────── */}
       <section className="dash-section">
         <h2 className="dash-section-title">Choose your Regulation</h2>
@@ -313,6 +311,8 @@ export default function Dashboard() {
           ))}
         </div>
       </section>
+
+      <DashboardHub />
 
     </div>
   );

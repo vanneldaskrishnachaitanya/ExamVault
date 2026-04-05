@@ -7,8 +7,10 @@ import {
   getCodingItems, suggestPlatform,
   getAllCodingItems, createCodingItem, deleteCodingItem,
   toggleCodingItem, getCodingSuggestions, reviewSuggestion,
+  addSavedItem, removeSavedItem as removeSavedItemApi,
 } from '../api/apiClient';
 import { useAuth } from '../hooks/useAuth';
+import { isSavedItem, toggleSavedItem } from '../utils/featureStorage';
 
 const TABS       = ['Platforms', 'Resources', 'Contests', 'Suggest'];
 const ADMIN_TABS = ['Platforms', 'Resources', 'Contests', 'Manage', 'Suggestions'];
@@ -156,18 +158,7 @@ export default function CodingPage() {
           <div className="platform-grid">
             {displayItems.length===0 && <p style={{color:'var(--text-3)',fontSize:'0.875rem'}}>No {activeTab.toLowerCase()} yet.</p>}
             {displayItems.map(item => (
-              <a key={item._id} href={item.url} target="_blank" rel="noreferrer" className="platform-card">
-                <div className="platform-card__header">
-                  <span className="platform-card__logo">{item.logo}</span>
-                  <div>
-                    <h3 className="platform-card__name">{item.name}</h3>
-                    {item.difficulty && <p className="platform-card__difficulty">{item.difficulty}</p>}
-                  </div>
-                  <ExternalLink size={14} className="platform-card__ext"/>
-                </div>
-                {item.desc && <p className="platform-card__desc">{item.desc}</p>}
-                {item.tags?.length>0 && <div className="platform-card__tags">{item.tags.map(tag=><span key={tag} className="platform-card__tag">{tag}</span>)}</div>}
-              </a>
+              <CodingPinCard key={item._id} item={item} />
             ))}
           </div>
         </div>
@@ -284,5 +275,54 @@ export default function CodingPage() {
 
       {toast && <div className="toast">{toast}</div>}
     </div>
+  );
+}
+
+function CodingPinCard({ item }) {
+  const [saved, setSaved] = useState(isSavedItem({ type: 'coding', id: item._id }));
+
+  useEffect(() => {
+    const sync = () => setSaved(isSavedItem({ type: 'coding', id: item._id }));
+    window.addEventListener('ev:saved-changed', sync);
+    return () => window.removeEventListener('ev:saved-changed', sync);
+  }, [item._id]);
+
+  const handlePin = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const payload = {
+      type: 'coding',
+      id: item._id,
+      title: item.name,
+      subtitle: item.type || 'coding',
+      href: '/coding',
+    };
+    try {
+      if (saved) {
+        await removeSavedItemApi({ type: 'coding', itemId: String(item._id) });
+      } else {
+        await addSavedItem({ type: 'coding', itemId: String(item._id), title: payload.title, subtitle: payload.subtitle, href: payload.href });
+      }
+      const next = toggleSavedItem(payload);
+      setSaved(next.some(entry => entry.type === 'coding' && String(entry.id) === String(item._id)));
+    } catch {}
+  };
+
+  return (
+    <a href={item.url} target="_blank" rel="noreferrer" className="platform-card">
+                <div className="platform-card__header">
+                  <span className="platform-card__logo">{item.logo}</span>
+                  <div>
+                    <h3 className="platform-card__name">{item.name}</h3>
+                    {item.difficulty && <p className="platform-card__difficulty">{item.difficulty}</p>}
+                  </div>
+                  <ExternalLink size={14} className="platform-card__ext"/>
+                </div>
+                {item.desc && <p className="platform-card__desc">{item.desc}</p>}
+                {item.tags?.length>0 && <div className="platform-card__tags">{item.tags.map(tag=><span key={tag} className="platform-card__tag">{tag}</span>)}</div>}
+                <button className={`btn btn--ghost btn--sm${saved ? ' btn--saved' : ''}`} onClick={handlePin}>
+                  {saved ? '📌 Saved' : '📌 Save'}
+                </button>
+              </a>
   );
 }

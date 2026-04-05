@@ -23,6 +23,7 @@ const {
   notificationRouter,
   announcementRouter,
   bookmarkRouter,
+  savedItemRouter,
   adminExtrasRouter,
   ratingRouter,
   historyRouter,
@@ -101,6 +102,7 @@ app.use('/reports',       reportRoutes);
 app.use('/notifications', notificationRouter);
 app.use('/announcements', announcementRouter);
 app.use('/bookmarks',     bookmarkRouter);
+app.use('/saved-items',   savedItemRouter);
 app.use('/ratings',       ratingRouter);
 app.use('/downloads',     historyRouter);
 app.use('/search',        searchRouter);

@@ -1,22 +1,15 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
-  ArrowRight, Bell, Bookmark, Calendar, Clock, FileText, Flame, Pin, Search,
-  Sparkles, TriangleAlert, Quote, Download, Megaphone, Trophy, Layers,
+  ArrowRight, Bell, Bookmark, Calendar, Clock, FileText, Flame, Pin,
+  TriangleAlert, Quote, Download, Megaphone,
 } from 'lucide-react';
 import {
   fetchAnnouncements, fetchBookmarks, fetchDownloadHistory, fetchEvents,
   fetchExams, fetchNotifications, removeBookmark,
+  fetchSavedItems, removeSavedItem as removeSavedItemApi,
 } from '../api/apiClient';
 import { getSavedItems, formatRelativeTime, removeSavedItem } from '../utils/featureStorage';
-
-const SOURCE_TILES = [
-  { label: 'Files', to: '/search?source=files', icon: FileText, hint: 'Papers, resources and previews' },
-  { label: 'Quotes', to: '/search?source=quotes', icon: Quote, hint: 'Daily inspiration and sections' },
-  { label: 'Events', to: '/search?source=events', icon: Calendar, hint: 'Clubs, workshops and fests' },
-  { label: 'Exams', to: '/search?source=exams', icon: Clock, hint: 'Upcoming tests and schedules' },
-  { label: 'Notices', to: '/search?source=announcements', icon: Megaphone, hint: 'Announcements and alerts' },
-];
 
 function buildSubjectLink(item) {
   if (!item.regulation || !item.branch || !item.subject) return '/dashboard';
@@ -86,7 +79,6 @@ function ReminderItem({ item }) {
 }
 
 export default function DashboardHub() {
-  const navigate = useNavigate();
   const [bookmarks, setBookmarks] = useState([]);
   const [savedItems, setSavedItems] = useState([]);
   const [announcements, setAnnouncements] = useState([]);
@@ -99,13 +91,14 @@ export default function DashboardHub() {
   useEffect(() => {
     const load = async () => {
       try {
-        const [ann, ev, ex, note, hist, bm] = await Promise.all([
+        const [ann, ev, ex, note, hist, bm, saved] = await Promise.all([
           fetchAnnouncements().catch(() => ({ announcements: [] })),
           fetchEvents().catch(() => ({ events: [] })),
           fetchExams().catch(() => ({ exams: [] })),
           fetchNotifications().catch(() => ({ notifications: [] })),
           fetchDownloadHistory().catch(() => ({ history: [] })),
           fetchBookmarks().catch(() => ({ bookmarks: [] })),
+          fetchSavedItems().catch(() => ({ savedItems: [] })),
         ]);
         setAnnouncements(ann.announcements || []);
         setEvents(ev.events || []);
@@ -113,7 +106,15 @@ export default function DashboardHub() {
         setNotifications(note.notifications || []);
         setDownloads(hist.history || []);
         setBookmarks(bm.bookmarks || []);
-        setSavedItems(getSavedItems());
+        const normalizedSaved = (saved.savedItems || []).map(item => ({
+          type: item.type,
+          id: item.itemId,
+          title: item.title,
+          subtitle: item.subtitle,
+          href: item.href,
+          savedAt: item.createdAt,
+        }));
+        setSavedItems(normalizedSaved);
       } finally {
         setLoading(false);
       }
@@ -144,7 +145,10 @@ export default function DashboardHub() {
     }));
     const localPins = savedItems.map(item => ({
       ...item,
-      id: `${item.type}:${item.id}`,
+      id: `${item.type}:${item.id ?? item.itemId}`,
+      href: item.type === 'quote' && (!item.href || item.href === '/dashboard')
+        ? `/search?source=quotes&q=${encodeURIComponent(item.subtitle || item.title || 'quote')}`
+        : item.href,
     }));
     return [...localPins, ...bookmarkPins].slice(0, 8);
   }, [bookmarks, savedItems]);
@@ -249,8 +253,12 @@ export default function DashboardHub() {
       .slice(0, 6);
   }, [events, exams, notifications]);
 
-  const removePinned = (item) => {
-    setSavedItems(removeSavedItem(item));
+  const removePinned = async (item) => {
+    try {
+      const pinId = String(item.id).includes(':') ? String(item.id).split(':').slice(1).join(':') : String(item.id);
+      await removeSavedItemApi({ type: item.type, itemId: pinId });
+      setSavedItems(removeSavedItem({ type: item.type, id: pinId }));
+    } catch {}
   };
 
   const removeBookmarkPin = async (item) => {
@@ -264,30 +272,6 @@ export default function DashboardHub() {
   return (
     <section className="dash-hub">
       <div className="dash-hub__grid">
-        <div className="dash-hub__panel dash-hub__panel--search">
-          <div className="dash-hub__panel-head">
-            <div>
-              <p className="dash-hub__eyebrow"><Sparkles size={12} /> Quick access</p>
-              <h2 className="dash-hub__title">Jump anywhere fast</h2>
-            </div>
-            <button className="btn btn--ghost btn--sm" onClick={() => navigate('/search')}>
-              Open search <ArrowRight size={13} />
-            </button>
-          </div>
-          <div className="dash-hub__search-grid">
-            {SOURCE_TILES.map(tile => {
-              const Icon = tile.icon;
-              return (
-                <button key={tile.label} className="dash-hub__search-tile" onClick={() => navigate(tile.to)}>
-                  <Icon size={18} />
-                  <span>{tile.label}</span>
-                  <small>{tile.hint}</small>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
         <div className="dash-hub__panel">
           <div className="dash-hub__panel-head">
             <div>
