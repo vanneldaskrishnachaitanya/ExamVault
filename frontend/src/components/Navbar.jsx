@@ -65,6 +65,18 @@ export default function Navbar({ theme, toggleTheme }) {
     setDrawerOpen(false);
   }, [navigate]);
 
+  // Prevent background scroll while the mobile drawer is open
+  useEffect(() => {
+    if (!drawerOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [drawerOpen]);
+
   // Keyboard shortcut: / → search
   useEffect(() => {
     const h = (e) => {
