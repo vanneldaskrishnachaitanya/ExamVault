@@ -3,12 +3,58 @@
 // ── 1. CURSOR ─────────────────────────────────────────────────
 export function initEffects() {
   if (!window.matchMedia('(pointer: fine)').matches) return () => {};
+
   let cur = document.getElementById('ev-cursor');
-  if (!cur) { cur = document.createElement('div'); cur.id = 'ev-cursor'; document.body.appendChild(cur); }
-  const onMove = (e) => { cur.style.left = e.clientX + 'px'; cur.style.top = e.clientY + 'px'; };
+  if (!cur) {
+    cur = document.createElement('div');
+    cur.id = 'ev-cursor';
+    document.body.appendChild(cur);
+  }
+
+  let trail = document.getElementById('ev-cursor-trail');
+  if (!trail) {
+    trail = document.createElement('div');
+    trail.id = 'ev-cursor-trail';
+    trail.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(trail);
+  }
+
+  let lastSpawn = 0;
+  const spawnTrailDot = (x, y) => {
+    const dot = document.createElement('span');
+    dot.className = 'ev-cursor-trail__dot';
+    const size = (Math.random() * 6 + 3).toFixed(1);
+    const driftX = (Math.random() * 30 - 15).toFixed(1);
+    const driftY = (Math.random() * 30 - 15).toFixed(1);
+    const duration = Math.round(Math.random() * 420 + 520);
+    dot.style.left = `${x}px`;
+    dot.style.top = `${y}px`;
+    dot.style.width = `${size}px`;
+    dot.style.height = `${size}px`;
+    dot.style.setProperty('--dx', `${driftX}px`);
+    dot.style.setProperty('--dy', `${driftY}px`);
+    dot.style.setProperty('--dur', `${duration}ms`);
+    trail.appendChild(dot);
+    dot.addEventListener('animationend', () => dot.remove(), { once: true });
+  };
+
+  const onMove = (e) => {
+    cur.style.left = `${e.clientX}px`;
+    cur.style.top = `${e.clientY}px`;
+    const now = performance.now();
+    if (now - lastSpawn > 26) {
+      lastSpawn = now;
+      spawnTrailDot(e.clientX, e.clientY);
+    }
+  };
+
+  const onDown = () => cur.classList.add('cursor--click');
+  const onUp = () => cur.classList.remove('cursor--click');
+
   document.addEventListener('mousemove', onMove, { passive: true });
-  document.addEventListener('mousedown', () => cur.classList.add('cursor--click'));
-  document.addEventListener('mouseup',   () => cur.classList.remove('cursor--click'));
+  document.addEventListener('mousedown', onDown);
+  document.addEventListener('mouseup', onUp);
+
   const bindHover = () => {
     document.querySelectorAll('a,button,input,select,textarea,[role="button"],.platform-card,.reg-card,.stat-card,.ev-tilt,.branch-accordion').forEach(el => {
       if (el._curHov) return; el._curHov = true;
@@ -19,7 +65,14 @@ export function initEffects() {
   bindHover();
   const obs = new MutationObserver(bindHover);
   obs.observe(document.body, { childList: true, subtree: true });
-  return () => { obs.disconnect(); cur?.remove(); };
+  return () => {
+    document.removeEventListener('mousemove', onMove);
+    document.removeEventListener('mousedown', onDown);
+    document.removeEventListener('mouseup', onUp);
+    obs.disconnect();
+    cur?.remove();
+    trail?.remove();
+  };
 }
 
 // ── 2. KINETIC — safe, no innerHTML on React elements ─────────
