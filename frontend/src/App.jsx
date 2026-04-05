@@ -18,6 +18,7 @@ import CGPACalculatorPage   from './pages/CGPACalculatorPage';
 import NotFoundPage         from './pages/NotFoundPage';
 import CodingPage           from './pages/CodingPage';
 import SyllabusPage         from './pages/SyllabusPage';
+import ExamSchedulePage     from './pages/ExamSchedulePage';
 import TimetablePage        from './pages/TimetablePage';
 import EventsPage           from './pages/EventsPage';
 
@@ -87,6 +88,7 @@ export default function App() {
         <Route path="/downloads"                          element={<DownloadHistoryPage />} />
         <Route path="/coding"                             element={<CodingPage />} />
         <Route path="/syllabus"                           element={<SyllabusPage />} />
+        <Route path="/exams"                              element={<ExamSchedulePage />} />
         <Route path="/timetable"                          element={<TimetablePage />} />
         <Route path="/events"                             element={<EventsPage />} />
         <Route path="/cgpa"                               element={<CGPACalculatorPage />} />

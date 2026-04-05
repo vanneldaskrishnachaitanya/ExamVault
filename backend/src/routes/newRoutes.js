@@ -11,6 +11,7 @@ const { getAnalytics, getPublicStats } = require('../controllers/analyticsContro
 const { getFileRatings, rateFile, deleteRating } = require('../controllers/ratingController');
 const { getDownloadHistory, recordDownloadFromFrontend, globalSearch, getAllUsers, toggleUserActive } = require('../controllers/extraController');
 const { upload: eventUpload, getEvents, createEvent, toggleComplete, deleteEvent, getClubs } = require('../controllers/eventController');
+const { getExams, createExam, deleteExam } = require('../controllers/examController');
 const {
   getCodingItems, getAllCodingItems, createCodingItem, deleteCodingItem,
   toggleCodingItem, suggestPlatform, getSuggestions, reviewSuggestion,
@@ -70,6 +71,11 @@ const statsRouter = express.Router();
 statsRouter.get('/', getPublicStats);
 
 // ── Exams ─────────────────────────────────────────────────────
+const examRouter = express.Router();
+examRouter.get('/', protect, getExams);
+examRouter.post('/', protect, restrictTo('admin'), createExam);
+examRouter.delete('/:id', protect, restrictTo('admin'), deleteExam);
+
 const eventRouter = express.Router();
 eventRouter.get('/',       protect, getEvents);
 eventRouter.get('/clubs',  protect, getClubs);
@@ -158,6 +164,6 @@ module.exports = {
   notificationRouter, announcementRouter, bookmarkRouter,
   adminExtrasRouter, ratingRouter, historyRouter, searchRouter,
   branchRouter, eventRouter, codingRouter, syllabusRouter,
-  timetableRouter, statsRouter, feedbackRouter,
+  timetableRouter, statsRouter, feedbackRouter, examRouter,
   quoteRouter, pollRouter,
 };

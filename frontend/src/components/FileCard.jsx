@@ -2,12 +2,13 @@ import { useState } from 'react';
 import {
   Download, Eye, FileText, Flag, Image, Presentation,
   FileSpreadsheet, Calendar, User, Clock, TrendingDown,
-  CheckCircle, AlertCircle, Timer, Trash2, Star, Share2,
+  CheckCircle, AlertCircle, Timer, Trash2, Star, Share2, Pin,
   X, Loader2,
 } from 'lucide-react';
 import api, { getFileRatings, rateFile, recordDownloadApi, toggleImportant } from '../api/apiClient';
 import { useAuth } from '../hooks/useAuth';
 import StarRating from './StarRating';
+import { isSavedItem, toggleSavedItem } from '../utils/featureStorage';
 
 const MIME_CONFIG = {
   'application/pdf': { icon: <FileText size={22} />, label: 'PDF',   color: 'file-icon--pdf' },
@@ -65,6 +66,7 @@ export default function FileCard({ file, showStatus = false, onReport, compact =
   const [ratingLoading, setRatingLoading] = useState(false);
   const [copied,        setCopied]        = useState(false);
   const [important,     setImportant]     = useState(file.isImportant || false);
+  const [saved,         setSaved]         = useState(isSavedItem({ type: 'file', id: file._id }));
 
   const canPreview = file.mimeType === 'application/pdf' || file.mimeType?.startsWith('image/')
     || file.mimeType?.includes('word') || file.mimeType?.includes('powerpoint')
@@ -114,6 +116,19 @@ export default function FileCard({ file, showStatus = false, onReport, compact =
     navigator.clipboard.writeText(window.location.href).then(() => {
       setCopied(true); setTimeout(() => setCopied(false), 2000);
     });
+  };
+
+  const handlePin = () => {
+    const next = toggleSavedItem({
+      type: 'file',
+      id: file._id,
+      title: file.originalName,
+      subtitle: `${file.regulation || ''} ${file.branch || ''} ${file.subject || ''}`.trim(),
+      href: file.regulation && file.branch && file.subject
+        ? `/r/${file.regulation}/${file.branch}/${encodeURIComponent(file.subject)}`
+        : '/dashboard',
+    });
+    setSaved(next.some(entry => entry.type === 'file' && entry.id === file._id));
   };
 
   const handleDelete = async () => {
@@ -176,6 +191,9 @@ export default function FileCard({ file, showStatus = false, onReport, compact =
             <button className="fc-btn fc-btn--share" onClick={handleShare} title="Copy link">
               <Share2 size={13} />
               {copied && <span style={{ fontSize: '0.7rem' }}>Copied!</span>}
+            </button>
+            <button className={`fc-btn fc-btn--pin${saved ? ' fc-btn--pin-active' : ''}`} onClick={handlePin} title={saved ? 'Unpin' : 'Pin to saved items'}>
+              <Pin size={13} />
             </button>
             {!isAdmin && (
               <button className="fc-btn fc-btn--rate" onClick={() => setRatingOpen(r => !r)} title="Rate">

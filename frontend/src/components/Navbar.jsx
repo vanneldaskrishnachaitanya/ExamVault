@@ -3,18 +3,27 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import {
   BookOpen, ChevronDown, LayoutDashboard, Shield, Bell, Sun, Moon,
   Check, Trash2, Search, Download, MessageSquare, Clock2,
-  Menu, X, BookMarked, Clock, LogOut, User,
+  Menu, X, BookMarked, Clock, LogOut, User, Palette,
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { fetchNotifications, markAllNotificationsRead, deleteNotification } from '../api/apiClient';
 
-export default function Navbar({ theme, toggleTheme }) {
+const THEME_LABELS = {
+  dark: 'Midnight',
+  light: 'Daylight',
+  aurora: 'Aurora',
+  forest: 'Forest',
+  sunset: 'Sunset',
+};
+
+export default function Navbar({ theme, toggleTheme, setTheme, themeOptions = ['dark', 'light'] }) {
   const { backendUser, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [notifOpen,    setNotifOpen]    = useState(false);
   const [drawerOpen,   setDrawerOpen]   = useState(false);
+  const [themeMenuOpen, setThemeMenuOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [unread, setUnread] = useState(0);
 
@@ -22,6 +31,8 @@ export default function Navbar({ theme, toggleTheme }) {
   const dropdownBtn  = useRef(null);
   const notifPanelRef = useRef(null);
   const notifBtnRef   = useRef(null);
+  const themePanelRef = useRef(null);
+  const themeBtnRef   = useRef(null);
   // NOTE: no refs for drawer — we handle it purely via state + overlay click
 
   // Load notifications
@@ -55,6 +66,13 @@ export default function Navbar({ theme, toggleTheme }) {
         notifBtnRef.current &&
         !notifBtnRef.current.contains(e.target)
       ) setNotifOpen(false);
+
+      if (
+        themePanelRef.current &&
+        !themePanelRef.current.contains(e.target) &&
+        themeBtnRef.current &&
+        !themeBtnRef.current.contains(e.target)
+      ) setThemeMenuOpen(false);
     };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
@@ -178,9 +196,29 @@ export default function Navbar({ theme, toggleTheme }) {
               <Search size={17} />
             </button>
 
-            <button className="navbar__icon-btn" onClick={toggleTheme} title="Toggle theme">
-              {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
-            </button>
+            <div className="navbar__theme-wrap">
+              <button ref={themeBtnRef} className="navbar__icon-btn" onClick={() => setThemeMenuOpen(p => !p)} title="Theme presets">
+                <Palette size={17} />
+              </button>
+              {themeMenuOpen && (
+                <div className="navbar__theme-menu" ref={themePanelRef}>
+                  <div className="navbar__theme-menu-head">Theme presets</div>
+                  {themeOptions.map(option => (
+                    <button
+                      key={option}
+                      className={`navbar__theme-option${theme === option ? ' navbar__theme-option--active' : ''}`}
+                      onClick={() => { setTheme(option); setThemeMenuOpen(false); }}
+                    >
+                      <span>{THEME_LABELS[option] || option}</span>
+                      {theme === option && <Check size={12} />}
+                    </button>
+                  ))}
+                  <button className="navbar__theme-option navbar__theme-option--cycle" onClick={() => { toggleTheme(); setThemeMenuOpen(false); }}>
+                    <Moon size={12} /> Cycle preset
+                  </button>
+                </div>
+              )}
+            </div>
 
             {/* Notification bell */}
             <div className="navbar__notif-wrap">

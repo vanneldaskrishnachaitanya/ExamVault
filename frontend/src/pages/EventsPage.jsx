@@ -2,9 +2,11 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import {
   Calendar, Plus, Trash2, Loader2, ExternalLink, CheckCircle,
   Clock, MapPin, Trophy, Users, X, Upload, Tag, Filter,
+   Pin,
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { fetchEvents, fetchEventClubs, createEvent, toggleEventComplete, deleteEvent } from '../api/apiClient';
+  import { isSavedItem, toggleSavedItem } from '../utils/featureStorage';
 
 const EVENT_TYPES = [
   { id: 'technical',     label: 'Technical',     color: '#3b82f6' },
@@ -348,6 +350,19 @@ function EventCard({ ev, isAdmin, onView, onComplete, onDelete }) {
   const type   = getType(ev.eventType);
   const regOpen = isRegOpen(ev);
   const isPast  = new Date(ev.eventDate) < new Date();
+  const [saved, setSaved] = useState(isSavedItem({ type: 'event', id: ev._id }));
+
+  const handlePin = (e) => {
+    e.stopPropagation();
+    const next = toggleSavedItem({
+      type: 'event',
+      id: ev._id,
+      title: ev.title,
+      subtitle: `${ev.clubName || 'Event'} · ${fmt(ev.eventDate)}`,
+      href: '/events',
+    });
+    setSaved(next.some(entry => entry.type === 'event' && entry.id === ev._id));
+  };
 
   return (
     <div className={`event-card${ev.isCompleted ? ' event-card--done' : ''}`}>
@@ -413,6 +428,9 @@ function EventCard({ ev, isAdmin, onView, onComplete, onDelete }) {
               <ExternalLink size={13}/> View Form
             </a>
           )}
+          <button className={`btn btn--ghost btn--sm${saved ? ' btn--saved' : ''}`} onClick={handlePin}>
+            <Pin size={13}/> {saved ? 'Saved' : 'Save'}
+          </button>
           {isAdmin && (
             <>
               <button className={`btn btn--sm ${ev.isCompleted ? 'btn--ghost' : 'btn--success'}`}

@@ -18,6 +18,7 @@ const TYPE_STYLES = {
 
 export default function MainLayout() {
   const location = useLocation();
+  const themeOptions = ['dark', 'light', 'aurora', 'forest', 'sunset'];
   const [theme, setTheme] = useState(() => {
     const saved = localStorage.getItem('ev-theme');
     if (saved) return saved;
@@ -56,7 +57,7 @@ export default function MainLayout() {
     localStorage.setItem('ev-theme', theme);
   }, [theme]);
 
-  const toggleTheme = () => setTheme(t => t === 'dark' ? 'light' : 'dark');
+  const toggleTheme = () => setTheme(t => themeOptions[(themeOptions.indexOf(t) + 1) % themeOptions.length] || 'dark');
 
   // Listen for system theme changes (only if user hasn't manually set a preference)
   useEffect(() => {
@@ -94,7 +95,7 @@ export default function MainLayout() {
 
   return (
     <div className="layout">
-      <Navbar theme={theme} toggleTheme={toggleTheme} />
+      <Navbar theme={theme} toggleTheme={toggleTheme} setTheme={setTheme} themeOptions={themeOptions} />
 
       {/* Announcement banners */}
       {showTour && <OnboardingTour onDone={() => { setShowTour(false); localStorage.setItem('ev-tour-done','1'); }} />}

@@ -2,9 +2,10 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import {
   Quote, Sparkles, ChevronLeft, ChevronRight, RefreshCw,
-  BookOpen, X, Check, BarChart2, Clock,
+  BookOpen, X, Check, BarChart2, Clock, Pin,
 } from 'lucide-react';
 import { fetchTodayQuotes, fetchActivePolls, votePoll as apiVotePoll } from '../api/apiClient';
+import { isSavedItem, toggleSavedItem } from '../utils/featureStorage';
 
 const BG_PATTERNS = [
   'radial-gradient(ellipse at 15% 50%, rgba(245,166,35,0.13) 0%, transparent 55%), radial-gradient(ellipse at 85% 20%, rgba(79,142,247,0.07) 0%, transparent 50%)',
@@ -148,6 +149,7 @@ export default function QuoteBanner() {
 
   // Description expand state
   const [descOpen, setDescOpen] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -187,6 +189,23 @@ export default function QuoteBanner() {
   const pollIdx     = isQuoteCard ? -1 : parseInt(currentCard.split('-')[1]);
 
   const canExpand = isQuoteCard && !!(q.description?.trim());
+
+  useEffect(() => {
+    if (!isQuoteCard || !q._id) { setSaved(false); return; }
+    setSaved(isSavedItem({ type: 'quote', id: q._id }));
+  }, [isQuoteCard, q._id]);
+
+  const handleSaveQuote = () => {
+    if (!q._id) return;
+    const next = toggleSavedItem({
+      type: 'quote',
+      id: q._id,
+      title: q.sectionName ? `${q.sectionName} quote` : 'Daily quote',
+      subtitle: q.author || q.text?.slice(0, 60) || 'Inspirational quote',
+      href: '/dashboard',
+    });
+    setSaved(next.some(entry => entry.type === 'quote' && entry.id === q._id));
+  };
 
   return (
     <div className="quote-banner-wrap">
@@ -235,6 +254,12 @@ export default function QuoteBanner() {
 
               {showAuthor && q.author && (
                 <p className="quote-banner__author">— {q.author}</p>
+              )}
+
+              {isQuoteCard && q._id && (
+                <button className={`quote-banner__save${saved ? ' quote-banner__save--active' : ''}`} onClick={handleSaveQuote}>
+                  <Pin size={12} /> {saved ? 'Saved' : 'Save quote'}
+                </button>
               )}
 
               {/* Learn More button — only if description exists */}

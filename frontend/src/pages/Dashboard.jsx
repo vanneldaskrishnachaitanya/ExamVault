@@ -1,5 +1,5 @@
-import RecentlyViewed from '../components/RecentlyViewed';
 import QuoteBanner from '../components/QuoteBanner';
+import DashboardHub from '../components/DashboardHub';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import { fetchPublicStats } from '../api/apiClient';
@@ -283,6 +283,8 @@ export default function Dashboard() {
         </div>
       </section>
 
+      <DashboardHub />
+
       {/* ── Regulation picker ─────────────────────────────── */}
       <section className="dash-section">
         <h2 className="dash-section-title">Choose your Regulation</h2>
@@ -312,7 +314,6 @@ export default function Dashboard() {
         </div>
       </section>
 
-      <RecentlyViewed />
     </div>
   );
 }

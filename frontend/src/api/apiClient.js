@@ -103,6 +103,11 @@ export const createEvent       = async (formData)   => { const { data } = await 
 export const toggleEventComplete = async (id)       => { const { data } = await api.patch(`/admin/events/${id}/complete`); return data.data; };
 export const deleteEvent       = async (id)         => { const { data } = await api.delete(`/admin/events/${id}`); return data; };
 
+// ── Exams ────────────────────────────────────────────────────
+export const fetchExams         = async ()          => { const { data } = await api.get('/exams'); return data.data; };
+export const createExam         = async (payload)   => { const { data } = await api.post('/exams', payload); return data.data; };
+export const deleteExam         = async (id)        => { const { data } = await api.delete(`/exams/${id}`); return data; };
+
 // ── Coding platforms ──────────────────────────────────────────
 export const getCodingItems       = async ()        => { const { data } = await api.get('/coding'); return data.data; };
 export const suggestPlatform      = async (payload) => { const { data } = await api.post('/coding/suggest', payload); return data.data; };
