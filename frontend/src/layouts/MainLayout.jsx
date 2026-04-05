@@ -130,6 +130,31 @@ export default function MainLayout() {
 
   return (
     <div className="layout">
+      <div className="cosmos-scene" aria-hidden="true">
+        <div className="cosmos-nebula cosmos-nebula--one" />
+        <div className="cosmos-nebula cosmos-nebula--two" />
+        <div className="cosmos-galaxy" />
+        <div className="cosmos-supernova" />
+
+        <div className="cosmos-planet cosmos-planet--main" />
+        <div className="cosmos-planet cosmos-planet--minor" />
+
+        <div className="cosmos-satellite">
+          <span className="cosmos-satellite__core" />
+          <span className="cosmos-satellite__wing cosmos-satellite__wing--left" />
+          <span className="cosmos-satellite__wing cosmos-satellite__wing--right" />
+          <span className="cosmos-satellite__dish" />
+        </div>
+
+        <div className="cosmos-asteroids">
+          <span className="cosmos-asteroid" />
+          <span className="cosmos-asteroid" />
+          <span className="cosmos-asteroid" />
+          <span className="cosmos-asteroid" />
+          <span className="cosmos-asteroid" />
+        </div>
+      </div>
+
       <Navbar
         theme={theme}
         toggleTheme={toggleTheme}
@@ -171,6 +196,14 @@ export default function MainLayout() {
       <main className="layout__main" style={{paddingBottom: '5rem'}}>
         <Outlet />
       </main>
+
+      <section className="space-end" aria-label="Space horizon footer">
+        <div className="space-end__brand">ExamVault</div>
+        <div className="space-end__horizon" />
+        <div className="space-end__flare" />
+        <p className="space-end__copy">VNRVJIET Academic Repository</p>
+      </section>
+
       <CommandPalette open={commandOpen} onClose={() => setCommandOpen(false)} />
     </div>
   );

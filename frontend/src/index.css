@@ -333,6 +333,300 @@ body::after {
   animation: pageIn 0.4s var(--ease);
 }
 
+.cosmos-scene {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.cosmos-nebula {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(22px);
+  opacity: 0.52;
+}
+
+.cosmos-nebula--one {
+  width: min(56vw, 760px);
+  height: min(56vw, 760px);
+  left: -14vw;
+  top: -20vh;
+  background: radial-gradient(circle, rgba(112, 34, 186, 0.3) 0%, rgba(79, 142, 247, 0.16) 34%, transparent 72%);
+  animation: nebulaFloatA 17s ease-in-out infinite alternate;
+}
+
+.cosmos-nebula--two {
+  width: min(44vw, 620px);
+  height: min(44vw, 620px);
+  right: -8vw;
+  bottom: 4vh;
+  background: radial-gradient(circle, rgba(245, 166, 35, 0.22) 0%, rgba(239, 68, 68, 0.16) 30%, transparent 74%);
+  animation: nebulaFloatB 20s ease-in-out infinite alternate;
+}
+
+.cosmos-galaxy {
+  position: absolute;
+  left: 8vw;
+  top: 24vh;
+  width: min(30vw, 430px);
+  height: min(16vw, 220px);
+  border-radius: 50%;
+  background:
+    radial-gradient(ellipse at center, rgba(255, 255, 255, 0.34) 0%, rgba(255, 218, 161, 0.22) 16%, rgba(116, 170, 255, 0.15) 32%, transparent 68%);
+  transform: rotate(-12deg);
+  opacity: 0.7;
+  filter: blur(0.2px);
+  animation: galaxySpin 26s linear infinite;
+}
+
+.cosmos-supernova {
+  position: absolute;
+  right: 26vw;
+  top: 13vh;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(129, 188, 255, 0.65) 10%, rgba(126, 87, 255, 0.28) 34%, rgba(79, 142, 247, 0.04) 58%, transparent 72%);
+  opacity: 0.7;
+  animation: supernovaPulse 5.2s ease-in-out infinite;
+}
+
+.cosmos-planet {
+  position: absolute;
+  border-radius: 50%;
+  box-shadow: inset -16px -20px 40px rgba(0, 0, 0, 0.38), 0 18px 32px rgba(0, 0, 0, 0.35);
+}
+
+.cosmos-planet--main {
+  width: min(20vw, 260px);
+  height: min(20vw, 260px);
+  right: 7vw;
+  top: 22vh;
+  background:
+    radial-gradient(circle at 30% 28%, rgba(255, 222, 188, 0.72) 0%, rgba(255, 163, 90, 0.42) 34%, rgba(84, 39, 25, 0.9) 70%);
+  animation: planetDrift 23s ease-in-out infinite alternate;
+}
+
+.cosmos-planet--main::after {
+  content: '';
+  position: absolute;
+  inset: 39% -16%;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 195, 127, 0.38);
+  transform: rotate(-15deg);
+  opacity: 0.8;
+}
+
+.cosmos-planet--minor {
+  width: min(10vw, 130px);
+  height: min(10vw, 130px);
+  left: 18vw;
+  bottom: 22vh;
+  background:
+    radial-gradient(circle at 35% 35%, rgba(194, 230, 255, 0.76) 0%, rgba(78, 124, 214, 0.45) 40%, rgba(21, 34, 68, 0.92) 78%);
+  animation: planetDriftMinor 18s ease-in-out infinite alternate;
+}
+
+.cosmos-satellite {
+  position: absolute;
+  left: 50%;
+  top: 14vh;
+  width: 120px;
+  height: 70px;
+  transform: translateX(-50%) rotate(-8deg);
+  animation: satelliteOrbit 13s ease-in-out infinite;
+}
+
+.cosmos-satellite__core {
+  position: absolute;
+  left: 48px;
+  top: 24px;
+  width: 22px;
+  height: 16px;
+  border-radius: 4px;
+  background: linear-gradient(135deg, #cad6f4, #6f7ea5);
+  box-shadow: 0 0 14px rgba(116, 170, 255, 0.36);
+}
+
+.cosmos-satellite__wing {
+  position: absolute;
+  top: 18px;
+  width: 40px;
+  height: 22px;
+  border-radius: 3px;
+  background: repeating-linear-gradient(90deg, #203158 0 7px, #6ea5ff 7px 10px);
+  border: 1px solid rgba(153, 188, 255, 0.5);
+}
+
+.cosmos-satellite__wing--left { left: 3px; }
+.cosmos-satellite__wing--right { right: 3px; }
+
+.cosmos-satellite__dish {
+  position: absolute;
+  left: 66px;
+  top: 38px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgba(185, 219, 255, 0.8);
+  border-right-color: transparent;
+  transform: rotate(28deg);
+}
+
+.cosmos-asteroids {
+  position: absolute;
+  inset: 0;
+}
+
+.cosmos-asteroid {
+  position: absolute;
+  width: 14px;
+  height: 9px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, rgba(158, 122, 102, 0.92), rgba(58, 37, 30, 0.95));
+  box-shadow: inset -2px -3px 5px rgba(0, 0, 0, 0.35);
+  opacity: 0.75;
+  animation: asteroidDrift 16s linear infinite;
+}
+
+.cosmos-asteroid:nth-child(1) { left: 18vw; top: 58vh; animation-delay: -2s; }
+.cosmos-asteroid:nth-child(2) { left: 36vw; top: 34vh; width: 10px; height: 7px; animation-delay: -7s; }
+.cosmos-asteroid:nth-child(3) { left: 60vw; top: 66vh; width: 17px; height: 11px; animation-delay: -11s; }
+.cosmos-asteroid:nth-child(4) { left: 74vw; top: 44vh; width: 12px; height: 8px; animation-delay: -4s; }
+.cosmos-asteroid:nth-child(5) { left: 84vw; top: 28vh; width: 9px; height: 6px; animation-delay: -14s; }
+
+.space-end {
+  position: relative;
+  z-index: 1;
+  margin-top: 1rem;
+  min-height: clamp(240px, 34vh, 340px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  overflow: hidden;
+  padding: 2rem 1rem 1.2rem;
+  background:
+    linear-gradient(180deg, rgba(7, 3, 10, 0) 0%, rgba(24, 6, 3, 0.78) 58%, rgba(28, 8, 4, 0.96) 100%);
+}
+
+.space-end__brand {
+  position: absolute;
+  inset: auto auto 5.2rem 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(2.8rem, 13vw, 11rem);
+  letter-spacing: -0.02em;
+  color: rgba(250, 176, 128, 0.12);
+  text-transform: lowercase;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.space-end__horizon {
+  position: absolute;
+  width: min(128%, 1900px);
+  height: min(52vw, 540px);
+  bottom: -72%;
+  border-radius: 50%;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(255, 232, 209, 0.44) 0%, rgba(255, 166, 110, 0.26) 14%, rgba(40, 11, 4, 0.95) 58%, rgba(9, 4, 2, 1) 76%);
+  box-shadow: inset 0 -20px 120px rgba(0, 0, 0, 0.55), 0 -18px 48px rgba(255, 156, 102, 0.24);
+}
+
+.space-end__flare {
+  position: absolute;
+  width: min(28vw, 420px);
+  height: 24px;
+  bottom: 30%;
+  border-radius: 999px;
+  background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.95) 0%, rgba(255, 194, 145, 0.78) 24%, rgba(255, 145, 93, 0.26) 54%, transparent 80%);
+  filter: blur(0.8px);
+}
+
+.space-end__copy {
+  position: relative;
+  z-index: 2;
+  color: rgba(218, 183, 165, 0.74);
+  font-size: 0.9rem;
+  letter-spacing: 0.03em;
+}
+
+@keyframes nebulaFloatA {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(50px, -20px, 0) scale(1.08); }
+}
+
+@keyframes nebulaFloatB {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(-36px, 22px, 0) scale(1.1); }
+}
+
+@keyframes planetDrift {
+  from { transform: translate3d(0, 0, 0) rotate(0deg); }
+  to { transform: translate3d(-22px, 16px, 0) rotate(8deg); }
+}
+
+@keyframes planetDriftMinor {
+  from { transform: translate3d(0, 0, 0) rotate(0deg); }
+  to { transform: translate3d(14px, -18px, 0) rotate(-10deg); }
+}
+
+@keyframes galaxySpin {
+  from { transform: rotate(-12deg) scale(1); }
+  to { transform: rotate(348deg) scale(1.03); }
+}
+
+@keyframes supernovaPulse {
+  0%, 100% { transform: scale(0.94); opacity: 0.52; }
+  50% { transform: scale(1.08); opacity: 0.9; }
+}
+
+@keyframes asteroidDrift {
+  from { transform: translate3d(0, 0, 0) rotate(0deg); }
+  to { transform: translate3d(-38px, 18px, 0) rotate(360deg); }
+}
+
+@keyframes satelliteOrbit {
+  0% { transform: translateX(-50%) translateY(0) rotate(-8deg); }
+  25% { transform: translateX(-44%) translateY(8px) rotate(-2deg); }
+  50% { transform: translateX(-50%) translateY(0) rotate(4deg); }
+  75% { transform: translateX(-56%) translateY(10px) rotate(-3deg); }
+  100% { transform: translateX(-50%) translateY(0) rotate(-8deg); }
+}
+
+@media (max-width: 900px) {
+  .cosmos-satellite { top: 10vh; left: 58%; transform: translateX(-50%) scale(0.88); }
+  .cosmos-supernova { width: 150px; height: 150px; right: 18vw; }
+  .cosmos-planet--main { width: min(26vw, 200px); height: min(26vw, 200px); }
+  .cosmos-planet--minor { width: min(13vw, 100px); height: min(13vw, 100px); left: 10vw; bottom: 14vh; }
+  .space-end__flare { width: min(42vw, 320px); }
+}
+
+@media (max-width: 640px) {
+  .cosmos-galaxy,
+  .cosmos-asteroid:nth-child(4),
+  .cosmos-asteroid:nth-child(5) { display: none; }
+  .cosmos-satellite { top: 12vh; left: 65%; transform: translateX(-50%) scale(0.72); }
+  .space-end { min-height: 220px; }
+  .space-end__copy { font-size: 0.78rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cosmos-nebula,
+  .cosmos-galaxy,
+  .cosmos-supernova,
+  .cosmos-planet,
+  .cosmos-satellite,
+  .cosmos-asteroid {
+    animation: none !important;
+  }
+}
+
 /* ══════════════════════════════════════════════════════════════
    APP LOADER
 ══════════════════════════════════════════════════════════════ */
