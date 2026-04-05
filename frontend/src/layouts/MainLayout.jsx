@@ -8,7 +8,7 @@ import CommandPalette from '../components/CommandPalette';
 import { fetchAnnouncements, fetchSavedItems } from '../api/apiClient';
 import { X, Megaphone } from 'lucide-react';
 import '../effects.css';
-import { initEffects, initTilt, initMagnetic, initCounters, initKinetic, initStarfield } from '../hooks/useEffects';
+import { initEffects, initTilt, initMagnetic, initCounters, initKinetic } from '../hooks/useEffects';
 
 const TYPE_STYLES = {
   info:    { bg: '#3b82f618', border: '#3b82f640', color: '#60a5fa' },
@@ -39,8 +39,7 @@ export default function MainLayout() {
     const cleanTilt     = initTilt();
     const cleanMagnetic = initMagnetic();
     const cleanCounters = initCounters();
-    const cleanStars    = initStarfield();
-    return () => { cleanCursor(); cleanTilt(); cleanMagnetic(); cleanCounters(); cleanStars(); };
+    return () => { cleanCursor(); cleanTilt(); cleanMagnetic(); cleanCounters(); };
   }, []);
 
   // ── Re-run kinetic on every route change ──────────────────
@@ -159,7 +158,7 @@ export default function MainLayout() {
 
     const bindReveal = () => {
       main.querySelectorAll(selectors).forEach((el) => {
-        if (el.classList.contains('reveal-blur') || el.closest('.space-end')) return;
+        if (el.classList.contains('reveal-blur')) return;
         el.classList.add('reveal-blur');
         observer.observe(el);
       });

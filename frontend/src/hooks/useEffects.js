@@ -5,10 +5,68 @@ export function initEffects() {
   if (!window.matchMedia('(pointer: fine)').matches) return () => {};
   let cur = document.getElementById('ev-cursor');
   if (!cur) { cur = document.createElement('div'); cur.id = 'ev-cursor'; document.body.appendChild(cur); }
-  const onMove = (e) => { cur.style.left = e.clientX + 'px'; cur.style.top = e.clientY + 'px'; };
+
+  let lastX = 0;
+  let lastY = 0;
+  let hasLast = false;
+  let lastDustAt = 0;
+
+  const spawnDust = (x, y) => {
+    const now = performance.now();
+    if (now - lastDustAt < 26) return;
+    lastDustAt = now;
+
+    const dust = document.createElement('span');
+    dust.className = 'ev-cursor-dust';
+    dust.style.left = `${x}px`;
+    dust.style.top = `${y}px`;
+
+    const size = 2.5 + Math.random() * 3.5;
+    const dx = (Math.random() - 0.5) * 26;
+    const dy = (Math.random() - 0.5) * 26;
+    const life = 0.45 + Math.random() * 0.3;
+
+    dust.style.setProperty('--size', `${size.toFixed(2)}px`);
+    dust.style.setProperty('--dx', `${dx.toFixed(1)}px`);
+    dust.style.setProperty('--dy', `${dy.toFixed(1)}px`);
+    dust.style.setProperty('--life', `${life.toFixed(2)}s`);
+
+    document.body.appendChild(dust);
+    window.setTimeout(() => dust.remove(), Math.ceil(life * 1000) + 60);
+  };
+
+  const onMove = (e) => {
+    cur.style.left = e.clientX + 'px';
+    cur.style.top = e.clientY + 'px';
+
+    if (!hasLast) {
+      lastX = e.clientX;
+      lastY = e.clientY;
+      hasLast = true;
+      return;
+    }
+
+    const dx = e.clientX - lastX;
+    const dy = e.clientY - lastY;
+    const dist = Math.hypot(dx, dy);
+    if (dist > 2.4) {
+      const count = dist > 14 ? 2 : 1;
+      for (let i = 0; i < count; i += 1) {
+        const t = count === 1 ? 1 : i / (count - 1);
+        spawnDust(lastX + dx * t, lastY + dy * t);
+      }
+    }
+
+    lastX = e.clientX;
+    lastY = e.clientY;
+  };
+
+  const onDown = () => cur.classList.add('cursor--click');
+  const onUp = () => cur.classList.remove('cursor--click');
+
   document.addEventListener('mousemove', onMove, { passive: true });
-  document.addEventListener('mousedown', () => cur.classList.add('cursor--click'));
-  document.addEventListener('mouseup',   () => cur.classList.remove('cursor--click'));
+  document.addEventListener('mousedown', onDown);
+  document.addEventListener('mouseup', onUp);
   const bindHover = () => {
     document.querySelectorAll('a,button,input,select,textarea,[role="button"],.platform-card,.reg-card,.stat-card,.ev-tilt,.branch-accordion').forEach(el => {
       if (el._curHov) return; el._curHov = true;
@@ -19,7 +77,14 @@ export function initEffects() {
   bindHover();
   const obs = new MutationObserver(bindHover);
   obs.observe(document.body, { childList: true, subtree: true });
-  return () => { obs.disconnect(); cur?.remove(); };
+  return () => {
+    obs.disconnect();
+    document.removeEventListener('mousemove', onMove);
+    document.removeEventListener('mousedown', onDown);
+    document.removeEventListener('mouseup', onUp);
+    document.querySelectorAll('.ev-cursor-dust').forEach((node) => node.remove());
+    cur?.remove();
+  };
 }
 
 // ── 2. KINETIC — safe, no innerHTML on React elements ─────────
@@ -254,74 +319,3 @@ export function initCounters() {
   return () => { io.disconnect(); obs.disconnect(); };
 }
 
-// ── 6. STARFIELD ─────────────────────────────────────────────
-export function initStarfield() {
-  let sf = document.getElementById('ev-starfield');
-  if (sf) return () => {};
-
-  sf = document.createElement('div');
-  sf.id = 'ev-starfield';
-  sf.setAttribute('aria-hidden', 'true');
-  document.body.insertBefore(sf, document.body.firstChild);
-
-  const NS = 'http://www.w3.org/2000/svg';
-  const svg = document.createElementNS(NS, 'svg');
-  svg.setAttribute('xmlns', NS);
-  svg.setAttribute('width', '100%');
-  svg.setAttribute('height', '100%');
-
-  // 55 stars — a good medium count
-  const STARS = 55;
-  const colors = ['#ffffff', '#ffffff', '#ffffff', '#f5a623', '#4f8ef7', '#00d4b8', '#8b5cf6'];
-
-  for (let i = 0; i < STARS; i++) {
-    const g = document.createElementNS(NS, 'g');
-    const x = (Math.random() * 100).toFixed(2) + '%';
-    const y = (Math.random() * 100).toFixed(2) + '%';
-    const r = (Math.random() * 1.2 + 0.4).toFixed(2);
-    const color = colors[Math.floor(Math.random() * colors.length)];
-    const dur = (Math.random() * 4 + 2).toFixed(1) + 's';
-    const delay = (Math.random() * 4).toFixed(1) + 's';
-    const minOp = (Math.random() * 0.1 + 0.05).toFixed(2);
-    const maxOp = (Math.random() * 0.5 + 0.3).toFixed(2);
-
-    const circle = document.createElementNS(NS, 'circle');
-    circle.setAttribute('cx', x);
-    circle.setAttribute('cy', y);
-    circle.setAttribute('r', r);
-    circle.setAttribute('fill', color);
-
-    const anim = document.createElementNS(NS, 'animate');
-    anim.setAttribute('attributeName', 'opacity');
-    anim.setAttribute('values', `${minOp};${maxOp};${minOp}`);
-    anim.setAttribute('dur', dur);
-    anim.setAttribute('begin', delay);
-    anim.setAttribute('repeatCount', 'indefinite');
-
-    circle.appendChild(anim);
-    g.appendChild(circle);
-
-    // Occasional larger glow star
-    if (Math.random() < 0.15) {
-      const glow = document.createElementNS(NS, 'circle');
-      glow.setAttribute('cx', x);
-      glow.setAttribute('cy', y);
-      glow.setAttribute('r', (parseFloat(r) * 2.5).toFixed(2));
-      glow.setAttribute('fill', color);
-      glow.setAttribute('opacity', '0.08');
-      const ganim = document.createElementNS(NS, 'animate');
-      ganim.setAttribute('attributeName', 'opacity');
-      ganim.setAttribute('values', '0.04;0.14;0.04');
-      ganim.setAttribute('dur', dur);
-      ganim.setAttribute('begin', delay);
-      ganim.setAttribute('repeatCount', 'indefinite');
-      glow.appendChild(ganim);
-      g.appendChild(glow);
-    }
-
-    svg.appendChild(g);
-  }
-
-  sf.appendChild(svg);
-  return () => sf?.remove();
-}

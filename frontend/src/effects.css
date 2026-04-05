@@ -1,8 +1,8 @@
 /* ═══════════════════════════════════════════════════════════════
-   ExamVault — effects.css  v3
-   1. Cursor  2. Kinetic  3. 3D Tilt (ALL cards)  4. Magnetic
-   5. Counters  6. Platform cards  7. SVG  8. Light cards
-   9. Starfield  10. Hamburger Drawer  11. Poll mobile fix
+  ExamVault — effects.css  v3
+  1. Cursor  2. Kinetic  3. 3D Tilt (ALL cards)  4. Magnetic
+  5. Counters  6. Platform cards  7. Light cards
+  8. Hamburger Drawer  9. Poll mobile fix
 ═══════════════════════════════════════════════════════════════ */
 
 /* ── 1. CURSOR ────────────────────────────────────────────── */
@@ -14,11 +14,37 @@
     pointer-events: none; z-index: 99999;
     transform: translate(-50%,-50%);
     transition: width .18s, height .18s, transform .07s;
-    box-shadow: 0 0 6px var(--blue), 0 0 16px rgba(79,142,247,.7), 0 0 28px rgba(79,142,247,.3);
+    box-shadow: 0 0 4px rgba(79,142,247,.75), 0 0 12px rgba(79,142,247,.32), 0 0 20px rgba(79,142,247,.14);
     will-change: left,top;
   }
-  #ev-cursor.cursor--hover { width:20px; height:20px; box-shadow:0 0 12px var(--blue),0 0 28px rgba(79,142,247,.8),0 0 50px rgba(79,142,247,.4); }
+  #ev-cursor.cursor--hover { width:17px; height:17px; box-shadow:0 0 8px rgba(79,142,247,.72),0 0 18px rgba(79,142,247,.36),0 0 30px rgba(79,142,247,.2); }
   #ev-cursor.cursor--click { transform:translate(-50%,-50%) scale(.55); }
+
+  .ev-cursor-dust {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: var(--size, 4px);
+    height: var(--size, 4px);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 99998;
+    background: radial-gradient(circle, rgba(255,255,255,.75) 0%, rgba(79,142,247,.34) 55%, rgba(79,142,247,0) 100%);
+    transform: translate3d(-50%, -50%, 0);
+    animation: evDustFade var(--life, .62s) ease-out forwards;
+    will-change: transform, opacity;
+  }
+}
+
+@keyframes evDustFade {
+  from {
+    opacity: .42;
+    transform: translate3d(-50%, -50%, 0) scale(.92);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(calc(-50% + var(--dx, 0px)), calc(-50% + var(--dy, 0px)), 0) scale(1.34);
+  }
 }
 
 /* ── 2. KINETIC ───────────────────────────────────────────── */
@@ -42,13 +68,13 @@
   will-change: transform;
 }
 .ev-tilt:hover {
-  box-shadow: 0 22px 56px rgba(0,0,0,.55), 0 0 0 1px var(--amber-border), 0 0 40px rgba(245,166,35,.1) !important;
+  box-shadow: 0 18px 46px rgba(0,0,0,.5), 0 0 0 1px var(--amber-border), 0 0 28px rgba(245,166,35,.06) !important;
 }
 .ev-tilt__shine {
   position: absolute; inset: 0; border-radius: inherit;
   pointer-events: none; z-index: 10; opacity: 0; transition: opacity .3s;
   background: radial-gradient(circle at var(--mx,50%) var(--my,50%),
-    rgba(79,142,247,.13) 0%, rgba(245,166,35,.06) 45%, transparent 65%);
+    rgba(79,142,247,.09) 0%, rgba(245,166,35,.035) 45%, transparent 65%);
 }
 .ev-tilt:hover .ev-tilt__shine { opacity: 1; }
 
@@ -103,19 +129,19 @@
 .platform-card:hover {
   transform: translateY(-10px) scale(1.025) !important;
   border-color: var(--amber-border) !important;
-  box-shadow: 0 20px 52px rgba(0,0,0,.48), 0 0 0 1px var(--amber-border), 0 0 40px rgba(245,166,35,.12) !important;
+  box-shadow: 0 18px 46px rgba(0,0,0,.45), 0 0 0 1px var(--amber-border), 0 0 28px rgba(245,166,35,.08) !important;
 }
 .platform-card::before {
   content:''; position:absolute; top:-60px; right:-60px;
   width:150px; height:150px; border-radius:50%;
-  background:radial-gradient(circle,rgba(245,166,35,.22),transparent 70%);
+  background:radial-gradient(circle,rgba(245,166,35,.14),transparent 70%);
   opacity:0; transition:opacity .4s,transform .55s; pointer-events:none; z-index:0;
 }
-.platform-card:hover::before { opacity:1; transform:scale(1.6); }
+.platform-card:hover::before { opacity:1; transform:scale(1.4); }
 .platform-card::after {
   content:''; position:absolute; inset:0; border-radius:inherit;
   pointer-events:none; z-index:1; opacity:0; transition:opacity .3s;
-  background:radial-gradient(circle at var(--lx,50%) var(--ly,50%),rgba(79,142,247,.1) 0%,transparent 60%);
+  background:radial-gradient(circle at var(--lx,50%) var(--ly,50%),rgba(79,142,247,.07) 0%,transparent 60%);
 }
 .platform-card:hover::after { opacity:1; }
 .platform-card__ext { transition:transform .28s,opacity .28s !important; }
@@ -140,21 +166,14 @@
 .ev-light-card::after {
   content:''; position:absolute; inset:0; border-radius:inherit;
   pointer-events:none; z-index:5; opacity:0; transition:opacity .3s;
-  background:radial-gradient(circle at var(--lx,50%) var(--ly,50%),rgba(79,142,247,.1) 0%,transparent 58%);
+  background:radial-gradient(circle at var(--lx,50%) var(--ly,50%),rgba(79,142,247,.07) 0%,transparent 58%);
 }
 .ev-light-card:hover::after { opacity:1; }
 .subject-folder.ev-light-card::after, .subject-item.ev-light-card::after {
-  background:radial-gradient(circle at var(--lx,50%) var(--ly,50%),rgba(245,166,35,.1) 0%,transparent 60%);
+  background:radial-gradient(circle at var(--lx,50%) var(--ly,50%),rgba(245,166,35,.08) 0%,transparent 60%);
 }
 
-/* ── 9. STARFIELD ────────────────────────────────────────── */
-#ev-starfield {
-  position: fixed; inset: 0; pointer-events: none;
-  z-index: 0; overflow: hidden;
-}
-#ev-starfield svg { width:100%; height:100%; }
-
-/* ── 10. HAMBURGER DRAWER ────────────────────────────────── */
+/* ── 9. HAMBURGER DRAWER ─────────────────────────────────── */
 .navbar__hamburger {
   display: none;
   align-items: center; justify-content: center;
@@ -274,7 +293,7 @@
 }
 .nav-drawer__signout:hover { background: rgba(239,68,68,0.18); border-color: rgba(239,68,68,0.4); }
 
-/* ── 11. POLL MOBILE + VOTER BREAKDOWN FIX ───────────────── */
+/* ── 10. POLL MOBILE + VOTER BREAKDOWN FIX ──────────────── */
 /* Mobile poll layout fix */
 @media (max-width: 640px) {
   .poll-card { padding: 1rem; }
@@ -338,7 +357,7 @@
 }
 .poll-admin__voters-empty { font-size: 0.82rem; color: var(--text-3); font-style: italic; }
 
-/* ── Position fixes for z-index with starfield ───────────── */
+/* ── Position fixes ──────────────────────────────────────── */
 #root, .layout, .navbar, .bottom-nav, .modal-overlay, .preview-modal-overlay {
   position: relative; z-index: 1;
 }
