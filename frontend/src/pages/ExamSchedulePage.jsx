@@ -91,6 +91,8 @@ export default function ExamSchedulePage() {
     return diff >= 0 && diff <= 30;
   }).sort((a,b) => new Date(a.date) - new Date(b.date));
 
+  const timelineEntries = upcoming.slice(0, 8);
+
   return (
     <div className="exam-page">
       <div className="exam-page__header">
@@ -225,6 +227,32 @@ export default function ExamSchedulePage() {
                   </div>
                 );
               })}
+            </div>
+          )}
+
+          {!loading && timelineEntries.length > 0 && (
+            <div className="exam-timeline">
+              <h4 className="exam-timeline__title">Exam timeline</h4>
+              <div className="exam-timeline__track">
+                {timelineEntries.map((ex, idx) => {
+                  const eventDate = new Date(ex.date);
+                  const daysLeft = Math.ceil((eventDate - today) / 86400000);
+                  const tone = daysLeft <= 2 ? 'danger' : daysLeft <= 7 ? 'warning' : 'calm';
+                  return (
+                    <div key={ex._id || idx} className={`exam-timeline__item exam-timeline__item--${tone}`}>
+                      <span className="exam-timeline__dot" />
+                      <div className="exam-timeline__content">
+                        <p className="exam-timeline__name">{ex.title}</p>
+                        <p className="exam-timeline__meta">
+                          {eventDate.toLocaleDateString('en-IN', { day:'2-digit', month:'short' })}
+                          {' · '}
+                          {daysLeft <= 0 ? 'Today' : daysLeft === 1 ? 'Tomorrow' : `${daysLeft} days`}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           )}
         </div>

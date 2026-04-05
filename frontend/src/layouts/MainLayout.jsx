@@ -4,6 +4,7 @@ import BottomNav from '../components/BottomNav';
 import { useEffect, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import CommandPalette from '../components/CommandPalette';
 import { fetchAnnouncements, fetchSavedItems } from '../api/apiClient';
 import { X, Megaphone } from 'lucide-react';
 import '../effects.css';
@@ -29,6 +30,16 @@ export default function MainLayout() {
   const [dismissed, setDismissed] = useState([]);
   const [installPrompt, setInstallPrompt] = useState(null);
   const [showInstall, setShowInstall] = useState(false);
+  const [commandOpen, setCommandOpen] = useState(false);
+  const [studyMode, setStudyMode] = useState(() => localStorage.getItem('ev-study-mode') === '1');
+
+  const toggleStudyMode = () => {
+    setStudyMode((prev) => {
+      const next = !prev;
+      localStorage.setItem('ev-study-mode', next ? '1' : '0');
+      return next;
+    });
+  };
 
   // ── Init all effects once ──────────────────────────────────
   useEffect(() => {
@@ -69,6 +80,27 @@ export default function MainLayout() {
     };
     mq.addEventListener('change', handler);
     return () => mq.removeEventListener('change', handler);
+  }, []);
+
+  useEffect(() => {
+    const onKeyDown = (e) => {
+      const isCmdK = (e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k';
+      if (isCmdK) {
+        e.preventDefault();
+        setCommandOpen(true);
+      }
+      if (e.altKey && e.key.toLowerCase() === 's') {
+        e.preventDefault();
+        toggleStudyMode();
+      }
+    };
+    const onToggleStudy = () => toggleStudyMode();
+    window.addEventListener('keydown', onKeyDown);
+    window.addEventListener('ev:toggle-study-mode', onToggleStudy);
+    return () => {
+      window.removeEventListener('keydown', onKeyDown);
+      window.removeEventListener('ev:toggle-study-mode', onToggleStudy);
+    };
   }, []);
 
   useEffect(() => {
@@ -113,11 +145,18 @@ export default function MainLayout() {
   const visible = announcements.filter(a => !dismissed.includes(a._id));
 
   return (
-    <div className="layout">
-      <Navbar theme={theme} toggleTheme={toggleTheme} setTheme={setTheme} themeOptions={themeOptions} />
+    <div className={`layout${studyMode ? ' layout--study' : ''}`}>
+      <Navbar
+        theme={theme}
+        toggleTheme={toggleTheme}
+        setTheme={setTheme}
+        themeOptions={themeOptions}
+        studyMode={studyMode}
+        onToggleStudyMode={toggleStudyMode}
+      />
 
       {/* Announcement banners */}
-      {showTour && <OnboardingTour onDone={() => { setShowTour(false); localStorage.setItem('ev-tour-done','1'); }} />}
+      {!studyMode && showTour && <OnboardingTour onDone={() => { setShowTour(false); localStorage.setItem('ev-tour-done','1'); }} />}
       {visible.map(ann => {
         const s = TYPE_STYLES[ann.type] || TYPE_STYLES.info;
         return (
@@ -139,7 +178,7 @@ export default function MainLayout() {
         );
       })}
 
-      {showInstall && (
+      {!studyMode && showInstall && (
         <div className="pwa-banner">
           <span>📲 Install ExamVault as an app!</span>
           <button className="pwa-banner__install" onClick={handleInstall}>Install</button>
@@ -150,6 +189,7 @@ export default function MainLayout() {
       <main className="layout__main" style={{paddingBottom: '5rem'}}>
         <Outlet />
       </main>
+      <CommandPalette open={commandOpen} onClose={() => setCommandOpen(false)} onToggleStudyMode={toggleStudyMode} />
     </div>
   );
 }
