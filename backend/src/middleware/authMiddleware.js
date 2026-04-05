@@ -50,7 +50,9 @@ const protect = async (req, res, next) => {
 
     const emailLower = email.toLowerCase();
     const isAdmin = ADMIN_EMAILS.includes(emailLower);
-    const isFaculty = FACULTY_EMAILS.includes(emailLower);
+    const localPart = emailLower.split('@')[0] || '';
+    const isFacultyByPattern = emailLower.endsWith(`@${ALLOWED_DOMAIN}`) && /^[^0-9]/.test(localPart);
+    const isFaculty = FACULTY_EMAILS.includes(emailLower) || isFacultyByPattern;
 
     // Block non-college users except admins
 

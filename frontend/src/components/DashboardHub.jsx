@@ -39,9 +39,7 @@ function openQuoteWindow(item) {
   const quote = meta.text || item.title || 'Saved quote';
   const author = meta.author || item.subtitle || 'Unknown';
   const description = meta.description || 'No description available for this quote yet.';
-  const win = window.open('', '_blank', 'noopener,noreferrer,width=760,height=560');
-  if (!win) return;
-  win.document.write(`<!doctype html>
+  const html = `<!doctype html>
 <html>
   <head>
     <meta charset="utf-8" />
@@ -65,8 +63,10 @@ function openQuoteWindow(item) {
       <p class="desc">${escapeHtml(description)}</p>
     </div>
   </body>
-</html>`);
-  win.document.close();
+</html>`;
+  const url = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
+  window.open(url, '_blank', 'noopener,noreferrer');
+  setTimeout(() => URL.revokeObjectURL(url), 60000);
 }
 
 function openFileWindow(item) {
@@ -75,10 +75,8 @@ function openFileWindow(item) {
   const mimeType = meta.mimeType || '';
   const previewUrl = buildFilePreviewUrl(fileUrl, mimeType);
   const fileName = meta.fileName || item.title || 'Saved file';
-  const win = window.open('', '_blank', 'noopener,noreferrer,width=980,height=720');
-  if (!win) return;
   const hasPreview = Boolean(fileUrl && previewUrl);
-  win.document.write(`<!doctype html>
+  const html = `<!doctype html>
 <html>
   <head>
     <meta charset="utf-8" />
@@ -120,8 +118,10 @@ function openFileWindow(item) {
       </div>
     </div>
   </body>
-</html>`);
-  win.document.close();
+</html>`;
+  const url = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
+  window.open(url, '_blank', 'noopener,noreferrer');
+  setTimeout(() => URL.revokeObjectURL(url), 60000);
 }
 
 function SavedCard({ item, onOpen, onRemove }) {

@@ -1,12 +1,11 @@
-// src/pages/Login.jsx
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { BookOpen, AlertCircle, Loader2, Shield } from 'lucide-react';
+import { AlertCircle, GraduationCap, Loader2, Shield } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 
-export default function Login() {
+export default function FacultyLogin() {
   const { login, loading } = useAuth();
-  const [error,   setError]   = useState('');
+  const [error, setError] = useState('');
   const [signing, setSigning] = useState(false);
 
   const handleSignIn = async () => {
@@ -32,23 +31,21 @@ export default function Login() {
       </div>
 
       <div className="login__card">
-        {/* Logo */}
         <div className="login__logo">
           <div className="login__logo-icon">
-            <BookOpen size={32} strokeWidth={2} />
+            <GraduationCap size={32} strokeWidth={2} />
           </div>
           <div>
             <h1 className="login__logo-title">VNRVJIET</h1>
-            <p className="login__logo-sub">Academic Repository</p>
+            <p className="login__logo-sub">Faculty Access</p>
           </div>
         </div>
 
-        {/* Body */}
         <div className="login__body">
-          <h2 className="login__heading">Student Login</h2>
+          <h2 className="login__heading">Faculty Login</h2>
           <p className="login__desc">
-            Sign in with your <strong>@vnrvjiet.in</strong> Google account to access
-            previous papers and subject resources.
+            Sign in with your <strong>@vnrvjiet.in</strong> account.
+            Faculty accounts are identified when the email starts with a non-digit.
           </p>
 
           {error && (
@@ -58,13 +55,9 @@ export default function Login() {
             </div>
           )}
 
-          <button
-            className="login__google-btn"
-            onClick={handleSignIn}
-            disabled={isLoading}
-          >
+          <button className="login__google-btn" onClick={handleSignIn} disabled={isLoading}>
             {isLoading ? (
-              <><Loader2 size={20} className="login__spinner" /> Signing in…</>
+              <><Loader2 size={20} className="login__spinner" /> Signing in...</>
             ) : (
               <>
                 <svg className="login__google-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -79,21 +72,14 @@ export default function Login() {
           </button>
 
           <p className="login__domain-note">
-            Only <code>@vnrvjiet.in</code> accounts are permitted.
+            Faculty rule: starts with non-digit and ends with <code>@vnrvjiet.in</code>
           </p>
         </div>
 
-        {/* Footer — admin login link */}
         <div className="login__footer">
           <div className="login__footer-links">
-            <Link to="/faculty-login" className="login__admin-link">
-              <Shield size={13} />
-              Faculty Login
-            </Link>
-            <Link to="/admin-login" className="login__admin-link">
-              <Shield size={13} />
-              Admin Login
-            </Link>
+            <Link to="/login" className="login__admin-link">Student Login</Link>
+            <Link to="/admin-login" className="login__admin-link"><Shield size={13} /> Admin Login</Link>
           </div>
         </div>
       </div>

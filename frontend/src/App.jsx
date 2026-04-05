@@ -3,6 +3,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { useAuth } from './hooks/useAuth';
 import MainLayout    from './layouts/MainLayout';
 import Login         from './pages/Login';
+import FacultyLogin  from './pages/FacultyLogin';
 import AdminLogin    from './pages/AdminLogin';
 import Dashboard     from './pages/Dashboard';
 import RegulationPage from './pages/RegulationPage';
@@ -72,6 +73,10 @@ export default function App() {
       {/* ── Public ─────────────────────────────────────────── */}
       <Route path="/login" element={
         <GuestRoute><Login /></GuestRoute>
+      } />
+
+      <Route path="/faculty-login" element={
+        <GuestRoute><FacultyLogin /></GuestRoute>
       } />
 
       <Route path="/admin-login" element={

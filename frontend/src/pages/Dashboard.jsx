@@ -443,6 +443,8 @@ export default function Dashboard() {
 
       <DigestCard mode={digestMode} onModeChange={setDigestMode} summary={digestSummary} />
 
+      <DashboardHub />
+
       <section className="dash-section">
         <h2 className="dash-section-title">Choose your Regulation</h2>
         <div className="reg-grid">
@@ -461,8 +463,6 @@ export default function Dashboard() {
           ))}
         </div>
       </section>
-
-      <DashboardHub />
     </div>
   );
 }
