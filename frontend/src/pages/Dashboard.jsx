@@ -106,9 +106,28 @@ export default function Dashboard() {
   const [stats, setStats] = useState(null);
   const [showOnlineDetails, setShowOnlineDetails] = useState(false);
   const { count: onlineCount, users: onlineUsers } = useOnlineCount(firstName, backendUser?.role, backendUser?._id);
+  const eyesRef = useRef(null);
 
   useEffect(() => {
     fetchPublicStats().then(d => setStats(d)).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    const el = eyesRef.current;
+    if (!el) return;
+
+    const onMove = (e) => {
+      const rect = el.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const nx = Math.max(-1, Math.min(1, (e.clientX - cx) / (rect.width * 0.5)));
+      const ny = Math.max(-1, Math.min(1, (e.clientY - cy) / (rect.height * 0.5)));
+      el.style.setProperty('--look-x', nx.toFixed(3));
+      el.style.setProperty('--look-y', ny.toFixed(3));
+    };
+
+    window.addEventListener('pointermove', onMove, { passive: true });
+    return () => window.removeEventListener('pointermove', onMove);
   }, []);
 
   return (
@@ -121,6 +140,33 @@ export default function Dashboard() {
       <section className="dash-hero">
         <div className="dash-hero__glow" aria-hidden="true" />
         <div className="dash-hero__glow dash-hero__glow--2" aria-hidden="true" />
+
+        {/* Fun mascot eyes in the right-side empty space */}
+        <div className="dash-eyes" ref={eyesRef} aria-hidden="true">
+          <svg viewBox="0 0 220 120" className="dash-eyes__svg">
+            <defs>
+              <linearGradient id="eyeSkin" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stopColor="rgba(245,166,35,0.24)" />
+                <stop offset="100%" stopColor="rgba(79,142,247,0.18)" />
+              </linearGradient>
+            </defs>
+
+            <ellipse cx="74" cy="58" rx="50" ry="34" fill="url(#eyeSkin)" stroke="rgba(245,166,35,0.35)" strokeWidth="1.5" />
+            <ellipse cx="146" cy="58" rx="50" ry="34" fill="url(#eyeSkin)" stroke="rgba(79,142,247,0.35)" strokeWidth="1.5" />
+
+            <ellipse cx="74" cy="58" rx="30" ry="23" fill="#f9fafb" />
+            <ellipse cx="146" cy="58" rx="30" ry="23" fill="#f9fafb" />
+
+            <circle className="dash-eyes__pupil dash-eyes__pupil--left" cx="74" cy="58" r="8.5" fill="#111827" />
+            <circle className="dash-eyes__pupil dash-eyes__pupil--right" cx="146" cy="58" r="8.5" fill="#111827" />
+
+            <circle className="dash-eyes__glint dash-eyes__glint--left" cx="71" cy="55" r="2.6" fill="#ffffff" />
+            <circle className="dash-eyes__glint dash-eyes__glint--right" cx="143" cy="55" r="2.6" fill="#ffffff" />
+
+            <path d="M20 34 Q74 8 128 34" fill="none" stroke="rgba(245,166,35,0.28)" strokeWidth="2" strokeLinecap="round" />
+            <path d="M92 34 Q146 8 200 34" fill="none" stroke="rgba(79,142,247,0.28)" strokeWidth="2" strokeLinecap="round" />
+          </svg>
+        </div>
 
         {/* SVG: twinkling constellation */}
         <svg aria-hidden="true" style={{position:'absolute',top:10,right:14,width:130,height:100,pointerEvents:'none',opacity:0.22}} viewBox="0 0 130 100">

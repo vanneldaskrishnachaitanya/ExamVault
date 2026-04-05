@@ -45,6 +45,11 @@ export default function MainLayout() {
     return () => clearTimeout(timer);
   }, [location.pathname]);
 
+  // Always start new route at top (prevents opening pages at mid-scroll)
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, [location.pathname]);
+
   // Apply theme to <html>
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
