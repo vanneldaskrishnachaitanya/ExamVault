@@ -95,7 +95,6 @@ export default function ExamSchedulePage() {
     <div className="exam-page">
       <div className="exam-page__header">
         {isStaff && (
-        {isAdmin && (
           <button className="btn btn--primary btn--sm" onClick={() => setShowForm(s => !s)}>
             <Plus size={14} /> Add Exam
           </button>
@@ -103,7 +102,6 @@ export default function ExamSchedulePage() {
       </div>
 
       {showForm && isStaff && (
-      {showForm && isAdmin && (
         <div className="exam-form">
           <div className="exam-form__grid">
             <label className="modal__label">Title *
@@ -217,8 +215,8 @@ export default function ExamSchedulePage() {
                       <p className="exam-item__date">{d.toLocaleDateString('en-IN',{day:'2-digit',month:'short'})}</p>
                       <p className="exam-item__days" style={{color: daysLeft <= 3 ? 'var(--danger)' : daysLeft <= 7 ? 'var(--warning)' : 'var(--text-3)'}}>
                         {daysLeft === 0 ? 'Today!' : daysLeft === 1 ? 'Tomorrow' : `${daysLeft} days`}
+                      </p>
                       {isStaff && (
-                      {isAdmin && (
                         <button className="btn btn--sm btn--danger" style={{padding:'0.2rem 0.4rem'}} onClick={() => handleDelete(ex._id)}>
                           <Trash2 size={12}/>
                         </button>
