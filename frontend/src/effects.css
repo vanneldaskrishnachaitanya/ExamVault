@@ -52,11 +52,8 @@
 }
 .ev-tilt:hover .ev-tilt__shine { opacity: 1; }
 
-/* Reg cards specifically — amber tint */
-.reg-card.ev-tilt .ev-tilt__shine {
-  background: radial-gradient(circle at var(--mx,50%) var(--my,50%),
-    rgba(245,166,35,.14) 0%, rgba(79,142,247,.05) 45%, transparent 65%);
-}
+/* Reg cards: tilt-only, no cursor sweep */
+.reg-card.ev-tilt .ev-tilt__shine { display: none !important; }
 /* Branch accordion — subtle */
 .branch-accordion.ev-tilt:hover {
   box-shadow: 0 12px 36px rgba(0,0,0,.45), 0 0 0 1px var(--amber-border) !important;

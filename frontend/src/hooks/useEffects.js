@@ -79,7 +79,8 @@ export function initTilt() {
       if (card._evTilt) return;
       card._evTilt = true;
       card.classList.add('ev-tilt');
-      if (!card.querySelector('.ev-tilt__shine')) {
+      const isRegCard = card.classList.contains('reg-card');
+      if (!isRegCard && !card.querySelector('.ev-tilt__shine')) {
         const sh = document.createElement('div');
         sh.className = 'ev-tilt__shine';
         card.appendChild(sh);
@@ -88,9 +89,13 @@ export function initTilt() {
         const r = card.getBoundingClientRect();
         const x = (e.clientX - r.left) / r.width;
         const y = (e.clientY - r.top)  / r.height;
-        card.style.transform = `perspective(900px) rotateX(${(y-.5)*-13}deg) rotateY(${(x-.5)*13}deg) scale(1.022)`;
-        card.style.setProperty('--mx', x*100+'%');
-        card.style.setProperty('--my', y*100+'%');
+        const rotateX = (y - 0.5) * -13;
+        const rotateY = (x - 0.5) * 13;
+        card.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.022)`;
+        if (!isRegCard) {
+          card.style.setProperty('--mx', x*100+'%');
+          card.style.setProperty('--my', y*100+'%');
+        }
         card.style.setProperty('--lx', x*100+'%');
         card.style.setProperty('--ly', y*100+'%');
       }, { passive: true });
