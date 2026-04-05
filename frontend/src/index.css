@@ -111,6 +111,10 @@ a { color: inherit; text-decoration: none; }
 button { cursor: pointer; border: none; background: none; font: inherit; }
 img { max-width: 100%; display: block; }
 input, select, textarea { font: inherit; color: inherit; }
+button, a, input, select, textarea, [role="button"] {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
 
 /* ── Body — Cosmic mesh background ─────────────────────────── */
 body {
@@ -226,6 +230,13 @@ body::after {
   outline: 2px solid var(--amber-border);
   outline-offset: 3px;
   border-radius: var(--radius-sm);
+}
+
+@media (hover: none) and (pointer: coarse) {
+  :focus-visible {
+    outline: none;
+    box-shadow: none;
+  }
 }
 
 /* ══════════════════════════════════════════════════════════════
