@@ -14,14 +14,14 @@ const getSavedItems = async (req, res, next) => {
 
 const addSavedItem = async (req, res, next) => {
   try {
-    const { type, itemId, title, subtitle = '', href = '/dashboard' } = req.body;
+    const { type, itemId, title, subtitle = '', href = '/dashboard', meta = {} } = req.body;
     if (!type || !itemId || !title) {
       return res.status(400).json({ success: false, message: 'type, itemId, and title are required' });
     }
 
     const savedItem = await SavedItem.findOneAndUpdate(
       { userId: req.user._id, type, itemId },
-      { $set: { title, subtitle, href } },
+      { $set: { title, subtitle, href, meta } },
       { new: true, upsert: true, setDefaultsOnInsert: true }
     );
 

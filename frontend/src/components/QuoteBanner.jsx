@@ -216,6 +216,11 @@ export default function QuoteBanner() {
       title: q.sectionName ? `${q.sectionName} quote` : 'Daily quote',
       subtitle: q.author || q.text?.slice(0, 60) || 'Inspirational quote',
       href: `/search?source=quotes&q=${query}`,
+      meta: {
+        text: q.text || '',
+        author: q.author || 'Unknown',
+        description: q.description || '',
+      },
     };
 
     const sync = async () => {
@@ -223,7 +228,14 @@ export default function QuoteBanner() {
         if (saved) {
           await removeSavedItemApi({ type: 'quote', itemId: String(q._id) });
         } else {
-          await addSavedItem({ type: 'quote', itemId: String(q._id), title: payload.title, subtitle: payload.subtitle, href: payload.href });
+          await addSavedItem({
+            type: 'quote',
+            itemId: String(q._id),
+            title: payload.title,
+            subtitle: payload.subtitle,
+            href: payload.href,
+            meta: payload.meta,
+          });
         }
         const next = toggleSavedItem(payload);
         setSaved(next.some(entry => entry.type === 'quote' && String(entry.id) === String(q._id)));

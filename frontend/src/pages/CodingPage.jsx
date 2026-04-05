@@ -295,13 +295,24 @@ function CodingPinCard({ item }) {
       id: item._id,
       title: item.name,
       subtitle: item.type || 'coding',
-      href: '/coding',
+      href: item.url,
+      meta: {
+        external: true,
+        url: item.url,
+      },
     };
     try {
       if (saved) {
         await removeSavedItemApi({ type: 'coding', itemId: String(item._id) });
       } else {
-        await addSavedItem({ type: 'coding', itemId: String(item._id), title: payload.title, subtitle: payload.subtitle, href: payload.href });
+        await addSavedItem({
+          type: 'coding',
+          itemId: String(item._id),
+          title: payload.title,
+          subtitle: payload.subtitle,
+          href: payload.href,
+          meta: payload.meta,
+        });
       }
       const next = toggleSavedItem(payload);
       setSaved(next.some(entry => entry.type === 'coding' && String(entry.id) === String(item._id)));

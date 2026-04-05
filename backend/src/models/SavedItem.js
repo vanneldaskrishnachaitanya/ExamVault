@@ -9,6 +9,7 @@ const SavedItemSchema = new mongoose.Schema({
   title:    { type: String, required: true, trim: true },
   subtitle: { type: String, default: '', trim: true },
   href:     { type: String, default: '/dashboard', trim: true },
+  meta:     { type: mongoose.Schema.Types.Mixed, default: {} },
 }, { timestamps: true });
 
 SavedItemSchema.index({ userId: 1, type: 1, itemId: 1 }, { unique: true });

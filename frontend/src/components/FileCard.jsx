@@ -136,6 +136,11 @@ export default function FileCard({ file, showStatus = false, onReport, compact =
       href: file.regulation && file.branch && file.subject
         ? `/r/${file.regulation}/${file.branch}/${encodeURIComponent(file.subject)}`
         : '/dashboard',
+      meta: {
+        fileUrl: file.filePath || '',
+        mimeType: file.mimeType || '',
+        fileName: file.originalName || 'File',
+      },
     };
 
     const sync = async () => {
@@ -143,7 +148,14 @@ export default function FileCard({ file, showStatus = false, onReport, compact =
         if (saved) {
           await removeSavedItemApi({ type: 'file', itemId: String(file._id) });
         } else {
-          await addSavedItem({ type: 'file', itemId: String(file._id), title: payload.title, subtitle: payload.subtitle, href: payload.href });
+          await addSavedItem({
+            type: 'file',
+            itemId: String(file._id),
+            title: payload.title,
+            subtitle: payload.subtitle,
+            href: payload.href,
+            meta: payload.meta,
+          });
         }
         const next = toggleSavedItem(payload);
         setSaved(next.some(entry => entry.type === 'file' && String(entry.id) === String(file._id)));

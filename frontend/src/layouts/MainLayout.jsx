@@ -101,6 +101,7 @@ export default function MainLayout() {
           title: item.title,
           subtitle: item.subtitle,
           href: item.href,
+          meta: item.meta || {},
           savedAt: item.createdAt,
         }));
         localStorage.setItem('ev-saved-items-v1', JSON.stringify(normalized));

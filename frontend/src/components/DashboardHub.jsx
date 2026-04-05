@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
-  ArrowRight, Bell, Bookmark, Calendar, Clock, FileText, Flame, Pin,
+  ArrowRight, Bell, Bookmark, Calendar, Clock, ExternalLink, FileText, Flame, Pin,
   TriangleAlert, Quote, Download, Megaphone,
 } from 'lucide-react';
 import {
@@ -16,11 +16,125 @@ function buildSubjectLink(item) {
   return `/r/${item.regulation}/${item.branch}/${encodeURIComponent(item.subject)}`;
 }
 
-function SavedCard({ item, onRemove }) {
-  const Icon = item.type === 'quote' ? Quote : item.type === 'event' ? Calendar : FileText;
+function escapeHtml(value) {
+  return String(value || '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+
+function buildFilePreviewUrl(fileUrl, mimeType) {
+  if (!fileUrl) return '';
+  if (String(mimeType || '').startsWith('image/')) return fileUrl;
+  if (mimeType === 'application/pdf') {
+    return `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(fileUrl)}`;
+  }
+  return `https://docs.google.com/viewer?url=${encodeURIComponent(fileUrl)}&embedded=true`;
+}
+
+function openQuoteWindow(item) {
+  const meta = item.meta || {};
+  const quote = meta.text || item.title || 'Saved quote';
+  const author = meta.author || item.subtitle || 'Unknown';
+  const description = meta.description || 'No description available for this quote yet.';
+  const win = window.open('', '_blank', 'noopener,noreferrer,width=760,height=560');
+  if (!win) return;
+  win.document.write(`<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Saved Quote</title>
+    <style>
+      :root { color-scheme: light dark; }
+      body { font-family: "Segoe UI", Tahoma, sans-serif; margin: 0; background: #0f172a; color: #e2e8f0; }
+      .wrap { max-width: 760px; margin: 0 auto; padding: 28px 24px 40px; }
+      .chip { display: inline-block; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; padding: 6px 10px; border-radius: 999px; background: rgba(148,163,184,0.2); }
+      .quote { margin: 20px 0 14px; font-size: clamp(24px, 3.2vw, 34px); line-height: 1.35; font-weight: 600; white-space: pre-wrap; }
+      .author { margin: 0; font-size: 18px; font-weight: 700; color: #93c5fd; }
+      .desc { margin-top: 14px; color: #cbd5e1; font-size: 15px; line-height: 1.6; white-space: pre-wrap; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <span class="chip">Saved quote</span>
+      <p class="quote">${escapeHtml(quote)}</p>
+      <p class="author">- ${escapeHtml(author)}</p>
+      <p class="desc">${escapeHtml(description)}</p>
+    </div>
+  </body>
+</html>`);
+  win.document.close();
+}
+
+function openFileWindow(item) {
+  const meta = item.meta || {};
+  const fileUrl = meta.fileUrl || item.href || '';
+  const mimeType = meta.mimeType || '';
+  const previewUrl = buildFilePreviewUrl(fileUrl, mimeType);
+  const fileName = meta.fileName || item.title || 'Saved file';
+  const win = window.open('', '_blank', 'noopener,noreferrer,width=980,height=720');
+  if (!win) return;
+  const hasPreview = Boolean(fileUrl && previewUrl);
+  win.document.write(`<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>${escapeHtml(fileName)}</title>
+    <style>
+      body { margin: 0; font-family: "Segoe UI", Tahoma, sans-serif; background: #0b1220; color: #e2e8f0; }
+      .wrap { max-width: 1100px; margin: 0 auto; padding: 18px; }
+      .head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+      .title { margin: 0; font-size: 22px; }
+      .sub { margin: 6px 0 0; font-size: 13px; color: #94a3b8; }
+      .actions { display: flex; gap: 10px; }
+      .btn { border: 0; border-radius: 10px; padding: 10px 14px; font-weight: 600; cursor: pointer; text-decoration: none; }
+      .btn-primary { background: #3b82f6; color: #fff; }
+      .btn-ghost { background: rgba(148,163,184,0.2); color: #e2e8f0; }
+      .preview { margin-top: 14px; height: 78vh; min-height: 420px; border: 1px solid rgba(148,163,184,0.3); border-radius: 12px; overflow: hidden; background: #111827; }
+      iframe, img { width: 100%; height: 100%; border: 0; display: block; }
+      .empty { padding: 16px; color: #cbd5e1; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="head">
+        <div>
+          <h1 class="title">${escapeHtml(fileName)}</h1>
+          <p class="sub">${escapeHtml(item.subtitle || 'Saved file')}</p>
+        </div>
+        <div class="actions">
+          <a class="btn btn-ghost" href="${escapeHtml(previewUrl || fileUrl)}" target="_blank" rel="noreferrer">Preview</a>
+          <a class="btn btn-primary" href="${escapeHtml(fileUrl)}" download="${escapeHtml(fileName)}">Download</a>
+        </div>
+      </div>
+      <div class="preview">
+        ${hasPreview
+          ? (String(mimeType || '').startsWith('image/')
+            ? `<img src="${escapeHtml(fileUrl)}" alt="${escapeHtml(fileName)}" />`
+            : `<iframe src="${escapeHtml(previewUrl)}" title="${escapeHtml(fileName)}"></iframe>`)
+          : '<div class="empty">Preview unavailable for this file. Use the buttons above.</div>'}
+      </div>
+    </div>
+  </body>
+</html>`);
+  win.document.close();
+}
+
+function SavedCard({ item, onOpen, onRemove }) {
+  const Icon = item.type === 'quote'
+    ? Quote
+    : item.type === 'event'
+      ? Calendar
+      : item.type === 'coding'
+        ? ExternalLink
+        : FileText;
   return (
     <div className="hub-saved-card">
-      <Link to={item.href || '/dashboard'} className="hub-saved-card__link">
+      <button type="button" className="hub-saved-card__link" onClick={() => onOpen(item)}>
         <div className="hub-saved-card__icon">
           <Icon size={14} />
         </div>
@@ -29,9 +143,13 @@ function SavedCard({ item, onRemove }) {
           <p className="hub-saved-card__meta">{item.subtitle}</p>
         </div>
         <ArrowRight size={13} />
-      </Link>
+      </button>
       {onRemove && (
-        <button className="hub-saved-card__remove" onClick={() => onRemove(item)} title="Remove saved item">
+        <button
+          className="hub-saved-card__remove"
+          onClick={(e) => { e.stopPropagation(); onRemove(item); }}
+          title="Remove saved item"
+        >
           <Pin size={12} />
         </button>
       )}
@@ -79,6 +197,7 @@ function ReminderItem({ item }) {
 }
 
 export default function DashboardHub() {
+  const navigate = useNavigate();
   const [bookmarks, setBookmarks] = useState([]);
   const [savedItems, setSavedItems] = useState([]);
   const [announcements, setAnnouncements] = useState([]);
@@ -112,6 +231,7 @@ export default function DashboardHub() {
           title: item.title,
           subtitle: item.subtitle,
           href: item.href,
+          meta: item.meta || {},
           savedAt: item.createdAt,
         }));
         setSavedItems(normalizedSaved);
@@ -269,6 +389,37 @@ export default function DashboardHub() {
     } catch {}
   };
 
+  const openSavedItem = (item) => {
+    if (!item) return;
+
+    if (item.type === 'quote') {
+      openQuoteWindow(item);
+      return;
+    }
+
+    if (item.type === 'file') {
+      if (!item.meta?.fileUrl) {
+        navigate(item.href || '/dashboard');
+        return;
+      }
+      openFileWindow(item);
+      return;
+    }
+
+    if (item.type === 'coding') {
+      const target = item.meta?.url || item.href;
+      if (target) window.open(target, '_blank', 'noopener,noreferrer');
+      return;
+    }
+
+    if (item.href && /^https?:\/\//i.test(item.href)) {
+      window.open(item.href, '_blank', 'noopener,noreferrer');
+      return;
+    }
+
+    navigate(item.href || '/dashboard');
+  };
+
   return (
     <section className="dash-hub">
       <div className="dash-hub__grid">
@@ -290,6 +441,7 @@ export default function DashboardHub() {
                 <SavedCard
                   key={item.id}
                   item={item}
+                  onOpen={openSavedItem}
                   onRemove={item.type === 'subject' ? removeBookmarkPin : removePinned}
                 />
               ))}
