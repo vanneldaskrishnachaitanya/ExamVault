@@ -1,7 +1,7 @@
 import OnboardingTour from '../components/OnboardingTour';
 import RecentlyViewed from '../components/RecentlyViewed';
 import BottomNav from '../components/BottomNav';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import CommandPalette from '../components/CommandPalette';
@@ -19,6 +19,7 @@ const TYPE_STYLES = {
 
 export default function MainLayout() {
   const location = useLocation();
+  const layoutRef = useRef(null);
   const themeOptions = ['dark', 'light', 'aurora', 'forest', 'sunset'];
   const [theme, setTheme] = useState(() => {
     const saved = localStorage.getItem('ev-theme');
@@ -88,6 +89,93 @@ export default function MainLayout() {
   }, []);
 
   useEffect(() => {
+    const root = layoutRef.current;
+    if (!root) return undefined;
+
+    let rafId = null;
+    const updateScrollVars = () => {
+      rafId = null;
+      const scrollY = window.scrollY || window.pageYOffset || 0;
+      const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+      const progress = Math.min(1, scrollY / maxScroll);
+      root.style.setProperty('--scroll-y', `${scrollY.toFixed(1)}px`);
+      root.style.setProperty('--scroll-p', progress.toFixed(4));
+    };
+
+    const onScroll = () => {
+      if (rafId !== null) return;
+      rafId = window.requestAnimationFrame(updateScrollVars);
+    };
+
+    updateScrollVars();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      if (rafId !== null) window.cancelAnimationFrame(rafId);
+    };
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
+    const root = layoutRef.current;
+    if (!root) return undefined;
+    const main = root.querySelector('.layout__main');
+    if (!main) return undefined;
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      });
+    }, {
+      threshold: 0.14,
+      rootMargin: '0px 0px -8% 0px',
+    });
+
+    const selectors = [
+      '.layout__main > *',
+      '.layout__main section',
+      '.layout__main .reg-card',
+      '.layout__main .file-card',
+      '.layout__main .event-card',
+      '.layout__main .dash-widget',
+      '.layout__main .home-role-card',
+      '.layout__main .smart-reminder',
+      '.layout__main .digest-card',
+      '.layout__main .analytics-card',
+      '.layout__main .subject-item',
+      '.layout__main .subject-folder',
+      '.layout__main .history-item',
+      '.layout__main .search-hit-card',
+      '.layout__main .hub-saved-card',
+      '.layout__main .hub-feed-item',
+      '.layout__main .hub-reminder-item',
+      '.layout__main .exam-item',
+    ].join(', ');
+
+    const bindReveal = () => {
+      main.querySelectorAll(selectors).forEach((el) => {
+        if (el.classList.contains('reveal-blur') || el.closest('.space-end')) return;
+        el.classList.add('reveal-blur');
+        observer.observe(el);
+      });
+    };
+
+    bindReveal();
+    const mutObserver = new MutationObserver(bindReveal);
+    mutObserver.observe(main, { childList: true, subtree: true });
+
+    return () => {
+      observer.disconnect();
+      mutObserver.disconnect();
+    };
+  }, [location.pathname]);
+
+  useEffect(() => {
     const handler = (e) => { e.preventDefault(); setInstallPrompt(e); setShowInstall(true); };
     window.addEventListener('beforeinstallprompt', handler);
     return () => window.removeEventListener('beforeinstallprompt', handler);
@@ -129,29 +217,35 @@ export default function MainLayout() {
   const visible = announcements.filter(a => !dismissed.includes(a._id));
 
   return (
-    <div className="layout">
+    <div className="layout layout--cosmic" ref={layoutRef}>
       <div className="cosmos-scene" aria-hidden="true">
         <div className="cosmos-nebula cosmos-nebula--one" />
         <div className="cosmos-nebula cosmos-nebula--two" />
-        <div className="cosmos-galaxy" />
-        <div className="cosmos-supernova" />
 
-        <div className="cosmos-planet cosmos-planet--main" />
-        <div className="cosmos-planet cosmos-planet--minor" />
+        <div className="cosmos-layer cosmos-layer--galaxy">
+          <img src="/cosmos/galaxy.svg" alt="" loading="lazy" />
+        </div>
+        <div className="cosmos-layer cosmos-layer--supernova">
+          <img src="/cosmos/supernova.svg" alt="" loading="lazy" />
+        </div>
 
-        <div className="cosmos-satellite">
-          <span className="cosmos-satellite__core" />
-          <span className="cosmos-satellite__wing cosmos-satellite__wing--left" />
-          <span className="cosmos-satellite__wing cosmos-satellite__wing--right" />
-          <span className="cosmos-satellite__dish" />
+        <div className="cosmos-layer cosmos-layer--planet-main">
+          <img src="/cosmos/planet-rust.svg" alt="" loading="lazy" />
+        </div>
+        <div className="cosmos-layer cosmos-layer--planet-minor">
+          <img src="/cosmos/planet-terra.svg" alt="" loading="lazy" />
+        </div>
+
+        <div className="cosmos-layer cosmos-layer--satellite">
+          <img src="/cosmos/satellite.svg" alt="" loading="lazy" />
         </div>
 
         <div className="cosmos-asteroids">
-          <span className="cosmos-asteroid" />
-          <span className="cosmos-asteroid" />
-          <span className="cosmos-asteroid" />
-          <span className="cosmos-asteroid" />
-          <span className="cosmos-asteroid" />
+          <span className="cosmos-asteroid cosmos-asteroid--a1"><img src="/cosmos/asteroid.svg" alt="" loading="lazy" /></span>
+          <span className="cosmos-asteroid cosmos-asteroid--a2"><img src="/cosmos/asteroid.svg" alt="" loading="lazy" /></span>
+          <span className="cosmos-asteroid cosmos-asteroid--a3"><img src="/cosmos/asteroid.svg" alt="" loading="lazy" /></span>
+          <span className="cosmos-asteroid cosmos-asteroid--a4"><img src="/cosmos/asteroid.svg" alt="" loading="lazy" /></span>
+          <span className="cosmos-asteroid cosmos-asteroid--a5"><img src="/cosmos/asteroid.svg" alt="" loading="lazy" /></span>
         </div>
       </div>
 

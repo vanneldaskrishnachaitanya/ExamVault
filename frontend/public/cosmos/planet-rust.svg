@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <radialGradient id="base" cx="34%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#ffd7b1"/>
+      <stop offset="26%" stop-color="#f0a067"/>
+      <stop offset="58%" stop-color="#8d4627"/>
+      <stop offset="100%" stop-color="#2d1209"/>
+    </radialGradient>
+    <filter id="dust" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="4" seed="12" result="t"/>
+      <feColorMatrix in="t" type="matrix" values="1 0 0 0 0  0 0.6 0 0 0  0 0 0.4 0 0  0 0 0 1 0"/>
+      <feBlend in="SourceGraphic" in2="t" mode="multiply"/>
+    </filter>
+    <radialGradient id="gloss" cx="22%" cy="18%" r="48%">
+      <stop offset="0%" stop-color="#fff" stop-opacity="0.62"/>
+      <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="256" cy="256" r="246" fill="url(#base)"/>
+  <g filter="url(#dust)" opacity="0.85">
+    <path d="M92 229c36-34 67-41 101-26 22 10 43 11 63 3 45-19 89-8 127 35 29 33 32 68 11 89-22 22-55 21-88 2-27-16-62-17-101-3-55 21-96 18-136-10-26-18-31-49-13-90 8-18 18-32 36-44z" fill="#6f2d19"/>
+    <path d="M147 330c31 29 69 41 113 34 40-6 69-2 92 13-29 40-77 66-133 70-57 3-112-19-146-62 7-25 25-46 74-55z" fill="#8a3f22"/>
+    <circle cx="322" cy="172" r="27" fill="#5c2415"/>
+    <circle cx="181" cy="184" r="18" fill="#6c2b17"/>
+  </g>
+  <ellipse cx="256" cy="306" rx="180" ry="52" fill="#2d1209" opacity="0.12"/>
+  <circle cx="256" cy="256" r="246" fill="url(#gloss)"/>
+  <circle cx="256" cy="256" r="246" fill="none" stroke="#ffcca8" stroke-opacity="0.24" stroke-width="3"/>
+</svg>
