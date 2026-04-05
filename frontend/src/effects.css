@@ -52,8 +52,14 @@
 }
 .ev-tilt:hover .ev-tilt__shine { opacity: 1; }
 
-/* Reg cards: tilt-only, no cursor sweep */
+/* Reg cards: spotlight handled in index.css, so hide generic shine layer */
 .reg-card.ev-tilt .ev-tilt__shine { display: none !important; }
+.reg-card.ev-tilt .reg-card__body,
+.reg-card.ev-tilt .reg-card__cta,
+.reg-card.ev-tilt .reg-card__note,
+.reg-card.ev-tilt .reg-card__watermark {
+  transform-style: preserve-3d;
+}
 /* Branch accordion — subtle */
 .branch-accordion.ev-tilt:hover {
   box-shadow: 0 12px 36px rgba(0,0,0,.45), 0 0 0 1px var(--amber-border) !important;

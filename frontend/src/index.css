@@ -791,6 +791,27 @@ a.breadcrumb__item:hover { color: var(--amber); background: var(--amber-dim); }
 }
 .reg-card:active { transform: translateY(-2px) scale(0.99); }
 
+/* cursor spotlight (replaces sweep) */
+.reg-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 0.22s ease;
+  background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.08) 16%, rgba(255,255,255,0.02) 38%, transparent 62%);
+}
+.reg-card:hover::before { opacity: 1; }
+
+.reg-card > * { position: relative; z-index: 1; }
+.reg-card__body,
+.reg-card__cta,
+.reg-card__note {
+  transform: translateZ(22px);
+}
+
 .reg-card__emoji { font-size: 2.2rem; margin-bottom: 0.9rem; display: block; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5)); }
 .reg-card__note {
   position: absolute; top: 1.1rem; right: 1.1rem;
@@ -810,28 +831,37 @@ a.breadcrumb__item:hover { color: var(--amber); background: var(--amber-dim); }
 .reg-card:hover .reg-card__cta { gap: 0.65rem; }
 
 .reg--purple {
-  border-top: 3px solid var(--purple);
-  background: linear-gradient(145deg, rgba(18, 12, 38, 0.94) 0%, rgba(30, 18, 58, 0.88) 52%, rgba(15, 10, 30, 0.95) 100%);
+  border-top: 3px solid #f472b6;
+  background:
+    radial-gradient(140% 130% at 85% 20%, rgba(244,114,182,0.26) 0%, transparent 45%),
+    radial-gradient(120% 120% at 15% 85%, rgba(168,85,247,0.2) 0%, transparent 50%),
+    linear-gradient(145deg, rgba(34, 12, 55, 0.96) 0%, rgba(48, 16, 72, 0.9) 56%, rgba(25, 10, 42, 0.97) 100%);
 }
-.reg--purple .reg-card__id, .reg--purple .reg-card__cta { color: var(--purple); }
-.reg--purple .reg-card__note { background: rgba(139,92,246,0.12); color: var(--purple); border: 1px solid rgba(139,92,246,0.25); }
-.reg--purple:hover { border-color: var(--purple); }
+.reg--purple .reg-card__id, .reg--purple .reg-card__cta { color: #f472b6; }
+.reg--purple .reg-card__note { background: rgba(244,114,182,0.15); color: #f9a8d4; border: 1px solid rgba(244,114,182,0.35); }
+.reg--purple:hover { border-color: #f472b6; }
 
 .reg--blue {
-  border-top: 3px solid var(--blue);
-  background: linear-gradient(145deg, rgba(8, 20, 44, 0.94) 0%, rgba(16, 34, 70, 0.89) 52%, rgba(8, 18, 38, 0.95) 100%);
+  border-top: 3px solid #60a5fa;
+  background:
+    radial-gradient(140% 130% at 80% 15%, rgba(147,197,253,0.27) 0%, transparent 46%),
+    radial-gradient(120% 120% at 14% 88%, rgba(34,211,238,0.18) 0%, transparent 50%),
+    linear-gradient(145deg, rgba(7, 27, 56, 0.97) 0%, rgba(10, 40, 84, 0.91) 55%, rgba(6, 22, 44, 0.97) 100%);
 }
-.reg--blue .reg-card__id, .reg--blue .reg-card__cta { color: var(--blue); }
-.reg--blue .reg-card__note { background: rgba(79,142,247,0.12); color: var(--blue); border: 1px solid rgba(79,142,247,0.25); }
-.reg--blue:hover { border-color: var(--blue); }
+.reg--blue .reg-card__id, .reg--blue .reg-card__cta { color: #7dd3fc; }
+.reg--blue .reg-card__note { background: rgba(96,165,250,0.16); color: #bfdbfe; border: 1px solid rgba(125,211,252,0.36); }
+.reg--blue:hover { border-color: #60a5fa; }
 
 .reg--teal {
-  border-top: 3px solid var(--teal);
-  background: linear-gradient(145deg, rgba(5, 28, 28, 0.95) 0%, rgba(8, 44, 44, 0.9) 52%, rgba(4, 22, 22, 0.96) 100%);
+  border-top: 3px solid #a78bfa;
+  background:
+    radial-gradient(130% 125% at 82% 18%, rgba(167,139,250,0.25) 0%, transparent 44%),
+    radial-gradient(120% 120% at 16% 86%, rgba(129,140,248,0.2) 0%, transparent 51%),
+    linear-gradient(145deg, rgba(22, 10, 46, 0.97) 0%, rgba(36, 14, 66, 0.92) 54%, rgba(16, 8, 34, 0.98) 100%);
 }
-.reg--teal .reg-card__id, .reg--teal .reg-card__cta { color: var(--teal); }
-.reg--teal .reg-card__note { background: rgba(0,212,184,0.1); color: var(--teal); border: 1px solid rgba(0,212,184,0.22); }
-.reg--teal:hover { border-color: var(--teal); }
+.reg--teal .reg-card__id, .reg--teal .reg-card__cta { color: #c4b5fd; }
+.reg--teal .reg-card__note { background: rgba(167,139,250,0.16); color: #ddd6fe; border: 1px solid rgba(167,139,250,0.34); }
+.reg--teal:hover { border-color: #a78bfa; }
 
 .reg--orange { border-top: 3px solid var(--orange); }
 .reg--orange .reg-card__id, .reg--orange .reg-card__cta { color: var(--orange); }

@@ -92,10 +92,8 @@ export function initTilt() {
         const rotateX = (y - 0.5) * -13;
         const rotateY = (x - 0.5) * 13;
         card.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.022)`;
-        if (!isRegCard) {
-          card.style.setProperty('--mx', x*100+'%');
-          card.style.setProperty('--my', y*100+'%');
-        }
+        card.style.setProperty('--mx', x*100+'%');
+        card.style.setProperty('--my', y*100+'%');
         card.style.setProperty('--lx', x*100+'%');
         card.style.setProperty('--ly', y*100+'%');
       }, { passive: true });
