@@ -356,31 +356,3 @@
   #ev-cursor { display:none !important; }
   * { cursor:auto !important; }
 }
-
-/* ── Minimal interaction reset (mescubook-like) ───────────── */
-@media (pointer: fine) {
-  * { cursor: auto !important; }
-  #ev-cursor { display: none !important; }
-}
-
-#ev-starfield {
-  display: none !important;
-}
-
-.ev-tilt,
-.ev-tilt:hover,
-.ev-magnetic,
-.platform-card,
-.platform-card:hover {
-  transform: none !important;
-  transition: none !important;
-  box-shadow: none !important;
-}
-
-.ev-tilt__shine,
-.ev-ripple,
-.ev-stat-bar,
-.platform-card::before,
-.platform-card::after {
-  display: none !important;
-}
