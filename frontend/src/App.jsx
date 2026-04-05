@@ -1,27 +1,29 @@
 // src/App.jsx
+import { Suspense, lazy } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useAuth } from './hooks/useAuth';
-import MainLayout    from './layouts/MainLayout';
-import Login         from './pages/Login';
-import FacultyLogin  from './pages/FacultyLogin';
-import AdminLogin    from './pages/AdminLogin';
-import Dashboard     from './pages/Dashboard';
-import RegulationPage from './pages/RegulationPage';
-import SubjectPage   from './pages/SubjectPage';
-import AdminPanel    from './pages/AdminPanel';
-import ProfilePage         from './pages/ProfilePage';
-import AnalyticsPage        from './pages/AnalyticsPage';
-import GlobalSearchPage     from './pages/GlobalSearchPage';
-import DownloadHistoryPage  from './pages/DownloadHistoryPage';
-import UserManagementPage   from './pages/UserManagementPage';
-import FeedbackPage         from './pages/FeedbackPage';
-import CGPACalculatorPage   from './pages/CGPACalculatorPage';
-import NotFoundPage         from './pages/NotFoundPage';
-import CodingPage           from './pages/CodingPage';
-import SyllabusPage         from './pages/SyllabusPage';
-import ExamSchedulePage     from './pages/ExamSchedulePage';
-import TimetablePage        from './pages/TimetablePage';
-import EventsPage           from './pages/EventsPage';
+
+const MainLayout = lazy(() => import('./layouts/MainLayout'));
+const Login = lazy(() => import('./pages/Login'));
+const FacultyLogin = lazy(() => import('./pages/FacultyLogin'));
+const AdminLogin = lazy(() => import('./pages/AdminLogin'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const RegulationPage = lazy(() => import('./pages/RegulationPage'));
+const SubjectPage = lazy(() => import('./pages/SubjectPage'));
+const AdminPanel = lazy(() => import('./pages/AdminPanel'));
+const ProfilePage = lazy(() => import('./pages/ProfilePage'));
+const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage'));
+const GlobalSearchPage = lazy(() => import('./pages/GlobalSearchPage'));
+const DownloadHistoryPage = lazy(() => import('./pages/DownloadHistoryPage'));
+const UserManagementPage = lazy(() => import('./pages/UserManagementPage'));
+const FeedbackPage = lazy(() => import('./pages/FeedbackPage'));
+const CGPACalculatorPage = lazy(() => import('./pages/CGPACalculatorPage'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
+const CodingPage = lazy(() => import('./pages/CodingPage'));
+const SyllabusPage = lazy(() => import('./pages/SyllabusPage'));
+const ExamSchedulePage = lazy(() => import('./pages/ExamSchedulePage'));
+const TimetablePage = lazy(() => import('./pages/TimetablePage'));
+const EventsPage = lazy(() => import('./pages/EventsPage'));
 
 // ── Route guards ──────────────────────────────────────────────
 
@@ -65,6 +67,10 @@ function AppLoader() {
   );
 }
 
+function LazyPage({ children }) {
+  return <Suspense fallback={<AppLoader />}>{children}</Suspense>;
+}
+
 // ── Route tree ────────────────────────────────────────────────
 export default function App() {
   return (
@@ -72,44 +78,44 @@ export default function App() {
 
       {/* ── Public ─────────────────────────────────────────── */}
       <Route path="/login" element={
-        <GuestRoute><Login /></GuestRoute>
+        <GuestRoute><LazyPage><Login /></LazyPage></GuestRoute>
       } />
 
       <Route path="/faculty-login" element={
-        <GuestRoute><FacultyLogin /></GuestRoute>
+        <GuestRoute><LazyPage><FacultyLogin /></LazyPage></GuestRoute>
       } />
 
       <Route path="/admin-login" element={
-        <AdminGuestRoute><AdminLogin /></AdminGuestRoute>
+        <AdminGuestRoute><LazyPage><AdminLogin /></LazyPage></AdminGuestRoute>
       } />
 
       {/* ── Student (protected) ────────────────────────────── */}
-      <Route element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
-        <Route path="/dashboard"                          element={<Dashboard />} />
-        <Route path="/r/:regulation"                      element={<RegulationPage />} />
-        <Route path="/r/:regulation/:branch/:subject"     element={<SubjectPage />} />
-        <Route path="/profile"                            element={<ProfilePage />} />
-        <Route path="/search"                             element={<GlobalSearchPage />} />
-        <Route path="/downloads"                          element={<DownloadHistoryPage />} />
-        <Route path="/coding"                             element={<CodingPage />} />
-        <Route path="/syllabus"                           element={<SyllabusPage />} />
-        <Route path="/exams"                              element={<ExamSchedulePage />} />
-        <Route path="/timetable"                          element={<TimetablePage />} />
-        <Route path="/events"                             element={<EventsPage />} />
-        <Route path="/cgpa"                               element={<CGPACalculatorPage />} />
-        <Route path="/feedback"                            element={<FeedbackPage />} />
+      <Route element={<ProtectedRoute><LazyPage><MainLayout /></LazyPage></ProtectedRoute>}>
+        <Route path="/dashboard"                          element={<LazyPage><Dashboard /></LazyPage>} />
+        <Route path="/r/:regulation"                      element={<LazyPage><RegulationPage /></LazyPage>} />
+        <Route path="/r/:regulation/:branch/:subject"     element={<LazyPage><SubjectPage /></LazyPage>} />
+        <Route path="/profile"                            element={<LazyPage><ProfilePage /></LazyPage>} />
+        <Route path="/search"                             element={<LazyPage><GlobalSearchPage /></LazyPage>} />
+        <Route path="/downloads"                          element={<LazyPage><DownloadHistoryPage /></LazyPage>} />
+        <Route path="/coding"                             element={<LazyPage><CodingPage /></LazyPage>} />
+        <Route path="/syllabus"                           element={<LazyPage><SyllabusPage /></LazyPage>} />
+        <Route path="/exams"                              element={<LazyPage><ExamSchedulePage /></LazyPage>} />
+        <Route path="/timetable"                          element={<LazyPage><TimetablePage /></LazyPage>} />
+        <Route path="/events"                             element={<LazyPage><EventsPage /></LazyPage>} />
+        <Route path="/cgpa"                               element={<LazyPage><CGPACalculatorPage /></LazyPage>} />
+        <Route path="/feedback"                           element={<LazyPage><FeedbackPage /></LazyPage>} />
       </Route>
 
       {/* ── Admin (protected + role check) ─────────────────── */}
-      <Route path="/admin" element={<AdminRoute><MainLayout /></AdminRoute>}>
-        <Route index element={<AdminPanel />} />
-        <Route path="analytics" element={<AnalyticsPage />} />
-        <Route path="users"     element={<UserManagementPage />} />
+      <Route path="/admin" element={<AdminRoute><LazyPage><MainLayout /></LazyPage></AdminRoute>}>
+        <Route index element={<LazyPage><AdminPanel /></LazyPage>} />
+        <Route path="analytics" element={<LazyPage><AnalyticsPage /></LazyPage>} />
+        <Route path="users"     element={<LazyPage><UserManagementPage /></LazyPage>} />
       </Route>
 
       {/* ── Catch-all ──────────────────────────────────────── */}
       <Route path="/"  element={<Navigate to="/login"   replace />} />
-      <Route path="*"  element={<NotFoundPage />} />
+      <Route path="*"  element={<LazyPage><NotFoundPage /></LazyPage>} />
     </Routes>
   );
 }
