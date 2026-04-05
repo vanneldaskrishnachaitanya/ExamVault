@@ -17,18 +17,6 @@ const TYPE_STYLES = {
   danger:  { bg: '#ef444418', border: '#ef444440', color: '#f87171' },
 };
 
-const COSMOS_IMAGES = {
-  galaxy: 'https://cdn.esahubble.org/archives/images/screen/heic1502a.jpg',
-  supernova: 'https://www.nasa.gov/wp-content/uploads/2023/03/161524main_image_feature_684_ys_full.jpg',
-  earth: 'https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg',
-  jupiter: 'https://upload.wikimedia.org/wikipedia/commons/e/e2/Jupiter.jpg',
-  mars: 'https://upload.wikimedia.org/wikipedia/commons/0/02/OSIRIS_Mars_true_color.jpg',
-  saturn: 'https://upload.wikimedia.org/wikipedia/commons/c/c7/Saturn_during_Equinox.jpg',
-  uranus: 'https://upload.wikimedia.org/wikipedia/commons/3/3d/Uranus2.jpg',
-  satellite: 'https://www.nasa.gov/wp-content/uploads/2023/02/International-Space-Station-in-2021.jpg',
-  asteroid: 'https://assets.science.nasa.gov/dynamicimage/assets/science/psd/solar/internal_resources/3964/Asteroid_Eros.jpeg?w=1200&h=900&fit=clip&crop=faces%2Cfocalpoint',
-};
-
 export default function MainLayout() {
   const location = useLocation();
   const layoutRef = useRef(null);
@@ -229,47 +217,7 @@ export default function MainLayout() {
   const visible = announcements.filter(a => !dismissed.includes(a._id));
 
   return (
-    <div className="layout layout--cosmic" ref={layoutRef}>
-      <div className="cosmos-scene" aria-hidden="true">
-        <div className="cosmos-climax" />
-        <div className="cosmos-nebula cosmos-nebula--one" />
-        <div className="cosmos-nebula cosmos-nebula--two" />
-
-        <div className="cosmos-layer cosmos-layer--galaxy">
-          <img src={COSMOS_IMAGES.galaxy} alt="" loading="lazy" decoding="async" />
-        </div>
-        <div className="cosmos-layer cosmos-layer--supernova">
-          <img src={COSMOS_IMAGES.supernova} alt="" loading="lazy" decoding="async" />
-        </div>
-
-        <div className="cosmos-layer cosmos-layer--planet cosmos-layer--planet-earth">
-          <img src={COSMOS_IMAGES.earth} alt="" loading="lazy" decoding="async" />
-        </div>
-        <div className="cosmos-layer cosmos-layer--planet cosmos-layer--planet-jupiter">
-          <img src={COSMOS_IMAGES.jupiter} alt="" loading="lazy" decoding="async" />
-        </div>
-        <div className="cosmos-layer cosmos-layer--planet cosmos-layer--planet-mars">
-          <img src={COSMOS_IMAGES.mars} alt="" loading="lazy" decoding="async" />
-        </div>
-        <div className="cosmos-layer cosmos-layer--planet cosmos-layer--planet-saturn">
-          <img src={COSMOS_IMAGES.saturn} alt="" loading="lazy" decoding="async" />
-        </div>
-        <div className="cosmos-layer cosmos-layer--planet cosmos-layer--planet-uranus">
-          <img src={COSMOS_IMAGES.uranus} alt="" loading="lazy" decoding="async" />
-        </div>
-
-        <div className="cosmos-layer cosmos-layer--satellite">
-          <img src={COSMOS_IMAGES.satellite} alt="" loading="lazy" decoding="async" />
-        </div>
-
-        <div className="cosmos-asteroids">
-          <span className="cosmos-asteroid cosmos-asteroid--a1"><img src={COSMOS_IMAGES.asteroid} alt="" loading="lazy" decoding="async" /></span>
-          <span className="cosmos-asteroid cosmos-asteroid--a2"><img src={COSMOS_IMAGES.asteroid} alt="" loading="lazy" decoding="async" /></span>
-          <span className="cosmos-asteroid cosmos-asteroid--a3"><img src={COSMOS_IMAGES.asteroid} alt="" loading="lazy" decoding="async" /></span>
-          <span className="cosmos-asteroid cosmos-asteroid--a4"><img src={COSMOS_IMAGES.asteroid} alt="" loading="lazy" decoding="async" /></span>
-          <span className="cosmos-asteroid cosmos-asteroid--a5"><img src={COSMOS_IMAGES.asteroid} alt="" loading="lazy" decoding="async" /></span>
-        </div>
-      </div>
+    <div className="layout" ref={layoutRef}>
 
       <Navbar
         theme={theme}
@@ -312,14 +260,6 @@ export default function MainLayout() {
       <main className="layout__main" style={{paddingBottom: '5rem'}}>
         <Outlet />
       </main>
-
-      <section className="space-end" aria-label="Space horizon footer">
-        <div className="space-end__brand">ExamVault</div>
-        <div className="space-end__horizon" />
-        <div className="space-end__planet" style={{ backgroundImage: `url(${COSMOS_IMAGES.earth})` }} />
-        <div className="space-end__flare" />
-        <p className="space-end__copy">VNRVJIET Academic Repository</p>
-      </section>
 
       <CommandPalette open={commandOpen} onClose={() => setCommandOpen(false)} />
     </div>
