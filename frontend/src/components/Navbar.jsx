@@ -21,8 +21,6 @@ export default function Navbar({
   toggleTheme,
   setTheme,
   themeOptions = ['dark', 'light'],
-  studyMode = false,
-  onToggleStudyMode,
 }) {
   const { backendUser, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
@@ -203,14 +201,6 @@ export default function Navbar({
               <Search size={17} />
             </button>
 
-            <button
-              className={`navbar__icon-btn navbar__study-btn${studyMode ? ' navbar__study-btn--active' : ''}`}
-              onClick={onToggleStudyMode}
-              title="Study mode (Alt+S)"
-            >
-              <BookOpen size={17} />
-            </button>
-
             <div className="navbar__theme-wrap">
               <button ref={themeBtnRef} className="navbar__icon-btn" onClick={() => setThemeMenuOpen(p => !p)} title="Theme presets">
                 <Palette size={17} />
@@ -371,9 +361,6 @@ export default function Navbar({
         {/* Nav items — only what's NOT in the bottom nav */}
         <nav className="nav-drawer__body">
           <p className="nav-drawer__section-label">Pages</p>
-          <button className="nav-drawer__item" onClick={() => { onToggleStudyMode?.(); setDrawerOpen(false); }}>
-            <BookOpen size={16} /> {studyMode ? 'Exit Study Mode' : 'Enter Study Mode'}
-          </button>
           <button className="nav-drawer__item" onClick={() => go('/syllabus')}>
             <BookMarked size={16} /> Syllabus
           </button>

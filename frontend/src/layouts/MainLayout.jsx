@@ -31,15 +31,6 @@ export default function MainLayout() {
   const [installPrompt, setInstallPrompt] = useState(null);
   const [showInstall, setShowInstall] = useState(false);
   const [commandOpen, setCommandOpen] = useState(false);
-  const [studyMode, setStudyMode] = useState(() => localStorage.getItem('ev-study-mode') === '1');
-
-  const toggleStudyMode = () => {
-    setStudyMode((prev) => {
-      const next = !prev;
-      localStorage.setItem('ev-study-mode', next ? '1' : '0');
-      return next;
-    });
-  };
 
   // ── Init all effects once ──────────────────────────────────
   useEffect(() => {
@@ -89,17 +80,10 @@ export default function MainLayout() {
         e.preventDefault();
         setCommandOpen(true);
       }
-      if (e.altKey && e.key.toLowerCase() === 's') {
-        e.preventDefault();
-        toggleStudyMode();
-      }
     };
-    const onToggleStudy = () => toggleStudyMode();
     window.addEventListener('keydown', onKeyDown);
-    window.addEventListener('ev:toggle-study-mode', onToggleStudy);
     return () => {
       window.removeEventListener('keydown', onKeyDown);
-      window.removeEventListener('ev:toggle-study-mode', onToggleStudy);
     };
   }, []);
 
@@ -145,18 +129,16 @@ export default function MainLayout() {
   const visible = announcements.filter(a => !dismissed.includes(a._id));
 
   return (
-    <div className={`layout${studyMode ? ' layout--study' : ''}`}>
+    <div className="layout">
       <Navbar
         theme={theme}
         toggleTheme={toggleTheme}
         setTheme={setTheme}
         themeOptions={themeOptions}
-        studyMode={studyMode}
-        onToggleStudyMode={toggleStudyMode}
       />
 
       {/* Announcement banners */}
-      {!studyMode && showTour && <OnboardingTour onDone={() => { setShowTour(false); localStorage.setItem('ev-tour-done','1'); }} />}
+      {showTour && <OnboardingTour onDone={() => { setShowTour(false); localStorage.setItem('ev-tour-done','1'); }} />}
       {visible.map(ann => {
         const s = TYPE_STYLES[ann.type] || TYPE_STYLES.info;
         return (
@@ -178,7 +160,7 @@ export default function MainLayout() {
         );
       })}
 
-      {!studyMode && showInstall && (
+      {showInstall && (
         <div className="pwa-banner">
           <span>📲 Install ExamVault as an app!</span>
           <button className="pwa-banner__install" onClick={handleInstall}>Install</button>
@@ -189,7 +171,7 @@ export default function MainLayout() {
       <main className="layout__main" style={{paddingBottom: '5rem'}}>
         <Outlet />
       </main>
-      <CommandPalette open={commandOpen} onClose={() => setCommandOpen(false)} onToggleStudyMode={toggleStudyMode} />
+      <CommandPalette open={commandOpen} onClose={() => setCommandOpen(false)} />
     </div>
   );
 }

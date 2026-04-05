@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Command, Search } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 
-export default function CommandPalette({ open, onClose, onToggleStudyMode }) {
+export default function CommandPalette({ open, onClose }) {
   const navigate = useNavigate();
   const { isAdmin } = useAuth();
   const [query, setQuery] = useState('');
@@ -36,7 +36,6 @@ export default function CommandPalette({ open, onClose, onToggleStudyMode }) {
       { id: 'exams', title: 'Open Exams', hint: 'Check upcoming exams', keywords: 'exam test schedule', run: () => navigate('/exams') },
       { id: 'coding', title: 'Open Coding', hint: 'Continue coding practice', keywords: 'coding practice dsa', run: () => navigate('/coding') },
       { id: 'downloads', title: 'Open Downloads', hint: 'See your download history', keywords: 'downloads history', run: () => navigate('/downloads') },
-      { id: 'study', title: 'Toggle Study Mode', hint: 'Reduce distractions and focus', keywords: 'study focus mode', run: () => onToggleStudyMode?.() },
     ];
 
     const admin = isAdmin
@@ -60,7 +59,7 @@ export default function CommandPalette({ open, onClose, onToggleStudyMode }) {
     }
 
     return [...base, ...admin, ...saved];
-  }, [isAdmin, navigate, onToggleStudyMode]);
+  }, [isAdmin, navigate]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();

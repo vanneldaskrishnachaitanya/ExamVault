@@ -4347,27 +4347,6 @@ option { background: var(--bg-card); }
   color: var(--text-3);
 }
 
-.navbar__study-btn--active {
-  background: var(--amber-dim);
-  border-color: var(--amber-border);
-  color: var(--amber);
-}
-
-.layout--study .announcement-banner,
-.layout--study .pwa-banner,
-.layout--study .dash-hero__glow,
-.layout--study .dash-eyes {
-  display: none;
-}
-.layout--study .layout__main {
-  filter: saturate(0.9) contrast(1.02);
-}
-.layout--study .dash-section,
-.layout--study .dash-hub__panel,
-.layout--study .reg-card {
-  border-color: rgba(79,142,247,0.24);
-}
-
 .cmdk-overlay {
   position: fixed;
   inset: 0;
