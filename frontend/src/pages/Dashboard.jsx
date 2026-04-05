@@ -112,6 +112,26 @@ export default function Dashboard() {
     fetchPublicStats().then(d => setStats(d)).catch(() => {});
   }, []);
 
+  const handleRegTiltMove = (e) => {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
+    const rotateX = (y - 0.5) * -20;
+    const rotateY = (x - 0.5) * 20;
+
+    card.style.setProperty('--rx', `${rotateX}deg`);
+    card.style.setProperty('--ry', `${rotateY}deg`);
+    card.style.setProperty('--mx', `${x * 100}%`);
+    card.style.setProperty('--my', `${y * 100}%`);
+  };
+
+  const handleRegTiltLeave = (e) => {
+    const card = e.currentTarget;
+    card.style.setProperty('--rx', '0deg');
+    card.style.setProperty('--ry', '0deg');
+  };
+
   useEffect(() => {
     const el = eyesRef.current;
     if (!el) return;
@@ -273,6 +293,8 @@ export default function Dashboard() {
               key={reg.id}
               className={`reg-card ${reg.accent}`}
               onClick={() => navigate(`/r/${reg.id}`)}
+              onPointerMove={handleRegTiltMove}
+              onPointerLeave={handleRegTiltLeave}
             >
               <span className="reg-card__note">{reg.note}</span>
               <span className="reg-card__watermark" aria-hidden="true">{reg.year}</span>
