@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: examvault-backend
+    env: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: CLIENT_URL
+        value: https://exam-vault-ten.vercel.app
+      - key: ALLOWED_DOMAIN
+        value: vnrvjiet.in
+      - key: MONGODB_URI
+        sync: false
+      - key: FIREBASE_PROJECT_ID
+        sync: false
+      - key: FIREBASE_CLIENT_EMAIL
+        sync: false
+      - key: FIREBASE_PRIVATE_KEY
+        sync: false

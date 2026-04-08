@@ -9,7 +9,11 @@ const connectDB = async () => {
       throw new Error('MONGODB_URI environment variable is not set');
     }
 
-    const conn = await mongoose.connect(process.env.MONGODB_URI);
+    const conn = await mongoose.connect(process.env.MONGODB_URI, {
+      serverSelectionTimeoutMS: 12_000,
+      connectTimeoutMS: 12_000,
+      socketTimeoutMS: 20_000,
+    });
     logger.info(`MongoDB connected → ${conn.connection.host}`);
 
     mongoose.connection.on('disconnected', () =>
@@ -19,7 +23,7 @@ const connectDB = async () => {
       logger.error(`MongoDB runtime error: ${err.message}`)
     );
   } catch (err) {
-    logger.error(`MongoDB connection failed: ${err.message}`);
+    logger.error(`MongoDB connection failed (startup): ${err.message}`);
     process.exit(1);
   }
 };
