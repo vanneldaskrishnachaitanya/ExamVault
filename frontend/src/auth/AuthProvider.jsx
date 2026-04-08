@@ -4,10 +4,11 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth, signInWithGoogle, firebaseSignOut } from './firebase';
 import { isAdminEmail } from './adminWhitelist';
 import axios from 'axios';
+import { API_BASE_URL, API_TARGET_LABEL } from '../config/apiBaseUrl';
 
 export const AuthContext = createContext(null);
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://examvault-miqe.onrender.com';
+const BASE_URL = API_BASE_URL;
 
 /**
  * Try to sync with backend. Returns user profile on success.
@@ -16,9 +17,16 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://examvault-miqe.on
  * from the Firebase user object so login still works.
  */
 const syncWithBackend = async (idToken, firebaseUser) => {
+  if (!BASE_URL && !import.meta.env.DEV) {
+    throw new Error(
+      'Backend URL is not configured. Set VITE_API_BASE_URL in your deployment environment.'
+    );
+  }
+
   try {
+    const endpoint = BASE_URL ? `${BASE_URL}/auth/login` : '/auth/login';
     const { data } = await axios.post(
-      `${BASE_URL}/auth/login`,
+      endpoint,
       {},
       {
         headers: {
@@ -54,8 +62,10 @@ const syncWithBackend = async (idToken, firebaseUser) => {
     // Network error — backend not running
     if (!err.response) {
       throw new Error(
-        'Cannot reach the backend server at ' + BASE_URL + '. ' +
-        'Make sure it is running with: npm run dev'
+        'Cannot reach backend at ' + API_TARGET_LABEL + '. ' +
+        (import.meta.env.DEV
+          ? 'Start your backend with: npm run dev'
+          : 'Verify the server is up and VITE_API_BASE_URL points to a live API.')
       );
     }
 

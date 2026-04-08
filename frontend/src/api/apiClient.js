@@ -1,11 +1,12 @@
 // src/api/apiClient.js
 import axios from 'axios';
 import { auth } from '../auth/firebase';
+import { API_BASE_URL } from '../config/apiBaseUrl';
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://examvault-miqe.onrender.com';
+const BASE_URL = API_BASE_URL;
 console.log("API BASE URL:", BASE_URL);
 const api = axios.create({
-  baseURL: BASE_URL,
+  baseURL: BASE_URL || undefined,
   timeout: 30_000,
   headers: { 'Content-Type': 'application/json' },
 });
@@ -24,7 +25,8 @@ api.interceptors.response.use(
 );
 
 export const loginToBackend = async (idToken) => {
-  const { data } = await axios.post(`${BASE_URL}/auth/login`, {}, { headers: { Authorization: `Bearer ${idToken}` } });
+  const endpoint = BASE_URL ? `${BASE_URL}/auth/login` : '/auth/login';
+  const { data } = await axios.post(endpoint, {}, { headers: { Authorization: `Bearer ${idToken}` } });
   return data.data.user;
 };
 export const fetchMe = async () => {
@@ -47,8 +49,8 @@ export const uploadFile      = async (formData, onProgress) => {
   });
   return data.data.file;
 };
-export const getPreviewUrl   = (id) => `${BASE_URL}/files/preview/${id}`;
-export const getDownloadUrl  = (id) => `${BASE_URL}/files/download/${id}`;
+export const getPreviewUrl   = (id) => `${BASE_URL || ''}/files/preview/${id}`;
+export const getDownloadUrl  = (id) => `${BASE_URL || ''}/files/download/${id}`;
 export const reportFile      = async (fileId, reason, description='') => { const { data } = await api.post('/reports', { fileId, reason, description }); return data; };
 
 // ── Admin files ────────────────────────────────────────────────
