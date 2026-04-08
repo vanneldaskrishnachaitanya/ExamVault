@@ -43,16 +43,8 @@ const protect = async (req, res, next) => {
       .map(e => e.trim().toLowerCase())
       .filter(Boolean);
 
-    const FACULTY_EMAILS = (process.env.FACULTY_EMAILS || '')
-      .split(',')
-      .map(e => e.trim().toLowerCase())
-      .filter(Boolean);
-
     const emailLower = email.toLowerCase();
     const isAdmin = ADMIN_EMAILS.includes(emailLower);
-    const localPart = emailLower.split('@')[0] || '';
-    const isFacultyByPattern = emailLower.endsWith(`@${ALLOWED_DOMAIN}`) && /^[^0-9]/.test(localPart);
-    const isFaculty = FACULTY_EMAILS.includes(emailLower) || isFacultyByPattern;
 
     // Block non-college users except admins
 
@@ -69,9 +61,7 @@ const protect = async (req, res, next) => {
     const existingUser = await User.findOne({ firebaseUid: uid }).lean();
     const resolvedRole = isAdmin
       ? 'admin'
-      : isFaculty
-        ? 'faculty'
-        : (existingUser?.role || 'student');
+      : (existingUser?.role === 'admin' ? 'admin' : 'student');
 
     const user = await User.findOneAndUpdate(
       { firebaseUid: uid },

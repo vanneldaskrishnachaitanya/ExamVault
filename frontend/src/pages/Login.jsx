@@ -95,10 +95,6 @@ export default function Login() {
         {/* Footer — admin login link */}
         <div className="login__footer">
           <div className="login__footer-links">
-            <Link to="/faculty-login" className="login__admin-link">
-              <Shield size={13} />
-              Faculty Login
-            </Link>
             <Link to="/admin-login" className="login__admin-link">
               <Shield size={13} />
               Admin Login

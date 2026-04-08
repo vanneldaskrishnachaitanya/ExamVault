@@ -5,7 +5,6 @@ import { useAuth } from './hooks/useAuth';
 
 const MainLayout = lazy(() => import('./layouts/MainLayout'));
 const Login = lazy(() => import('./pages/Login'));
-const FacultyLogin = lazy(() => import('./pages/FacultyLogin'));
 const AdminLogin = lazy(() => import('./pages/AdminLogin'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const RegulationPage = lazy(() => import('./pages/RegulationPage'));
@@ -79,10 +78,6 @@ export default function App() {
       {/* ── Public ─────────────────────────────────────────── */}
       <Route path="/login" element={
         <GuestRoute><LazyPage><Login /></LazyPage></GuestRoute>
-      } />
-
-      <Route path="/faculty-login" element={
-        <GuestRoute><LazyPage><FacultyLogin /></LazyPage></GuestRoute>
       } />
 
       <Route path="/admin-login" element={

@@ -63,7 +63,6 @@ export default function UserManagementPage() {
         <select className="modal__select" style={{ width:'auto' }} value={role} onChange={e => setRole(e.target.value)}>
           <option value="">All roles</option>
           <option value="student">Students</option>
-          <option value="faculty">Faculty</option>
           <option value="admin">Admins</option>
         </select>
       </div>
@@ -89,9 +88,7 @@ export default function UserManagementPage() {
                 <span className={`user-row__role user-row__role--${user.role}`}>
                   {user.role === 'admin'
                     ? <><Shield size={11} /> Admin</>
-                    : user.role === 'faculty'
-                      ? <><GraduationCap size={11} /> Faculty</>
-                      : <><GraduationCap size={11} /> Student</>}
+                    : <><GraduationCap size={11} /> Student</>}
                 </span>
                 <span className="user-row__status" title={user.lastSeenAt ? new Date(user.lastSeenAt).toLocaleString('en-IN') : 'Never'}>
                   Last seen: {formatLastSeen(user.lastSeenAt)}

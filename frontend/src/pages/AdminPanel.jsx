@@ -410,9 +410,7 @@ export default function AdminPanel() {
                     <span className={`user-row__role user-row__role--${user.role}`}>
                       {user.role === 'admin'
                         ? <><Shield size={11} /> Admin</>
-                        : user.role === 'faculty'
-                          ? <><GraduationCap size={11} /> Faculty</>
-                          : <><GraduationCap size={11} /> Student</>}
+                        : <><GraduationCap size={11} /> Student</>}
                     </span>
                     <span className="user-row__status" title={user.lastSeenAt ? new Date(user.lastSeenAt).toLocaleString('en-IN') : 'Never'}>
                       Last seen: {formatLastSeen(user.lastSeenAt)}

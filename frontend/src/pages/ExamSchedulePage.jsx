@@ -27,7 +27,7 @@ function getFirstDayOfMonth(year, month) {
 
 export default function ExamSchedulePage() {
   const { backendUser } = useAuth();
-  const isStaff = backendUser?.role === 'admin' || backendUser?.role === 'faculty';
+  const isStaff = backendUser?.role === 'admin';
 
   const today = new Date();
   const [viewYear,  setViewYear]  = useState(today.getFullYear());

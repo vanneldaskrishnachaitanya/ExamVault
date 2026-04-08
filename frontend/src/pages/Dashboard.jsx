@@ -43,19 +43,10 @@ const ROLE_HOME_CONFIG = {
       { title: 'Manage Users', description: 'Control access and account status for active campus users.', to: '/admin/users', icon: Users },
     ],
   },
-  faculty: {
-    label: 'Faculty workspace',
-    cards: [
-      { title: 'Upload Timetable', description: 'Keep students aligned with updated class/test schedules.', to: '/timetable', icon: Clock3 },
-      { title: 'Manage Exams', description: 'Publish upcoming assessments and important exam instructions.', to: '/exams', icon: CalendarDays },
-      { title: 'Share Resources', description: 'Provide latest papers and materials from your dashboard tools.', to: '/dashboard', icon: FileUp },
-    ],
-  },
 };
 
 function getRoleHome(role) {
   if (role === 'admin') return ROLE_HOME_CONFIG.admin;
-  if (role === 'faculty') return ROLE_HOME_CONFIG.faculty;
   return ROLE_HOME_CONFIG.student;
 }
 

@@ -33,7 +33,7 @@ const isRegOpen = (e) => {
 
 export default function EventsPage() {
   const { backendUser } = useAuth();
-  const isStaff = backendUser?.role === 'admin' || backendUser?.role === 'faculty';
+  const isStaff = backendUser?.role === 'admin';
   const imgRef = useRef(null);
 
   const [events,       setEvents]       = useState([]);

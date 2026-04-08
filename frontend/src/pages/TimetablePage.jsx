@@ -15,7 +15,7 @@ const formatBytes = (b) => !b ? '' : b < 1048576 ? `${(b/1024).toFixed(1)} KB` :
 
 export default function TimetablePage() {
   const { backendUser } = useAuth();
-  const isStaff = backendUser?.role === 'admin' || backendUser?.role === 'faculty';
+  const isStaff = backendUser?.role === 'admin';
   const fileRef = useRef(null);
 
   const [timetables, setTimetables] = useState([]);

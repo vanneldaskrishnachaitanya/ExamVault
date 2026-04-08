@@ -308,7 +308,7 @@ export default function Navbar({
                   </div>
                   <div className="navbar__dropdown-divider" />
                   <span className={`navbar__role-pill navbar__role-pill--${backendUser?.role}`}>
-                    {backendUser?.role === 'admin' ? '⚡ Admin' : backendUser?.role === 'faculty' ? '🧑‍🏫 Faculty' : '🎓 Student'}
+                    {backendUser?.role === 'admin' ? '⚡ Admin' : '🎓 Student'}
                   </span>
                   <div className="navbar__dropdown-divider" />
                   <button className="navbar__dropdown-item" onClick={() => { setDropdownOpen(false); navigate('/profile'); }} role="menuitem">
@@ -350,7 +350,7 @@ export default function Navbar({
           <div className="nav-drawer__user-info">
             <p className="nav-drawer__name">{backendUser?.name || 'User'}</p>
             <span className={`nav-drawer__role nav-drawer__role--${backendUser?.role}`}>
-              {backendUser?.role === 'admin' ? '⚡ Admin' : backendUser?.role === 'faculty' ? '🧑‍🏫 Faculty' : '🎓 Student'}
+              {backendUser?.role === 'admin' ? '⚡ Admin' : '🎓 Student'}
             </span>
           </div>
           <button className="nav-drawer__close" onClick={() => setDrawerOpen(false)}>
