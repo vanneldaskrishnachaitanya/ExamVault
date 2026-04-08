@@ -119,7 +119,6 @@ export function AuthProvider({ children }) {
   // Student login (Google, @vnrvjiet.in only)
   const login = useCallback(async () => {
     setError(null);
-    setLoading(true);
     try {
       const { user: fbUser, idToken: token } = await signInWithGoogle();
       const profile = await syncWithBackend(token, fbUser);
@@ -129,14 +128,11 @@ export function AuthProvider({ children }) {
     } catch (err) {
       setError(err.message || 'Sign-in failed.');
       throw err;
-    } finally {
-      setLoading(false);
     }
   }, []);
 
   const loginDemoFaculty = useCallback(async () => {
     setError(null);
-    setLoading(true);
     try {
       const { user: fbUser, idToken: token } = await signInWithEmailPassword(
         DEMO_FACULTY_EMAIL,
@@ -150,8 +146,6 @@ export function AuthProvider({ children }) {
     } catch (err) {
       setError(err.message || 'Demo faculty sign-in failed.');
       throw err;
-    } finally {
-      setLoading(false);
     }
   }, []);
 

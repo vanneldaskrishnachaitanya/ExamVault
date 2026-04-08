@@ -4,11 +4,14 @@ import { AlertCircle, GraduationCap, Loader2, Shield } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 
 export default function FacultyLogin() {
-  const { login, loginDemoFaculty, loading } = useAuth();
+  const { login, loginDemoFaculty, loading, error: authError, clearError } = useAuth();
   const [error, setError] = useState('');
   const [signing, setSigning] = useState(false);
 
+  const visibleError = error || authError;
+
   const handleSignIn = async () => {
+    clearError();
     setError('');
     setSigning(true);
     try {
@@ -21,6 +24,7 @@ export default function FacultyLogin() {
   };
 
   const handleDemoSignIn = async () => {
+    clearError();
     setError('');
     setSigning(true);
     try {
@@ -60,10 +64,10 @@ export default function FacultyLogin() {
             Faculty accounts are identified when the email starts with a non-digit.
           </p>
 
-          {error && (
+          {visibleError && (
             <div className="login__error" role="alert">
               <AlertCircle size={16} />
-              <span>{error}</span>
+              <span>{visibleError}</span>
             </div>
           )}
 
