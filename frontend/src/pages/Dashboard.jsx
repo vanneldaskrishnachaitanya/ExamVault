@@ -324,16 +324,6 @@ export default function Dashboard() {
       <section className="dash-hero">
         <div className="dash-hero__glow" aria-hidden="true" />
         <div className="dash-hero__glow dash-hero__glow--2" aria-hidden="true" />
-        <div className="dash-eyes" ref={eyesRef} aria-hidden="true">
-          <svg viewBox="0 0 220 120" className="dash-eyes__svg">
-            <ellipse cx="74" cy="58" rx="50" ry="34" fill="rgba(245,166,35,0.2)" />
-            <ellipse cx="146" cy="58" rx="50" ry="34" fill="rgba(79,142,247,0.2)" />
-            <ellipse cx="74" cy="58" rx="30" ry="23" fill="#f9fafb" />
-            <ellipse cx="146" cy="58" rx="30" ry="23" fill="#f9fafb" />
-            <circle className="dash-eyes__pupil dash-eyes__pupil--left" cx="74" cy="58" r="8.5" fill="#111827" />
-            <circle className="dash-eyes__pupil dash-eyes__pupil--right" cx="146" cy="58" r="8.5" fill="#111827" />
-          </svg>
-        </div>
 
         <div className="dash-hero__content">
           <GraduationCap size={36} className="dash-hero__icon" />

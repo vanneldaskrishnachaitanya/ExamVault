@@ -1,25 +1,8 @@
 // ExamVault — useEffects.js v3
 
-// ── 1. CURSOR ─────────────────────────────────────────────────
+// Custom cursor disabled: keep the system cursor for better platform consistency.
 export function initEffects() {
-  if (!window.matchMedia('(pointer: fine)').matches) return () => {};
-  let cur = document.getElementById('ev-cursor');
-  if (!cur) { cur = document.createElement('div'); cur.id = 'ev-cursor'; document.body.appendChild(cur); }
-  const onMove = (e) => { cur.style.left = e.clientX + 'px'; cur.style.top = e.clientY + 'px'; };
-  document.addEventListener('mousemove', onMove, { passive: true });
-  document.addEventListener('mousedown', () => cur.classList.add('cursor--click'));
-  document.addEventListener('mouseup',   () => cur.classList.remove('cursor--click'));
-  const bindHover = () => {
-    document.querySelectorAll('a,button,input,select,textarea,[role="button"],.platform-card,.reg-card,.stat-card,.ev-tilt,.branch-accordion').forEach(el => {
-      if (el._curHov) return; el._curHov = true;
-      el.addEventListener('mouseenter', () => cur.classList.add('cursor--hover'));
-      el.addEventListener('mouseleave', () => cur.classList.remove('cursor--hover'));
-    });
-  };
-  bindHover();
-  const obs = new MutationObserver(bindHover);
-  obs.observe(document.body, { childList: true, subtree: true });
-  return () => { obs.disconnect(); cur?.remove(); };
+  return () => {};
 }
 
 // ── 2. KINETIC — safe, no innerHTML on React elements ─────────

@@ -23,8 +23,8 @@
 
   /* Text */
   --text-1:  #eef2ff;
-  --text-2:  #7b87a8;
-  --text-3:  #3d4a66;
+  --text-2:  #9ca8ca;
+  --text-3:  #7381a6;
 
   /* Brand — amber-gold star */
   --amber:        #f5a623;
@@ -209,6 +209,7 @@ body {
   min-height: 100dvh;
   position: relative;
   overflow-x: hidden;
+  text-rendering: optimizeLegibility;
 }
 
 /* Animated cosmic mesh overlay — the UNFORGETTABLE background */
@@ -295,6 +296,77 @@ body::after {
 .spin { animation: spin 0.8s linear infinite; }
 .sr-only { position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0; }
 .hl { background: rgba(245,166,35,0.25); color: var(--amber); border-radius: 3px; padding: 0 2px; }
+
+/* Improve readable contrast across the app */
+p, li, .dash-hero__sub, .reg-card__desc, .sp-header__meta, .login__domain-note,
+.branch-accordion__count, .subject-item__meta, .subject-folder__meta,
+.history-item__meta, .ann-item__meta, .report-card__desc, .feedback-item__meta,
+.navbar__dropdown-email, .navbar__notif-time, .dash-stat__label, .dash-hero__stat > div > div:last-child {
+  color: var(--text-2);
+}
+
+.dash-hero,
+.reg-card,
+.branch-accordion,
+.subject-item,
+.subject-folder,
+.history-item,
+.report-card,
+.feedback-card,
+.feedback-item,
+.search-hit-card,
+.hub-saved-card,
+.hub-feed-item,
+.hub-reminder-item,
+.analytics-card,
+.event-card,
+.exam-item,
+.smart-reminder,
+.digest-card,
+.home-role-card,
+.profile-card,
+.platform-card {
+  background-color: var(--bg-card);
+  border-color: var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+.dash-hero {
+  background: linear-gradient(145deg, rgba(11, 16, 31, 0.98) 0%, rgba(13, 19, 36, 0.94) 55%, rgba(8, 12, 23, 0.98) 100%);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.35), 0 0 0 1px rgba(245,166,35,0.08);
+}
+
+.dash-hero__title,
+.reg-card__heading,
+.profile-card__name,
+.notfound-code,
+.notfound-title,
+.events-section__title,
+.home-role-head,
+.dash-section-title,
+.sp-section-hdr,
+.sp-header__title,
+.cgpa-result-card,
+.announcement-banner strong,
+.feedback-card__title,
+.report-card__title,
+.history-item__title,
+.subject-item__title,
+.subject-folder__title {
+  color: var(--text-1);
+}
+
+.dash-hero__sub,
+.reg-card__desc,
+.profile-card__meta,
+.search-hit-card__meta,
+.hub-feed-item__meta,
+.hub-reminder-item__meta,
+.digest-card__meta,
+.analytics-card__meta {
+  color: var(--text-2);
+}
 
 /* ── Scrollbar ──────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
