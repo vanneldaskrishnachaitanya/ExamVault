@@ -339,10 +339,15 @@
 .poll-admin__voters-empty { font-size: 0.82rem; color: var(--text-3); font-style: italic; }
 
 /* ── Position fixes for z-index with starfield ───────────── */
-#root, .layout, .navbar, .bottom-nav, .modal-overlay, .preview-modal-overlay {
+#root, .layout, .modal-overlay, .preview-modal-overlay {
   position: relative; z-index: 1;
 }
-.navbar, .bottom-nav { z-index: 100; }
+.navbar {
+  position: relative; z-index: 1;
+}
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+}
 .nav-drawer-overlay  { position: fixed; inset: 0; z-index: 200; }
 .nav-drawer          { position: fixed; z-index: 201; }
 .modal-overlay, .preview-modal-overlay { z-index: 300; }

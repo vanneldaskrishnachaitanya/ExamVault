@@ -257,7 +257,7 @@ export default function MainLayout() {
         </div>
       )}
       <BottomNav />
-      <main className="layout__main" style={{paddingBottom: '5rem'}}>
+      <main className="layout__main">
         <Outlet />
       </main>
 
