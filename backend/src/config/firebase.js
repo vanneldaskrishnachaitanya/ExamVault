@@ -14,7 +14,7 @@ const initFirebase = () => {
 
   if (!FIREBASE_PROJECT_ID || !FIREBASE_CLIENT_EMAIL || !FIREBASE_PRIVATE_KEY) {
     logger.error('Firebase env vars missing. Check FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY.');
-    process.exit(1);
+    throw new Error('Firebase env vars missing');
   }
 
   try {
@@ -29,7 +29,7 @@ const initFirebase = () => {
     logger.info('Firebase Admin SDK initialised');
   } catch (err) {
     logger.error(`Firebase init failed: ${err.message}`);
-    process.exit(1);
+    throw err;
   }
 };
 

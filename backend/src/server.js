@@ -45,6 +45,11 @@ const { seedBranches } = require('./controllers/branchController');
 const app = express();
 app.set('trust proxy', 1);
 
+const runtimeStatus = {
+  firebase: false,
+  mongo: false,
+};
+
 app.use(helmet());
 
 const allowedOrigins = [
@@ -92,7 +97,14 @@ const authLimiter = rateLimit({
 });
 
 app.get('/health', (_req, res) => {
-  res.json({ success: true, message: 'VNRVJIET API is running', timestamp: new Date() });
+  const degraded = !runtimeStatus.firebase || !runtimeStatus.mongo;
+  res.status(200).json({
+    success: true,
+    message: degraded ? 'VNRVJIET API is running in degraded mode' : 'VNRVJIET API is running',
+    dependencies: runtimeStatus,
+    timestamp: new Date(),
+    uptimeSeconds: Math.floor(process.uptime()),
+  });
 });
 
 app.use('/auth',          authLimiter, authRoutes);
@@ -149,34 +161,87 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5000;
 
 const start = async () => {
-  try {
-    initFirebase();
-    await connectDB();
-    await seedBranches();
-    // Seed coding platforms (needs first admin user)
-    try { const User = require('./models/User'); const admin = await User.findOne({role:'admin'}); if(admin) await seedCodingData(admin._id); } catch{}
+  const bootstrapDependencies = async () => {
+    try {
+      initFirebase();
+      runtimeStatus.firebase = true;
+    } catch (err) {
+      runtimeStatus.firebase = false;
+      logger.error(`Continuing without Firebase at startup: ${err.message}`);
+    }
 
-    const server = app.listen(PORT, () => {
-      logger.info(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
-      logger.info(`Health endpoint → /health`);
-    });
+    try {
+      await connectDB();
+      runtimeStatus.mongo = true;
+    } catch (err) {
+      runtimeStatus.mongo = false;
+      logger.error(`Continuing without MongoDB at startup: ${err.message}`);
+    }
 
-    const shutdown = (signal) => {
-      logger.warn(`${signal} received — shutting down`);
-      server.close(() => { logger.info('HTTP server closed'); process.exit(0); });
-    };
+    if (runtimeStatus.mongo) {
+      try {
+        await seedBranches();
+      } catch (err) {
+        logger.warn(`Branch seeding skipped: ${err.message}`);
+      }
 
-    process.on('SIGTERM', () => shutdown('SIGTERM'));
-    process.on('SIGINT',  () => shutdown('SIGINT'));
-    process.on('unhandledRejection', (reason) => {
-      logger.error(`Unhandled rejection: ${reason}`);
-      server.close(() => process.exit(1));
-    });
+      // Seed coding platforms (needs first admin user)
+      try {
+        const User = require('./models/User');
+        const admin = await User.findOne({ role: 'admin' });
+        if (admin) await seedCodingData(admin._id);
+      } catch (err) {
+        logger.warn(`Coding seed skipped: ${err.message}`);
+      }
+    }
+  };
 
-  } catch (err) {
-    logger.error(`Startup failed: ${err.message}`);
-    process.exit(1);
-  }
+  const retryDependencies = async () => {
+    if (!runtimeStatus.firebase) {
+      try {
+        initFirebase();
+        runtimeStatus.firebase = true;
+        logger.info('Firebase dependency recovered');
+      } catch (err) {
+        logger.warn(`Firebase retry failed: ${err.message}`);
+      }
+    }
+
+    if (!runtimeStatus.mongo) {
+      try {
+        await connectDB();
+        runtimeStatus.mongo = true;
+        logger.info('MongoDB dependency recovered');
+      } catch (err) {
+        logger.warn(`MongoDB retry failed: ${err.message}`);
+      }
+    }
+  };
+
+  await bootstrapDependencies();
+
+  const server = app.listen(PORT, () => {
+    logger.info(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+    logger.info(`Health endpoint → /health`);
+  });
+
+  const retryTimer = setInterval(() => {
+    retryDependencies().catch((err) => logger.error(`Dependency retry loop failed: ${err.message}`));
+  }, 30_000);
+  retryTimer.unref();
+
+  const shutdown = (signal) => {
+    logger.warn(`${signal} received — shutting down`);
+    clearInterval(retryTimer);
+    server.close(() => { logger.info('HTTP server closed'); process.exit(0); });
+  };
+
+  process.on('SIGTERM', () => shutdown('SIGTERM'));
+  process.on('SIGINT',  () => shutdown('SIGINT'));
+  process.on('unhandledRejection', (reason) => {
+    logger.error(`Unhandled rejection: ${reason}`);
+    server.close(() => process.exit(1));
+  });
 };
 
 start();
