@@ -26,9 +26,18 @@ export default function Login() {
   return (
     <div className="login">
       <div className="login__bg" aria-hidden="true">
+        <div className="login__bg-noise" />
         <div className="login__bg-grid" />
+        <div className="login__bg-aurora" />
+        <div className="login__bg-stars" />
+        <div className="login__bg-ring" />
         <div className="login__bg-blob login__bg-blob--1" />
         <div className="login__bg-blob login__bg-blob--2" />
+        <div className="login__bg-shooters">
+          <span className="login__bg-shooter login__bg-shooter--1" />
+          <span className="login__bg-shooter login__bg-shooter--2" />
+          <span className="login__bg-shooter login__bg-shooter--3" />
+        </div>
       </div>
 
       <div className="login__card">
