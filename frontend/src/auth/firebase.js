@@ -1,6 +1,6 @@
 // src/auth/firebase.js
 import { initializeApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, signOut } from 'firebase/auth';
 
 const firebaseConfig = {
   apiKey:            import.meta.env.VITE_FIREBASE_API_KEY,
@@ -32,6 +32,21 @@ const ALLOWED_DOMAIN = import.meta.env.VITE_ALLOWED_DOMAIN || 'vnrvjiet.in';
 export const signInWithGoogle = async () => {
   const result = await signInWithPopup(auth, provider);
   const { user } = result;
+
+  if (!user.email?.endsWith(`@${ALLOWED_DOMAIN}`)) {
+    await signOut(auth);
+    throw new Error(
+      `Access denied. Only @${ALLOWED_DOMAIN} email addresses are permitted.`
+    );
+  }
+
+  const idToken = await user.getIdToken();
+  return { user, idToken };
+};
+
+export const signInWithEmailPassword = async (email, password) => {
+  const credential = await signInWithEmailAndPassword(auth, email, password);
+  const { user } = credential;
 
   if (!user.email?.endsWith(`@${ALLOWED_DOMAIN}`)) {
     await signOut(auth);

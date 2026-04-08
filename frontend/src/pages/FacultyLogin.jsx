@@ -4,7 +4,7 @@ import { AlertCircle, GraduationCap, Loader2, Shield } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 
 export default function FacultyLogin() {
-  const { login, loading } = useAuth();
+  const { login, loginDemoFaculty, loading } = useAuth();
   const [error, setError] = useState('');
   const [signing, setSigning] = useState(false);
 
@@ -15,6 +15,18 @@ export default function FacultyLogin() {
       await login();
     } catch (err) {
       setError(err.message || 'Sign-in failed. Please try again.');
+    } finally {
+      setSigning(false);
+    }
+  };
+
+  const handleDemoSignIn = async () => {
+    setError('');
+    setSigning(true);
+    try {
+      await loginDemoFaculty();
+    } catch (err) {
+      setError(err.message || 'Demo sign-in failed. Please try again.');
     } finally {
       setSigning(false);
     }
@@ -69,6 +81,10 @@ export default function FacultyLogin() {
                 Continue with Google
               </>
             )}
+          </button>
+
+          <button className="login__demo-btn" onClick={handleDemoSignIn} disabled={isLoading}>
+            {isLoading ? 'Loading demo account...' : 'Use Demo Faculty Account'}
           </button>
 
           <p className="login__domain-note">

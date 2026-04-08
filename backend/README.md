@@ -200,3 +200,24 @@ db.users.updateOne(
   { $set: { role: "admin" } }
 )
 ```
+
+## Create a Demo Faculty Account
+
+The backend includes a helper script that creates (or updates) a Firebase Auth user
+and syncs it into MongoDB with `role: "faculty"`.
+
+1. Set these values in `.env` (defaults are already in `.env.example`):
+
+```env
+DEMO_FACULTY_EMAIL=faculty.demo@vnrvjiet.in
+DEMO_FACULTY_PASSWORD=Faculty@123
+DEMO_FACULTY_NAME=Faculty Demo
+```
+
+2. Run:
+
+```bash
+npm run create:demo-faculty
+```
+
+This prints the demo credentials and ensures the account is active with faculty role.

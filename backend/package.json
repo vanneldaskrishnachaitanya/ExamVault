@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "lint": "eslint src/"
+    "lint": "eslint src/",
+    "create:demo-faculty": "node scripts/createDemoFaculty.js"
   },
   "dependencies": {
     "cloudinary": "^1.41.3",
