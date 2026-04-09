@@ -208,7 +208,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   min-height: 100dvh;
   position: relative;
-  overflow-x: hidden;
+  overflow-x: clip;
   text-rendering: optimizeLegibility;
 }
 
@@ -4878,8 +4878,10 @@ option { background: var(--bg-card); }
 .bottom-nav__item,
 .quote-banner__save {
   background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
   color: var(--text-2);
+}
+.quote-banner__save {
+  border: 1px solid rgba(255,255,255,0.08);
 }
 
 .navbar__link:hover,
