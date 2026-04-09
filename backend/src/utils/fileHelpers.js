@@ -128,8 +128,8 @@ const getServeStrategy = (mimeType) => ({
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 6. BUILD DUPLICATE-DETECTION FILTER
-//    Checks: regulation + branch + subject + category + examType + storedName base
-//    (We compare originalName because storedName is always unique.)
+//    Checks: regulation + branch + subject + category + examType + originalName
+//    Duplicate blocking is applied for pending + approved records.
 // ─────────────────────────────────────────────────────────────────────────────
 const buildDuplicateFilter = ({ regulation, branch, subject, category, examType, originalName }) => ({
   regulation: regulation.toUpperCase(),
@@ -137,8 +137,8 @@ const buildDuplicateFilter = ({ regulation, branch, subject, category, examType,
   subject:    new RegExp(`^${subject.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i'),
   category,
   examType:   category === 'paper' ? (examType || null) : null,
-  originalName,
-  status: 'approved',
+  originalName: new RegExp(`^${String(originalName || '').trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i'),
+  status: { $in: ['pending', 'approved'] },
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
