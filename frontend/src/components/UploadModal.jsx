@@ -115,8 +115,8 @@ export default function UploadModal({ isOpen, onClose, onSuccess, prefill = {} }
   };
 
   return (
-    <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
-      <div className="modal" role="dialog" aria-modal="true" aria-label="Upload file">
+    <div className="modal-overlay modal-overlay--upload" onClick={(e) => e.target === e.currentTarget && onClose()}>
+      <div className="modal modal--upload" role="dialog" aria-modal="true" aria-label="Upload file">
 
         <div className="modal__header">
           <h2 className="modal__title"><FileUp size={20} /> Upload File</h2>
@@ -164,17 +164,21 @@ export default function UploadModal({ isOpen, onClose, onSuccess, prefill = {} }
                 <option value="resource">Resource</option>
               </select>
             </label>
-            {form.category === 'paper' && (
-              <label className="modal__label">
-                Exam Type *
-                <select className="modal__select" value={form.examType} onChange={set('examType')} required>
-                  <option value="">Select…</option>
-                  {EXAM_TYPES.map(t => (
-                    <option key={t.id} value={t.id}>{t.label}</option>
-                  ))}
-                </select>
-              </label>
-            )}
+            <label className={`modal__label ${form.category !== 'paper' ? 'modal__label--disabled' : ''}`}>
+              Exam Type *
+              <select
+                className="modal__select"
+                value={form.examType}
+                onChange={set('examType')}
+                required={form.category === 'paper'}
+                disabled={form.category !== 'paper'}
+              >
+                <option value="">{form.category === 'paper' ? 'Select…' : 'Not required for resources'}</option>
+                {EXAM_TYPES.map(t => (
+                  <option key={t.id} value={t.id}>{t.label}</option>
+                ))}
+              </select>
+            </label>
           </div>
 
           {/* Year */}

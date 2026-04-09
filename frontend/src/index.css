@@ -2362,6 +2362,16 @@ a.breadcrumb__item:hover { color: var(--amber); background: var(--amber-dim); }
   padding: max(0.5rem, env(safe-area-inset-top)) 0.5rem max(0.5rem, env(safe-area-inset-bottom));
   animation: fadeIn 0.2s ease;
 }
+.modal-overlay--upload {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-top: calc(var(--nav-h) + 0.85rem);
+  padding-bottom: 0.8rem;
+  isolation: isolate;
+}
 .modal {
   width: min(620px, calc(100vw - 1rem));
   background: linear-gradient(160deg, var(--bg-card) 0%, rgba(10,13,23,0.98) 100%);
@@ -2370,6 +2380,10 @@ a.breadcrumb__item:hover { color: var(--amber); background: var(--amber-dim); }
   box-shadow: var(--shadow-lg), 0 0 0 1px var(--amber-border), 0 0 60px rgba(245,166,35,0.05);
   animation: slideUp 0.25s var(--ease);
   max-height: min(92dvh, 860px); overflow-y: auto;
+}
+.modal--upload {
+  margin: 0 auto;
+  transform: translateZ(0);
 }
 [data-theme="light"] .modal { background: linear-gradient(160deg, #fff 0%, #f8f9fc 100%); border: 1px solid rgba(0,0,0,0.1); }
 .modal__header {
@@ -2385,6 +2399,7 @@ a.breadcrumb__item:hover { color: var(--amber); background: var(--amber-dim); }
 .modal__row { display: flex; gap: 0.8rem; }
 .modal__row--2col > * { flex: 1; min-width: 0; }
 .modal__label { display: flex; flex-direction: column; gap: 0.45rem; font-size: 0.82rem; font-weight: 700; color: var(--text-2); letter-spacing: 0.03em; }
+.modal__label--disabled { opacity: 0.72; }
 .modal__input, .modal__select {
   padding: 0.65rem 0.9rem; background: var(--bg-raised); border: 1px solid var(--border);
   border-radius: var(--radius-sm); color: var(--text-1); font-size: 0.9rem; width: 100%;
@@ -2392,6 +2407,10 @@ a.breadcrumb__item:hover { color: var(--amber); background: var(--amber-dim); }
 }
 .modal__input:focus, .modal__select:focus { outline: none; border-color: var(--amber); box-shadow: 0 0 0 3px var(--amber-dim); }
 .modal__input:hover:not(:focus), .modal__select:hover:not(:focus) { border-color: var(--amber-border); }
+.modal__select:disabled {
+  opacity: 0.72;
+  cursor: not-allowed;
+}
 .modal__select {
   appearance: none;
   cursor: pointer;
@@ -2531,6 +2550,10 @@ option {
 }
 
 @media (max-width: 760px) {
+  .modal-overlay--upload {
+    padding-top: calc(var(--nav-h) + 0.5rem);
+    padding-bottom: 0.5rem;
+  }
   .modal {
     width: calc(100vw - 1rem);
     max-height: calc(100dvh - 1rem);

@@ -102,8 +102,8 @@ export default function BulkUploadModal({ isOpen, onClose, onDone, prefill = {} 
   const readyCount = rows.filter(r => r.file && r.subject.trim()).length;
 
   return (
-    <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
-      <div className="modal modal--bulk" role="dialog" aria-modal="true">
+    <div className="modal-overlay modal-overlay--upload" onClick={e => e.target === e.currentTarget && onClose()}>
+      <div className="modal modal--upload modal--bulk" role="dialog" aria-modal="true">
         <div className="modal__header">
           <h2 className="modal__title"><FileUp size={20} /> Bulk Upload</h2>
           <button className="modal__close" onClick={onClose}><X size={18} /></button>
@@ -163,14 +163,16 @@ export default function BulkUploadModal({ isOpen, onClose, onDone, prefill = {} 
                   <option value="resource">Resource</option>
                 </select>
 
-                {/* Exam type (only for papers) */}
-                {row.category === 'paper' && (
-                  <select className="modal__select bulk-row__exam"
-                    value={row.examType} onChange={e => updateRow(row.id, { examType: e.target.value })}
-                    disabled={row.status === 'success'}>
-                    {EXAM_TYPES.map(t => <option key={t.id} value={t.id}>{t.label}</option>)}
-                  </select>
-                )}
+                {/* Exam type slot kept stable to avoid row jumping */}
+                <select
+                  className="modal__select bulk-row__exam"
+                  value={row.examType}
+                  onChange={e => updateRow(row.id, { examType: e.target.value })}
+                  disabled={row.status === 'success' || row.category !== 'paper'}
+                >
+                  {row.category !== 'paper' && <option value="">N/A for resource</option>}
+                  {EXAM_TYPES.map(t => <option key={t.id} value={t.id}>{t.label}</option>)}
+                </select>
 
                 {/* Progress bar */}
                 {row.status === 'uploading' && (
