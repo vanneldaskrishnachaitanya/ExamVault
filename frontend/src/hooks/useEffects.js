@@ -73,6 +73,13 @@ export function initTilt() {
     ].join(',');
 
     document.querySelectorAll(TILT).forEach(card => {
+      if (card.classList.contains('file-card') && card.closest('.admin-file-row')) {
+        card.classList.remove('ev-tilt');
+        card.style.transform = '';
+        const shine = card.querySelector('.ev-tilt__shine');
+        if (shine) shine.remove();
+        return;
+      }
       if (card._evTilt) return;
       card._evTilt = true;
       card.classList.add('ev-tilt');

@@ -63,6 +63,21 @@ function formatLastSeen(dateValue) {
   return new Date(dateValue).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
 }
 
+function shouldHideAdminListUser(user) {
+  const name = String(user?.name || '').trim().toLowerCase();
+  const email = String(user?.email || '').trim().toLowerCase();
+  const emailLocal = email.split('@')[0] || '';
+  const hiddenKeys = new Set(['faculty', 'demo', 'faculty demo']);
+  const facultyDemoPattern = /faculty[\s._-]*demo/;
+
+  return (
+    hiddenKeys.has(name)
+    || hiddenKeys.has(emailLocal)
+    || facultyDemoPattern.test(name)
+    || facultyDemoPattern.test(emailLocal)
+  );
+}
+
 export default function AdminPanel() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('pending');
@@ -112,7 +127,10 @@ export default function AdminPanel() {
 
   const loadUsers = useCallback(async () => {
     setULoading(true);
-    try { const d = await fetchAllUsers({ search: uSearch, limit: 100 }); setUsers(d.users || []); }
+    try {
+      const d = await fetchAllUsers({ search: uSearch, limit: 100 });
+      setUsers((d.users || []).filter((u) => !shouldHideAdminListUser(u)));
+    }
     catch {} finally { setULoading(false); }
   }, [uSearch]);
 
@@ -457,7 +475,7 @@ export default function AdminPanel() {
                   onChange={e => setNewBranch(p => ({ ...p, emoji: e.target.value }))} />
               </label>
             </div>
-            <button className="btn btn--primary" style={{ marginTop: '0.75rem' }}
+            <button className="btn btn--primary" data-no-magnetic style={{ marginTop: '0.75rem' }}
               disabled={bSubmitting || !newBranch.id || !newBranch.label}
               onClick={handleCreateBranch}>
               {bSubmitting ? <Loader2 size={14} className="spin" /> : <Plus size={14} />} Create Branch
