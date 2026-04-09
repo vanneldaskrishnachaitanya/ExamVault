@@ -3312,7 +3312,7 @@ option { background: var(--bg-card); }
   transition: border-color 0.18s;
   animation: cardIn 0.3s var(--ease);
 }
-.qs-section-row--hidden { opacity: 0.55; }
+.qs-section-row--hidden .qs-section-row__head { opacity: 0.55; }
 .qs-section-row:hover { border-color: rgba(255,255,255,0.1); }
 
 .qs-section-row__head {
