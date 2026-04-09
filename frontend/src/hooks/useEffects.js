@@ -70,9 +70,6 @@ export function initTilt() {
       '.hub-saved-card',
       '.hub-feed-item',
       '.hub-reminder-item',
-      '.qs-section-row',
-      '.qs-quote-item',
-      '.qs-control-row',
       '.exam-item',
     ].join(',');
 

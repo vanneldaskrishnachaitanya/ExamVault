@@ -182,8 +182,6 @@ export default function QuoteBanner() {
   const hasPolls = polls.length > 0;
   const hasCards = quotes.length > 0 || hasPolls;
 
-  if (!enabled || (!loading && !hasCards)) return null;
-
   const q   = quotes[quoteIdx] || {};
   const pat = BG_PATTERNS[quoteIdx % BG_PATTERNS.length];
 
@@ -206,6 +204,8 @@ export default function QuoteBanner() {
     window.addEventListener('ev:saved-changed', sync);
     return () => window.removeEventListener('ev:saved-changed', sync);
   }, [isQuoteCard, q._id]);
+
+  if (!enabled || (!loading && !hasCards)) return null;
 
   const handleSaveQuote = () => {
     if (!q._id) return;
