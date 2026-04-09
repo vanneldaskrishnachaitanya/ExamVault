@@ -1,5 +1,5 @@
-import QuoteBanner from '../components/QuoteBanner';
 import DashboardHub from '../components/DashboardHub';
+import PomodoroTimer from '../components/PomodoroTimer';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
@@ -24,7 +24,7 @@ const REGULATIONS = [
 ];
 const BRANCHES = ['CSE', 'ECE', 'EEE', 'IT', 'MECH', 'CIVIL', 'AIML'];
 const YEARS = ['1', '2', '3', '4'];
-const DEFAULT_WIDGET_ORDER = ['timetable', 'exam', 'uploads', 'announcements'];
+const DEFAULT_WIDGET_ORDER = ['timetable', 'exam', 'uploads', 'announcements', 'pomodoro'];
 
 const ROLE_HOME_CONFIG = {
   student: {
@@ -71,8 +71,31 @@ function getSnoozeTimestamp(mode) {
 }
 
 
+const DEFAULT_SECTION_ORDER = ['regulation', 'personalized', 'recent', 'widgets', 'hub'];
+
 export default function Dashboard() {
   const navigate = useNavigate();
+  const [sectionOrder, setSectionOrder] = useState(() => {
+    return JSON.parse(localStorage.getItem('ev-section-order') || JSON.stringify(DEFAULT_SECTION_ORDER));
+  });
+  const dragSectionRef = useRef(null);
+
+  const handleSectionDrop = (targetId) => {
+    const sourceId = dragSectionRef.current;
+    if (!sourceId || sourceId === targetId) return;
+    setSectionOrder(prev => {
+      const copy = [...prev];
+      const sourceIdx = copy.indexOf(sourceId);
+      const targetIdx = copy.indexOf(targetId);
+      if (sourceIdx !== -1 && targetIdx !== -1) {
+        copy.splice(sourceIdx, 1);
+        copy.splice(targetIdx, 0, sourceId);
+        localStorage.setItem('ev-section-order', JSON.stringify(copy));
+      }
+      return copy;
+    });
+    dragSectionRef.current = null;
+  };
   const { backendUser } = useAuth();
   const isAdmin = backendUser?.role === 'admin';
   const firstName = backendUser?.name?.split(' ')[0] || 'there';
@@ -263,6 +286,9 @@ export default function Dashboard() {
         <p className="dash-widget__meta">{widgetData.announcement?.message || 'Important notices will appear here'}</p>
       </button>
     ),
+    pomodoro: (
+      <PomodoroTimer key="pomodoro" />
+    ),
   };
 
   function handleWidgetDrop(targetId) {
@@ -324,78 +350,87 @@ export default function Dashboard() {
         </div>
       )}
 
-      <section className="dash-section">
-        <h2 className="dash-section-title">Branch-aware context</h2>
-        <div className="dash-context-grid">
-          <label className="modal__label">Regulation<select className="modal__select" value={branchContext.regulation} onChange={(e) => setBranchContext(prev => ({ ...prev, regulation: e.target.value }))}>{REGULATIONS.map(item => <option key={item.id} value={item.id}>{item.id}</option>)}</select></label>
-          <label className="modal__label">Branch<select className="modal__select" value={branchContext.branch} onChange={(e) => setBranchContext(prev => ({ ...prev, branch: e.target.value }))}>{BRANCHES.map(item => <option key={item} value={item}>{item}</option>)}</select></label>
-          <label className="modal__label">Year<select className="modal__select" value={branchContext.year} onChange={(e) => setBranchContext(prev => ({ ...prev, year: e.target.value }))}>{YEARS.map(item => <option key={item} value={item}>{item}</option>)}</select></label>
-        </div>
-      </section>
-
-      <section className="dash-section">
-        <h2 className="dash-section-title">Choose your Regulation</h2>
-        <div className="reg-grid">
-          {REGULATIONS.map((reg) => (
-            <button key={reg.id} className={`reg-card ${reg.accent}`} onClick={() => navigate(`/r/${reg.id}`)}>
-              <span className="reg-card__note">{reg.note}</span>
-              <span className="reg-card__watermark" aria-hidden="true">{reg.year}</span>
-              <div className="reg-card__body">
-                <span className="reg-card__emoji" aria-hidden="true">{reg.emoji}</span>
-                <div className="reg-card__id">{reg.id}</div>
-                <h3 className="reg-card__heading">{reg.heading}</h3>
-                <p className="reg-card__desc">{reg.desc}</p>
+      <div className="dash-sections-container">
+        {sectionOrder.map(sectionId => {
+          if (sectionId === 'regulation') return (
+            <section key="regulation" className="dash-section dash-section--draggable" draggable onDragStart={() => { dragSectionRef.current = 'regulation'; }} onDragOver={(e) => e.preventDefault()} onDrop={() => handleSectionDrop('regulation')}>
+              <h2 className="dash-section-title"><GripVertical size={16} /> Choose your Regulation</h2>
+              <div className="reg-grid">
+                {REGULATIONS.map((reg) => (
+                  <button key={reg.id} className={`reg-card ${reg.accent}`} onClick={() => navigate(`/r/${reg.id}`)}>
+                    <span className="reg-card__note">{reg.note}</span>
+                    <span className="reg-card__watermark" aria-hidden="true">{reg.year}</span>
+                    <div className="reg-card__body">
+                      <span className="reg-card__emoji" aria-hidden="true">{reg.emoji}</span>
+                      <div className="reg-card__id">{reg.id}</div>
+                      <h3 className="reg-card__heading">{reg.heading}</h3>
+                      <p className="reg-card__desc">{reg.desc}</p>
+                    </div>
+                    <span className="reg-card__cta">Browse <ArrowRight size={15} /></span>
+                  </button>
+                ))}
               </div>
-              <span className="reg-card__cta">Browse <ArrowRight size={15} /></span>
-            </button>
-          ))}
-        </div>
-      </section>
+            </section>
+          );
+          
+          if (sectionId === 'personalized') return (
+            <section key="personalized" className="dash-section dash-section--draggable" draggable onDragStart={() => { dragSectionRef.current = 'personalized'; }} onDragOver={(e) => e.preventDefault()} onDrop={() => handleSectionDrop('personalized')}>
+              <h2 className="dash-section-title"><GripVertical size={16} /> Personalized home page</h2>
+              <div className="home-role-head"><p className="home-role-head__label">{roleHome.label}</p><p className="home-role-head__sub">Cards are tuned to your role so you can jump faster.</p></div>
+              <div className="home-role-grid">
+                {roleHome.cards.map((card) => {
+                  const Icon = card.icon;
+                  return (
+                    <button key={card.title} className="home-role-card" onClick={() => navigate(card.to)}>
+                      <span className="home-role-card__icon"><Icon size={16} /></span>
+                      <p className="home-role-card__title">{card.title}</p>
+                      <p className="home-role-card__desc">{card.description}</p>
+                      <span className="home-role-card__cta">Open <ArrowRight size={14} /></span>
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+          );
 
-      <section className="dash-section">
-        <h2 className="dash-section-title">Personalized home page</h2>
-        <div className="home-role-head"><p className="home-role-head__label">{roleHome.label}</p><p className="home-role-head__sub">Cards are tuned to your role so you can jump faster.</p></div>
-        <div className="home-role-grid">
-          {roleHome.cards.map((card) => {
-            const Icon = card.icon;
-            return (
-              <button key={card.title} className="home-role-card" onClick={() => navigate(card.to)}>
-                <span className="home-role-card__icon"><Icon size={16} /></span>
-                <p className="home-role-card__title">{card.title}</p>
-                <p className="home-role-card__desc">{card.description}</p>
-                <span className="home-role-card__cta">Open <ArrowRight size={14} /></span>
-              </button>
-            );
-          })}
-        </div>
-      </section>
+          if (sectionId === 'recent') return (
+            <section key="recent" className="dash-section dash-section--draggable" draggable onDragStart={() => { dragSectionRef.current = 'recent'; }} onDragOver={(e) => e.preventDefault()} onDrop={() => handleSectionDrop('recent')}>
+              <h2 className="dash-section-title"><GripVertical size={16} /> What changed since last login</h2>
+              <div className="digest-card">
+                <p className="digest-card__title">Since your last seen timestamp</p>
+                <p className="digest-card__text">{sinceLastSeen.files} new files, {sinceLastSeen.announcements} announcements, and {sinceLastSeen.exams} exam updates were added for your context.</p>
+              </div>
+            </section>
+          );
 
-      <section className="dash-section">
-        <h2 className="dash-section-title">What changed since last login</h2>
-        <div className="digest-card">
-          <p className="digest-card__title">Since your last seen timestamp</p>
-          <p className="digest-card__text">{sinceLastSeen.files} new files, {sinceLastSeen.announcements} announcements, and {sinceLastSeen.exams} exam updates were added for your context.</p>
-        </div>
-      </section>
+          if (sectionId === 'widgets') return (
+            <section key="widgets" className="dash-section dash-section--draggable" draggable onDragStart={() => { dragSectionRef.current = 'widgets'; }} onDragOver={(e) => e.preventDefault()} onDrop={() => handleSectionDrop('widgets')}>
+              <h2 className="dash-section-title"><GripVertical size={16} /> Smart dashboard widgets</h2>
+              <div className="widget-customizer">
+                {DEFAULT_WIDGET_ORDER.map(id => (
+                  <button key={id} className={`widget-toggle ${hiddenWidgets.includes(id) ? 'widget-toggle--off' : ''}`} onClick={() => setHiddenWidgets(prev => prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id])}>
+                    <EyeOff size={13} /> {id}
+                  </button>
+                ))}
+                <button className="widget-toggle" onClick={() => { setWidgetOrder(DEFAULT_WIDGET_ORDER); setHiddenWidgets([]); }}>Reset widgets</button>
+              </div>
+              {widgetLoading ? (
+                <div className="dash-widget-grid">{[1, 2, 3, 4].map((slot) => <div key={slot} className="dash-widget dash-widget--loading" />)}</div>
+              ) : (
+                <div className="dash-widget-grid">{orderedVisibleWidgets.map(id => widgetMap[id]).filter(Boolean)}</div>
+              )}
+            </section>
+          );
 
-      <section className="dash-section">
-        <h2 className="dash-section-title">Smart dashboard widgets</h2>
-        <div className="widget-customizer">
-          {DEFAULT_WIDGET_ORDER.map(id => (
-            <button key={id} className={`widget-toggle ${hiddenWidgets.includes(id) ? 'widget-toggle--off' : ''}`} onClick={() => setHiddenWidgets(prev => prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id])}>
-              <EyeOff size={13} /> {id}
-            </button>
-          ))}
-          <button className="widget-toggle" onClick={() => { setWidgetOrder(DEFAULT_WIDGET_ORDER); setHiddenWidgets([]); }}>Reset widgets</button>
-        </div>
-        {widgetLoading ? (
-          <div className="dash-widget-grid">{[1, 2, 3, 4].map((slot) => <div key={slot} className="dash-widget dash-widget--loading" />)}</div>
-        ) : (
-          <div className="dash-widget-grid">{orderedVisibleWidgets.map(id => widgetMap[id]).filter(Boolean)}</div>
-        )}
-      </section>
+          if (sectionId === 'hub') return (
+            <div key="hub" className="dash-section dash-section--draggable" draggable onDragStart={() => { dragSectionRef.current = 'hub'; }} onDragOver={(e) => e.preventDefault()} onDrop={() => handleSectionDrop('hub')}>
+              <DashboardHub smartReminders={visibleReminders} onSnooze={(id, mode) => setReminderSnoozes(prev => ({ ...prev, [id]: getSnoozeTimestamp(mode) }))} onNavigate={navigate} />
+            </div>
+          );
 
-      <DashboardHub smartReminders={visibleReminders} onSnooze={(id, mode) => setReminderSnoozes(prev => ({ ...prev, [id]: getSnoozeTimestamp(mode) }))} onNavigate={navigate} />
+          return null;
+        })}
+      </div>
     </div>
   );
 }

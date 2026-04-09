@@ -20,12 +20,13 @@ const TYPE_STYLES = {
 export default function MainLayout() {
   const location = useLocation();
   const layoutRef = useRef(null);
-  const themeOptions = ['dark', 'light', 'aurora', 'forest', 'sunset'];
-  const [theme, setTheme] = useState(() => {
-    const saved = localStorage.getItem('ev-theme');
-    if (saved) return saved;
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  const themeOptions = ['system', 'dark', 'light', 'aurora', 'forest', 'sunset'];
+  // 'themePref' is the user's choice: 'system', 'dark', 'light', etc.
+  const [themePref, setThemePref] = useState(() => {
+    return localStorage.getItem('ev-theme-pref') || 'system';
   });
+  // 'activeTheme' is what actually gets applied to the DOM ('dark', 'light', 'aurora', etc.)
+  const [activeTheme, setActiveTheme] = useState('dark');
   const [announcements, setAnnouncements] = useState([]);
   const [showTour, setShowTour] = useState(() => !localStorage.getItem('ev-tour-done'));
   const [dismissed, setDismissed] = useState([]);
@@ -54,25 +55,36 @@ export default function MainLayout() {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
   }, [location.pathname]);
 
-  // Apply theme to <html>
+  // Apply theme resolution logic
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('ev-theme', theme);
-  }, [theme]);
+    localStorage.setItem('ev-theme-pref', themePref);
+    
+    let resolvedTheme = themePref;
+    if (themePref === 'system') {
+      resolvedTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    
+    setActiveTheme(resolvedTheme);
+    document.documentElement.setAttribute('data-theme', resolvedTheme);
+  }, [themePref]);
 
-  const toggleTheme = () => setTheme(t => themeOptions[(themeOptions.indexOf(t) + 1) % themeOptions.length] || 'dark');
-
-  // Listen for system theme changes (only if user hasn't manually set a preference)
+  // Listen for actual system changes
   useEffect(() => {
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
     const handler = (e) => {
-      if (!localStorage.getItem('ev-theme')) {
-        setTheme(e.matches ? 'dark' : 'light');
+      if (themePref === 'system') {
+        const newTheme = e.matches ? 'dark' : 'light';
+        setActiveTheme(newTheme);
+        document.documentElement.setAttribute('data-theme', newTheme);
       }
     };
     mq.addEventListener('change', handler);
     return () => mq.removeEventListener('change', handler);
-  }, []);
+  }, [themePref]);
+
+  const toggleTheme = () => {
+    setThemePref(t => themeOptions[(themeOptions.indexOf(t) + 1) % themeOptions.length] || 'system');
+  };
 
   useEffect(() => {
     const onKeyDown = (e) => {
@@ -220,9 +232,10 @@ export default function MainLayout() {
     <div className="layout" ref={layoutRef}>
 
       <Navbar
-        theme={theme}
+        theme={activeTheme}
+        themePref={themePref}
+        setThemePref={setThemePref}
         toggleTheme={toggleTheme}
-        setTheme={setTheme}
         themeOptions={themeOptions}
       />
 

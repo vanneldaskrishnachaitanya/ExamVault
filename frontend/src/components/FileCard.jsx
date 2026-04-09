@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react';
 import {
   Download, Eye, FileText, Flag, Image, Presentation,
   FileSpreadsheet, Calendar, User, Clock, TrendingDown,
-  CheckCircle, AlertCircle, Timer, Trash2, Star, Share2, Pin,
-  X, Loader2,
+  X, Loader2, HardDriveDownload, HardDrive,
 } from 'lucide-react';
 import api, {
   getFileRatings, rateFile, recordDownloadApi, toggleImportant,
@@ -12,6 +11,7 @@ import api, {
 import { useAuth } from '../hooks/useAuth';
 import StarRating from './StarRating';
 import { isSavedItem, toggleSavedItem } from '../utils/featureStorage';
+import { saveFileOffline, removeFileOffline, checkFileOffline } from '../utils/offlineStorage';
 
 const MIME_CONFIG = {
   'application/pdf': { icon: <FileText size={22} />, label: 'PDF',   color: 'file-icon--pdf' },
@@ -70,12 +70,19 @@ export default function FileCard({ file, showStatus = false, onReport, compact =
   const [copied,        setCopied]        = useState(false);
   const [important,     setImportant]     = useState(file.isImportant || false);
   const [saved,         setSaved]         = useState(isSavedItem({ type: 'file', id: file._id }));
+  const [offline,       setOffline]       = useState(false);
+  const [offlineLoading, setOfflineLoading] = useState(false);
 
   useEffect(() => {
     const sync = () => setSaved(isSavedItem({ type: 'file', id: file._id }));
     window.addEventListener('ev:saved-changed', sync);
+    
+    if (file.filePath) {
+      checkFileOffline(file.filePath).then(setOffline);
+    }
+    
     return () => window.removeEventListener('ev:saved-changed', sync);
-  }, [file._id]);
+  }, [file._id, file.filePath]);
 
   const canPreview = file.mimeType === 'application/pdf' || file.mimeType?.startsWith('image/')
     || file.mimeType?.includes('word') || file.mimeType?.includes('powerpoint')
@@ -165,6 +172,23 @@ export default function FileCard({ file, showStatus = false, onReport, compact =
     sync();
   };
 
+  const handleOfflineToggle = async () => {
+    if (!file.filePath) return alert('No file path provided.');
+    setOfflineLoading(true);
+    try {
+      if (offline) {
+        await removeFileOffline(file.filePath);
+        setOffline(false);
+      } else {
+        const ok = await saveFileOffline(file.filePath);
+        if (ok) setOffline(true);
+        else alert('Failed to cache file.');
+      }
+    } finally {
+      setOfflineLoading(false);
+    }
+  };
+
   const handleDelete = async () => {
     if (!window.confirm(`Delete "${file.originalName}"?`)) return;
     try { await api.delete(`/admin/files/${file._id}`); window.location.reload(); }
@@ -228,6 +252,9 @@ export default function FileCard({ file, showStatus = false, onReport, compact =
             </button>
             <button className={`fc-btn fc-btn--pin${saved ? ' fc-btn--pin-active' : ''}`} onClick={handlePin} title={saved ? 'Unpin' : 'Pin to saved items'}>
               <Pin size={13} />
+            </button>
+            <button className={`fc-btn fc-btn--offline${offline ? ' fc-btn--offline-active' : ''}`} onClick={handleOfflineToggle} title={offline ? 'Available Offline' : 'Save Offline'}>
+              {offlineLoading ? <Loader2 size={13} className="spin" /> : offline ? <HardDrive size={13} color="var(--blue)" /> : <HardDriveDownload size={13} />}
             </button>
             {!isAdmin && (
               <button className="fc-btn fc-btn--rate" onClick={() => setRatingOpen(r => !r)} title="Rate">

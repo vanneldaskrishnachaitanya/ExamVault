@@ -10,6 +10,7 @@ import {
   fetchSavedItems, removeSavedItem as removeSavedItemApi,
 } from '../api/apiClient';
 import { getSavedItems, formatRelativeTime, removeSavedItem } from '../utils/featureStorage';
+import { X } from 'lucide-react';
 
 function buildSubjectLink(item) {
   if (!item.regulation || !item.branch || !item.subject) return '/dashboard';
@@ -207,6 +208,7 @@ export default function DashboardHub({ smartReminders = [], onSnooze, onNavigate
   const [notifications, setNotifications] = useState([]);
   const [downloads, setDownloads] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [mobileRemindersOpen, setMobileRemindersOpen] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -271,7 +273,22 @@ export default function DashboardHub({ smartReminders = [], onSnooze, onNavigate
         ? `/search?source=quotes&q=${encodeURIComponent(item.subtitle || item.title || 'quote')}`
         : item.href,
     }));
-    return [...localPins, ...bookmarkPins].slice(0, 8);
+    const allPins = [...localPins, ...bookmarkPins];
+    
+    // Group them
+    const groups = { 'Subjects': [], 'Files': [], 'Other': [] };
+    
+    for (const item of allPins) {
+      if (item.type === 'subject') {
+        groups['Subjects'].push(item);
+      } else if (item.type === 'file') {
+        groups['Files'].push(item);
+      } else {
+        groups['Other'].push(item);
+      }
+    }
+    
+    return groups;
   }, [bookmarks, savedItems]);
 
   const feed = useMemo(() => {
@@ -433,22 +450,32 @@ export default function DashboardHub({ smartReminders = [], onSnooze, onNavigate
               <p className="dash-hub__eyebrow"><Bookmark size={12} /> Saved</p>
               <h2 className="dash-hub__title">Pinned items</h2>
             </div>
-            <span className="dash-hub__count">{pinned.length}</span>
+            <span className="dash-hub__count">{Object.values(pinned).flat().length}</span>
           </div>
           {loading ? (
             <div className="dash-hub__empty">Loading pins…</div>
-          ) : pinned.length === 0 ? (
+          ) : Object.values(pinned).flat().length === 0 ? (
             <div className="dash-hub__empty">Pin files, quotes, or events to keep them here.</div>
           ) : (
-            <div className="dash-hub__saved-list">
-              {pinned.map(item => (
+            <div className="dash-hub__saved-groups">
+              {['Subjects', 'Files', 'Other'].map(group => {
+                if (pinned[group].length === 0) return null;
+                return (
+                  <div key={group} className="dash-hub__pin-group">
+                    <h3 className="dash-hub__pin-group-title">{group}</h3>
+                    <div className="dash-hub__saved-list">
+                      {pinned[group].map(item => (
                 <SavedCard
                   key={item.id}
                   item={item}
                   onOpen={openSavedItem}
                   onRemove={item.type === 'subject' ? removeBookmarkPin : removePinned}
                 />
-              ))}
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>
@@ -469,12 +496,26 @@ export default function DashboardHub({ smartReminders = [], onSnooze, onNavigate
           )}
         </div>
 
-        <div className="dash-hub__panel dash-hub__panel--reminders">
+        {/* Reminders section with bottom-sheet logic on mobile */}
+        {(hasFeedReminders || hasSmartReminders) && (
+          <button 
+            className="dash-hub__mobile-reminders-fab" 
+            onClick={() => setMobileRemindersOpen(true)}
+          >
+            <Bell size={20} />
+            <span className="fab-badge">{localReminders.length + smartReminders.length}</span>
+          </button>
+        )}
+
+        <div className={`dash-hub__panel dash-hub__panel--reminders ${mobileRemindersOpen ? 'dash-hub__panel--open' : ''}`}>
           <div className="dash-hub__panel-head">
             <div>
               <p className="dash-hub__eyebrow"><TriangleAlert size={12} /> Reminders</p>
               <h2 className="dash-hub__title">Upcoming alerts</h2>
             </div>
+            <button className="dash-hub__close-sheet" onClick={() => setMobileRemindersOpen(false)}>
+              <X size={20} />
+            </button>
           </div>
 
           {/* Smart reminders with snooze from Dashboard */}

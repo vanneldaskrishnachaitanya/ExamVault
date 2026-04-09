@@ -64,7 +64,27 @@ export default function CommandPalette({ open, onClose }) {
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return commands;
-    return commands.filter((cmd) => (`${cmd.title} ${cmd.hint} ${cmd.keywords}`).toLowerCase().includes(q));
+
+    const fuzzyMatch = (pattern, str) => {
+      let patternIdx = 0;
+      let strIdx = 0;
+      while (patternIdx < pattern.length && strIdx < str.length) {
+        if (pattern[patternIdx] === str[strIdx]) patternIdx++;
+        strIdx++;
+      }
+      return patternIdx === pattern.length;
+    };
+
+    return commands
+      .map(cmd => {
+        const searchSpace = `${cmd.title} ${cmd.hint} ${cmd.keywords}`.toLowerCase();
+        let exactMatch = searchSpace.includes(q);
+        let fuzzy = !exactMatch && fuzzyMatch(q.replace(/\s+/g, ''), searchSpace);
+        return { cmd, exactMatch, fuzzy };
+      })
+      .filter(item => item.exactMatch || item.fuzzy)
+      .sort((a, b) => (a.exactMatch === b.exactMatch ? 0 : a.exactMatch ? -1 : 1))
+      .map(item => item.cmd);
   }, [commands, query]);
 
   useEffect(() => {

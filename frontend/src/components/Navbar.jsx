@@ -6,9 +6,11 @@ import {
   Menu, X, BookMarked, Clock, LogOut, User, Palette,
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
-import { fetchNotifications, markAllNotificationsRead, deleteNotification } from '../api/apiClient';
+import { fetchNotifications, markAllNotificationsRead, deleteNotification, fetchBookmarks, fetchSavedItems } from '../api/apiClient';
+import { getSavedItems } from '../utils/featureStorage';
 
 const THEME_LABELS = {
+  system: 'System Auto',
   dark: 'Midnight',
   light: 'Daylight',
   aurora: 'Aurora',
@@ -18,9 +20,10 @@ const THEME_LABELS = {
 
 export default function Navbar({
   theme,
+  themePref,
+  setThemePref,
   toggleTheme,
-  setTheme,
-  themeOptions = ['dark', 'light'],
+  themeOptions = ['system', 'dark', 'light'],
 }) {
   const { backendUser, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
@@ -31,6 +34,8 @@ export default function Navbar({
   const [themeMenuOpen, setThemeMenuOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [unread, setUnread] = useState(0);
+  const [pinned, setPinned] = useState([]);
+  const [loadingPins, setLoadingPins] = useState(false);
 
   const dropdownRef  = useRef(null);
   const dropdownBtn  = useRef(null);
@@ -111,6 +116,43 @@ export default function Navbar({
     document.addEventListener('keydown', h);
     return () => document.removeEventListener('keydown', h);
   }, [navigate]);
+
+  // Load pins for mobile drawer
+  useEffect(() => {
+    if (!drawerOpen || !backendUser) return;
+    const loadPins = async () => {
+      setLoadingPins(true);
+      try {
+        const [bmRes, savedRes] = await Promise.all([
+          fetchBookmarks().catch(() => ({ bookmarks: [] })),
+          fetchSavedItems().catch(() => ({ savedItems: [] }))
+        ]);
+        
+        const bookmarkPins = (bmRes.bookmarks || []).map(b => ({
+          type: 'subject',
+          title: b.subject,
+          subtitle: `${b.regulation} · ${b.branch}`,
+          href: `/r/${b.regulation}/${b.branch}/${encodeURIComponent(b.subject)}`,
+          id: `bookmark:${b.regulation}:${b.branch}:${b.subject}`,
+        }));
+        
+        const localPins = (savedRes.savedItems || []).map(item => ({
+          type: item.type,
+          id: `${item.type}:${item.itemId}`,
+          title: item.title,
+          subtitle: item.subtitle,
+          href: item.href,
+        }));
+        
+        setPinned([...localPins, ...bookmarkPins].slice(0, 8));
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoadingPins(false);
+      }
+    };
+    loadPins();
+  }, [drawerOpen, backendUser]);
 
   const handleLogout = async () => {
     if (!window.confirm('Sign out?')) return;
@@ -211,11 +253,11 @@ export default function Navbar({
                   {themeOptions.map(option => (
                     <button
                       key={option}
-                      className={`navbar__theme-option${theme === option ? ' navbar__theme-option--active' : ''}`}
-                      onClick={() => { setTheme(option); setThemeMenuOpen(false); }}
+                      className={`navbar__theme-option${themePref === option ? ' navbar__theme-option--active' : ''}`}
+                      onClick={() => { setThemePref(option); setThemeMenuOpen(false); }}
                     >
                       <span>{THEME_LABELS[option] || option}</span>
-                      {theme === option && <Check size={12} />}
+                      {themePref === option && <Check size={12} />}
                     </button>
                   ))}
                   <button className="navbar__theme-option navbar__theme-option--cycle" onClick={() => { toggleTheme(); setThemeMenuOpen(false); }}>
@@ -356,6 +398,39 @@ export default function Navbar({
           <button className="nav-drawer__close" onClick={() => setDrawerOpen(false)}>
             <X size={18} />
           </button>
+        </div>
+
+        {/* Pinned Items (Mobile Only) */}
+        <div className="nav-drawer__pinned">
+          <p className="nav-drawer__section-label">Pinned Items</p>
+          {loadingPins ? (
+            <div className="nav-drawer__pinned-empty">Loading pins...</div>
+          ) : pinned.length === 0 ? (
+            <div className="nav-drawer__pinned-empty">Pin files to see them here</div>
+          ) : (
+            <div className="nav-drawer__pinned-list">
+              {pinned.map(item => (
+                <button
+                  key={item.id}
+                  className="nav-drawer__item nav-drawer__item--pin"
+                  onClick={() => {
+                    setDrawerOpen(false);
+                    if (item.href && /^https?:\/\//i.test(item.href)) {
+                      window.open(item.href, '_blank', 'noopener,noreferrer');
+                    } else {
+                      navigate(item.href || '/dashboard');
+                    }
+                  }}
+                >
+                  <BookMarked size={14} className="nav-drawer__pin-icon" />
+                  <div className="nav-drawer__pin-text">
+                    <span className="nav-drawer__pin-title">{item.title}</span>
+                    <span className="nav-drawer__pin-sub">{item.subtitle}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Nav items — only what's NOT in the bottom nav */}
