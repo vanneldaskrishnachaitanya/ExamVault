@@ -96,6 +96,10 @@ const authLimiter = rateLimit({
   message: { success: false, message: 'Too many login attempts. Try again in 15 minutes.' }
 });
 
+app.get('/', (_req, res) => {
+  res.status(200).json({ success: true, message: 'VNRVJIET API is running. Visit /health for status.' });
+});
+
 app.get('/health', (_req, res) => {
   const degraded = !runtimeStatus.firebase || !runtimeStatus.mongo;
   res.status(200).json({
