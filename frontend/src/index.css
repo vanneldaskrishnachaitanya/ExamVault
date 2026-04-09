@@ -2277,14 +2277,19 @@ a.breadcrumb__item:hover { color: var(--amber); background: var(--amber-dim); }
 .preview-modal-overlay {
   position: fixed !important; inset: 0 !important; z-index: 9999 !important;
   background: rgba(0,0,0,0.88) !important; backdrop-filter: blur(10px) !important;
-  display: flex !important; align-items: center !important; justify-content: center !important; padding: 1.5rem !important;
+  display: flex !important; align-items: flex-start !important; justify-content: center !important;
+  padding: calc(var(--nav-h) + 0.9rem) 1rem 1rem !important;
+  overflow: auto !important;
 }
 .preview-modal {
-  width: min(920px, 94vw) !important; height: min(88vh, 880px) !important; max-height: 88vh !important;
+  width: min(920px, 94vw) !important;
+  height: min(calc(100dvh - var(--nav-h) - 2rem), 880px) !important;
+  max-height: calc(100dvh - var(--nav-h) - 2rem) !important;
   background: var(--bg-card) !important; border: 1px solid rgba(255,255,255,0.08) !important;
   border-radius: var(--radius-lg) !important; box-shadow: 0 32px 96px rgba(0,0,0,0.8) !important;
   display: flex !important; flex-direction: column !important; overflow: hidden !important;
   animation: heroIn 0.28s var(--ease) !important;
+  margin: 0 auto !important;
 }
 .preview-modal__header { display: flex !important; align-items: center !important; justify-content: space-between !important; padding: 0.9rem 1.3rem !important; border-bottom: 1px solid var(--border) !important; background: var(--bg-raised) !important; flex-shrink: 0 !important; min-height: 54px !important; gap: 1rem !important; position: sticky !important; top: 0 !important; z-index: 4 !important; }
 .preview-modal__title { font-size: 0.875rem; font-weight: 600; color: var(--text-1); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -2293,6 +2298,18 @@ a.breadcrumb__item:hover { color: var(--amber); background: var(--amber-dim); }
 .preview-modal__body { flex: 1 !important; overflow: hidden !important; min-height: 0 !important; }
 .preview-modal__iframe { width: 100% !important; height: 100% !important; border: none !important; display: block !important; }
 .preview-modal__img { width: 100% !important; height: 100% !important; object-fit: contain !important; padding: 1rem !important; }
+
+@media (max-width: 640px) {
+  .preview-modal-overlay {
+    padding: calc(var(--nav-h) + 0.6rem) 0.5rem 0.5rem !important;
+  }
+  .preview-modal {
+    width: calc(100vw - 1rem) !important;
+    height: calc(100dvh - var(--nav-h) - 1.1rem) !important;
+    max-height: calc(100dvh - var(--nav-h) - 1.1rem) !important;
+    border-radius: 14px !important;
+  }
+}
 
 /* ══════════════════════════════════════════════════════════════
    TAB BAR
