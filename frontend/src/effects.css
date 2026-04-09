@@ -347,7 +347,7 @@
 .poll-admin__voters-empty { font-size: 0.82rem; color: var(--text-3); font-style: italic; }
 
 /* ── Position fixes for z-index with starfield ───────────── */
-#root, .layout, .modal-overlay, .preview-modal-overlay {
+#root, .layout {
   position: relative; z-index: 1;
 }
 .navbar {
@@ -359,7 +359,9 @@
 }
 .nav-drawer-overlay  { position: fixed; inset: 0; z-index: 200; }
 .nav-drawer          { position: fixed; z-index: 201; }
-.modal-overlay, .preview-modal-overlay { z-index: 300; }
+.modal-overlay,
+.preview-modal-overlay,
+.online-modal-overlay { position: fixed !important; z-index: 12000 !important; }
 
 /* ── Reduced motion ──────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {

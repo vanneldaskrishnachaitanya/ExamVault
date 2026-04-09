@@ -2286,9 +2286,9 @@ a.breadcrumb__item:hover { color: var(--amber); background: var(--amber-dim); }
   display: flex !important; flex-direction: column !important; overflow: hidden !important;
   animation: heroIn 0.28s var(--ease) !important;
 }
-.preview-modal__header { display: flex !important; align-items: center !important; justify-content: space-between !important; padding: 0.9rem 1.3rem !important; border-bottom: 1px solid var(--border) !important; background: var(--bg-raised) !important; flex-shrink: 0 !important; min-height: 54px !important; gap: 1rem !important; }
+.preview-modal__header { display: flex !important; align-items: center !important; justify-content: space-between !important; padding: 0.9rem 1.3rem !important; border-bottom: 1px solid var(--border) !important; background: var(--bg-raised) !important; flex-shrink: 0 !important; min-height: 54px !important; gap: 1rem !important; position: sticky !important; top: 0 !important; z-index: 4 !important; }
 .preview-modal__title { font-size: 0.875rem; font-weight: 600; color: var(--text-1); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.preview-modal__close { color: var(--text-3); padding: 0.3rem; border-radius: var(--radius-sm); transition: color 0.15s, background 0.15s; }
+.preview-modal__close { color: var(--text-3); padding: 0.3rem; border-radius: var(--radius-sm); transition: color 0.15s, background 0.15s; z-index: 5; }
 .preview-modal__close:hover { color: var(--text-1); background: var(--bg-hover); }
 .preview-modal__body { flex: 1 !important; overflow: hidden !important; min-height: 0 !important; }
 .preview-modal__iframe { width: 100% !important; height: 100% !important; border: none !important; display: block !important; }
@@ -2375,8 +2375,28 @@ a.breadcrumb__item:hover { color: var(--amber); background: var(--amber-dim); }
 }
 .modal__input:focus, .modal__select:focus { outline: none; border-color: var(--amber); box-shadow: 0 0 0 3px var(--amber-dim); }
 .modal__input:hover:not(:focus), .modal__select:hover:not(:focus) { border-color: var(--amber-border); }
-.modal__select { appearance: none; cursor: pointer; }
-option { background: var(--bg-card); }
+.modal__select {
+  appearance: none;
+  cursor: pointer;
+  padding-right: 2.1rem;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--amber) 50%),
+    linear-gradient(135deg, var(--amber) 50%, transparent 50%),
+    linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+  background-position:
+    calc(100% - 16px) calc(50% - 3px),
+    calc(100% - 10px) calc(50% - 3px),
+    center;
+  background-size: 6px 6px, 6px 6px, 100% 100%;
+  background-repeat: no-repeat;
+}
+.modal__select:focus {
+  box-shadow: 0 0 0 3px var(--amber-dim), 0 10px 24px rgba(245,166,35,0.12);
+}
+option {
+  background: var(--bg-card);
+  color: var(--text-1);
+}
 .modal__dropzone { border: 2px dashed var(--border); border-radius: var(--radius); padding: 2.2rem; display: flex; flex-direction: column; align-items: center; gap: 0.7rem; cursor: pointer; text-align: center; transition: border-color 0.18s, background 0.18s; }
 .modal__dropzone:hover, .modal__dropzone--has-file { border-color: var(--amber); background: var(--amber-dim); }
 .modal__file-input { display: none; }
@@ -4107,13 +4127,14 @@ option { background: var(--bg-card); }
 }
 
 .online-modal-overlay {
-  position: fixed; inset: 0; z-index: 2000;
-  background: rgba(0,0,0,0.55); display: grid; place-items: center;
+  position: fixed !important; inset: 0 !important; z-index: 12000 !important;
+  background: rgba(0,0,0,0.62); display: flex; align-items: center; justify-content: center;
   padding: 1rem;
 }
 .online-modal {
-  width: min(500px, 100%); background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: var(--radius-lg); padding: 1.2rem; box-shadow: 0 12px 26px rgba(0,0,0,0.4);
+  width: min(540px, 100%); background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 1.2rem; box-shadow: 0 28px 70px rgba(0,0,0,0.58);
+  margin: auto;
 }
 .online-modal__header { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 1rem; }
 .online-modal__header h3 { margin: 0; font-size: 1.1rem; font-weight: 800; }

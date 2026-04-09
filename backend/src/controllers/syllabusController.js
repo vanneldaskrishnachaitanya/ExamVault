@@ -9,21 +9,30 @@ const upload = multer({
   storage: multer.memoryStorage(),
   limits:  { fileSize: 25 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
-    const allowed = ['application/pdf','application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    const allowed = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'image/png',
+      'image/jpeg',
+      'image/gif',
+      'image/webp',
+      'image/svg+xml',
+    ];
     if (allowed.includes(file.mimetype)) cb(null, true);
-    else cb(new Error('Only PDF and Word files allowed'));
+    else cb(new Error('Only PDF, Word, and image files are allowed'));
   },
 });
 
 // Upload buffer to Cloudinary
-const uploadToCloudinary = (buffer, folder, filename) =>
+const uploadToCloudinary = (file, folder, filename) =>
   new Promise((resolve, reject) => {
+    const resourceType = String(file?.mimetype || '').startsWith('image/') ? 'image' : 'raw';
     const stream = cloudinary.uploader.upload_stream(
-      { folder, resource_type: 'raw', public_id: filename, use_filename: true, unique_filename: false },
+      { folder, resource_type: resourceType, public_id: filename, use_filename: true, unique_filename: false },
       (err, result) => err ? reject(err) : resolve(result)
     );
-    stream.end(buffer);
+    stream.end(file.buffer);
   });
 
 // ── Syllabus ──────────────────────────────────────────────────
@@ -49,7 +58,7 @@ const uploadSyllabus = async (req, res, next) => {
     if (!regulation || !branch || !year) return res.status(400).json({ success: false, message: 'regulation, branch, year required' });
 
     const result = await uploadToCloudinary(
-      req.file.buffer,
+      req.file,
       `syllabus/${regulation}/${branch}`,
       `${regulation}_${branch}_Y${year}_${Date.now()}`
     );
@@ -100,7 +109,7 @@ const uploadTimetable = async (req, res, next) => {
     if (!regulation || !branch || !year || !sem) return res.status(400).json({ success: false, message: 'regulation, branch, year, sem required' });
 
     const result = await uploadToCloudinary(
-      req.file.buffer,
+      req.file,
       `timetable/${regulation}/${branch}`,
       `${regulation}_${branch}_Y${year}_S${sem}_${Date.now()}`
     );

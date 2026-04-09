@@ -13,6 +13,20 @@ const SEMS = [
 ];
 const formatBytes = (b) => !b ? '' : b < 1048576 ? `${(b/1024).toFixed(1)} KB` : `${(b/1048576).toFixed(1)} MB`;
 
+const isImageFile = (fileName = '', fileUrl = '') => {
+  const target = `${fileName} ${fileUrl}`.toLowerCase();
+  return ['.png', '.jpg', '.jpeg', '.webp', '.gif', '.svg'].some((ext) => target.includes(ext));
+};
+
+const getPreviewUrl = (fileUrl = '', fileName = '') => {
+  if (!fileUrl) return '';
+  if (isImageFile(fileName, fileUrl)) return fileUrl;
+  if (String(fileName).toLowerCase().endsWith('.pdf') || String(fileUrl).toLowerCase().includes('.pdf')) {
+    return `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(fileUrl)}`;
+  }
+  return `https://docs.google.com/viewer?url=${encodeURIComponent(fileUrl)}&embedded=true`;
+};
+
 export default function TimetablePage() {
   const { backendUser } = useAuth();
   const isStaff = backendUser?.role === 'admin';
@@ -64,7 +78,7 @@ export default function TimetablePage() {
       const d = await uploadTimetable(fd);
       setTimetables(prev => [d.timetable, ...prev]);
       setShowForm(false); setFile(null);
-      setForm({ regulation:'R22', branch:'CSE', year:'1', sem:'1', title:'' });
+      setForm({ regulation:'R22', branch:'CSE', year:'1', sem:'mid1', title:'' });
       showToast('Timetable uploaded ✓');
     } catch (e) { showToast(`Error: ${e.message}`); }
     finally { setUploading(false); }
@@ -119,7 +133,7 @@ export default function TimetablePage() {
       {/* Upload Form */}
       {showForm && isStaff && (
         <div className="syllabus-form">
-          <h3 className="syllabus-form__title">Upload Timetable PDF</h3>
+          <h3 className="syllabus-form__title">Upload Timetable</h3>
           <div className="syllabus-form__grid">
             <label className="modal__label">Regulation
               <select className="modal__select" value={form.regulation} onChange={e => setForm(f=>({...f,regulation:e.target.value}))}>
@@ -147,12 +161,12 @@ export default function TimetablePage() {
               value={form.title} onChange={e => setForm(f=>({...f,title:e.target.value}))} />
           </label>
           <div className="modal__dropzone" style={{marginTop:'0.75rem', cursor:'pointer'}} onClick={() => fileRef.current?.click()}>
-            <input ref={fileRef} type="file" accept=".pdf,.doc,.docx" style={{display:'none'}}
+            <input ref={fileRef} type="file" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg,.webp,.gif,.svg" style={{display:'none'}}
               onChange={e => setFile(e.target.files[0] || null)} />
             {file ? (
               <span style={{color:'var(--success)',display:'flex',alignItems:'center',gap:'0.4rem'}}>✓ {file.name}</span>
             ) : (
-              <span style={{color:'var(--text-3)'}}>Click to select PDF/DOCX</span>
+              <span style={{color:'var(--text-3)'}}>Click to select PDF/DOCX/Image</span>
             )}
           </div>
           <div style={{display:'flex',gap:'0.5rem',marginTop:'0.75rem'}}>
@@ -218,10 +232,14 @@ export default function TimetablePage() {
               <button className="preview-modal__close" onClick={() => setPreview(null)}><X size={16}/></button>
             </div>
             <div className="preview-modal__body">
-              <iframe
-                src={`https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(preview.fileUrl)}`}
-                className="preview-modal__iframe" title={preview.title} allowFullScreen
-              />
+              {isImageFile(preview.fileName, preview.fileUrl) ? (
+                <img src={preview.fileUrl} alt={preview.title} className="preview-modal__img" />
+              ) : (
+                <iframe
+                  src={getPreviewUrl(preview.fileUrl, preview.fileName)}
+                  className="preview-modal__iframe" title={preview.title} allowFullScreen
+                />
+              )}
             </div>
           </div>
         </div>
