@@ -10,11 +10,11 @@
 /* ── Design Tokens ──────────────────────────────────────────── */
 :root {
   /* Backgrounds — deep space layers */
-  --bg:          #05070f;
-  --bg-card:     #0d1222;
-  --bg-raised:   #161c2d;
-  --bg-hover:    #1f263c;
-  --bg-glass:    rgba(13, 18, 34, 0.7);
+  --bg:          #080c16;
+  --bg-card:     #111626;
+  --bg-raised:   #192033;
+  --bg-hover:    #222a42;
+  --bg-glass:    rgba(17, 22, 38, 0.7);
 
   /* Borders */
   --border:      #2a334d;
@@ -4748,7 +4748,7 @@ option { background: var(--bg-card); }
 .fc-btn--pin { border-color: var(--border); }
 .fc-btn--pin-active,
 .btn--saved,
-.quote-banner__save--active { background: var(--amber-dim); color: var(--amber); border-color: var(--amber-border); }
+.quote-banner__save--active { background: var(--amber); color: #fff !important; border-color: var(--amber); }
 .quote-banner__save {
   margin-top: 0.55rem;
   display: inline-flex;

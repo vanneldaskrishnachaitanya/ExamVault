@@ -57,7 +57,6 @@ export function initTilt() {
       '.home-role-card',
       '.dash-widget',
       '.smart-reminder',
-      '.digest-card',
       '.file-card',
       '.history-item',
       '.syllabus-item',
@@ -75,8 +74,6 @@ export function initTilt() {
       '.qs-quote-item',
       '.qs-control-row',
       '.exam-item',
-      '.subject-item',
-      '.subject-folder',
     ].join(',');
 
     document.querySelectorAll(TILT).forEach(card => {

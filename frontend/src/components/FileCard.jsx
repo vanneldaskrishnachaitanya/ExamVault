@@ -251,7 +251,7 @@ export default function FileCard({ file, showStatus = false, onReport, compact =
               {copied && <span style={{ fontSize: '0.7rem' }}>Copied!</span>}
             </button>
             <button className={`fc-btn fc-btn--pin${saved ? ' fc-btn--pin-active' : ''}`} onClick={handlePin} title={saved ? 'Unpin' : 'Pin to saved items'}>
-              <Pin size={13} />
+              <Pin size={13} fill={saved ? 'currentColor' : 'none'} />
             </button>
             <button className={`fc-btn fc-btn--offline${offline ? ' fc-btn--offline-active' : ''}`} onClick={handleOfflineToggle} title={offline ? 'Available Offline' : 'Save Offline'}>
               {offlineLoading ? <Loader2 size={13} className="spin" /> : offline ? <HardDrive size={13} color="var(--blue)" /> : <HardDriveDownload size={13} />}
