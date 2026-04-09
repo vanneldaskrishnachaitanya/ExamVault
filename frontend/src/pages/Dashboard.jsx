@@ -1,5 +1,6 @@
 import DashboardHub from '../components/DashboardHub';
 import PomodoroTimer from '../components/PomodoroTimer';
+import QuoteBanner from '../components/QuoteBanner';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
