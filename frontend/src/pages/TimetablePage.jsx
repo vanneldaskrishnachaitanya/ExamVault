@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { Clock, Upload, Trash2, Loader2, FileText, Eye, Download, Plus, X } from 'lucide-react';
 import { fetchTimetable, uploadTimetable, deleteTimetable, fetchBranches } from '../api/apiClient';
 import { useAuth } from '../hooks/useAuth';
@@ -45,6 +46,7 @@ export default function TimetablePage() {
   const [branches,   setBranches]   = useState(DEFAULT_BRANCHES);
   const [toast,      setToast]      = useState('');
   const [preview,    setPreview]    = useState(null);
+  const canUsePortal = typeof document !== 'undefined' && !!document.body;
 
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(''), 3000); };
 
@@ -67,6 +69,15 @@ export default function TimetablePage() {
   }, []);
 
   useEffect(() => { load(); }, [regulation, branch, year, sem]);
+
+  useEffect(() => {
+    if (!preview) return undefined;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [preview]);
 
   const handleUpload = async () => {
     if (!file) { showToast('Please select a file'); return; }
@@ -224,7 +235,7 @@ export default function TimetablePage() {
         </div>
       )}
 
-      {preview && (
+      {preview && canUsePortal && createPortal(
         <div className="preview-modal-overlay" onClick={e => e.target===e.currentTarget && setPreview(null)}>
           <div className="preview-modal">
             <div className="preview-modal__header">
@@ -242,7 +253,8 @@ export default function TimetablePage() {
               )}
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {toast && <div className="toast">{toast}</div>}
