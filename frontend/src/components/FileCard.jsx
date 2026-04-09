@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import {
   Download, Eye, FileText, Flag, Image, Presentation,
   FileSpreadsheet, Calendar, User, Clock, TrendingDown,
@@ -73,6 +74,7 @@ export default function FileCard({ file, showStatus = false, onReport, compact =
   const [saved,         setSaved]         = useState(isSavedItem({ type: 'file', id: file._id }));
   const [offline,       setOffline]       = useState(false);
   const [offlineLoading, setOfflineLoading] = useState(false);
+  const canUsePortal = typeof document !== 'undefined' && !!document.body;
 
   useEffect(() => {
     const sync = () => setSaved(isSavedItem({ type: 'file', id: file._id }));
@@ -299,7 +301,7 @@ export default function FileCard({ file, showStatus = false, onReport, compact =
       </div>
 
       {/* Preview modal */}
-      {previewOpen && (
+      {previewOpen && canUsePortal && createPortal(
         <div className="preview-modal-overlay" onClick={e => e.target === e.currentTarget && setPreviewOpen(false)}>
           <div className="preview-modal">
             <div className="preview-modal__header">
@@ -319,7 +321,8 @@ export default function FileCard({ file, showStatus = false, onReport, compact =
               )}
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
