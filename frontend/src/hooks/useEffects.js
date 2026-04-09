@@ -59,7 +59,6 @@ export function initTilt() {
       '.smart-reminder',
       '.file-card',
       '.history-item',
-      '.syllabus-item',
       '.suggest-item',
       '.year-card',
       '.sem-card',
@@ -151,7 +150,7 @@ export function initMagnetic() {
     '.fc-btn--delete','.fc-btn--rate','.fc-btn--flag',
     '.btn--primary','.btn--ghost','.btn--success','.btn--danger','.btn--warning',
     '.modal__submit','.feedback-upvote','.feedback-card__upvote',
-    '.coding-tab','.admin-analytics-btn','.profile-cgpa-btn',
+    '.admin-analytics-btn','.profile-cgpa-btn',
     '[data-magnetic]',
   ].join(',');
 
@@ -164,15 +163,6 @@ export function initMagnetic() {
         btn.style.transform = `translate(${(e.clientX-(r.left+r.width/2))*.28}px,${(e.clientY-(r.top+r.height/2))*.28}px)`;
       }, { passive: true });
       btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
-      btn.addEventListener('click', (e) => {
-        const r = btn.getBoundingClientRect();
-        const rip = document.createElement('span');
-        const sz = Math.max(r.width, r.height);
-        rip.className = 'ev-ripple';
-        rip.style.cssText = `width:${sz}px;height:${sz}px;left:${e.clientX-r.left-sz/2}px;top:${e.clientY-r.top-sz/2}px`;
-        btn.appendChild(rip);
-        setTimeout(() => rip.remove(), 600);
-      });
     });
   };
   apply();

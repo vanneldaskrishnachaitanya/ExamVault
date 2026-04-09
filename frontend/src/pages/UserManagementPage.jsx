@@ -17,6 +17,15 @@ function formatLastSeen(dateValue) {
   return new Date(dateValue).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
 }
 
+function shouldHideAdminListUser(user) {
+  const name = String(user?.name || '').trim().toLowerCase();
+  const email = String(user?.email || '').trim().toLowerCase();
+  const emailLocal = email.split('@')[0] || '';
+  const hiddenKeys = new Set(['faculty', 'demo', 'faculty demo']);
+
+  return hiddenKeys.has(name) || hiddenKeys.has(emailLocal);
+}
+
 export default function UserManagementPage() {
   const [users,   setUsers]   = useState([]);
   const [total,   setTotal]   = useState(0);
@@ -31,7 +40,9 @@ export default function UserManagementPage() {
     setLoading(true);
     try {
       const d = await fetchAllUsers({ search, role, limit: 50 });
-      setUsers(d.users || []); setTotal(d.total || 0);
+      const filteredUsers = (d.users || []).filter((u) => !shouldHideAdminListUser(u));
+      setUsers(filteredUsers);
+      setTotal(filteredUsers.length);
     } catch {}
     finally { setLoading(false); }
   }, [search, role]);
