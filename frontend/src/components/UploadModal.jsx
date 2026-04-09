@@ -1,5 +1,6 @@
 // src/components/UploadModal.jsx
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Upload, CheckCircle, AlertCircle, FileUp } from 'lucide-react';
 import { uploadFile, fetchBranches } from '../api/apiClient';
 import { useAuth } from '../hooks/useAuth';
@@ -40,6 +41,7 @@ export default function UploadModal({ isOpen, onClose, onSuccess, prefill = {} }
   const [status,     setStatus]     = useState('idle');
   const [errorMsg,   setErrorMsg]   = useState('');
   const [branches,   setBranches]   = useState(DEFAULT_BRANCHES);
+  const canUsePortal = typeof document !== 'undefined' && !!document.body;
 
   // Load branches from API
   useEffect(() => {
@@ -73,6 +75,15 @@ export default function UploadModal({ isOpen, onClose, onSuccess, prefill = {} }
     if (isOpen) document.addEventListener('keydown', handler);
     return () => document.removeEventListener('keydown', handler);
   }, [isOpen, onClose]);
+
+  useEffect(() => {
+    if (!isOpen || typeof document === 'undefined') return undefined;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -114,7 +125,7 @@ export default function UploadModal({ isOpen, onClose, onSuccess, prefill = {} }
     }
   };
 
-  return (
+  const modalUi = (
     <div className="modal-overlay modal-overlay--upload" onClick={(e) => e.target === e.currentTarget && onClose()}>
       <div className="modal modal--upload" role="dialog" aria-modal="true" aria-label="Upload file">
 
@@ -250,4 +261,6 @@ export default function UploadModal({ isOpen, onClose, onSuccess, prefill = {} }
       </div>
     </div>
   );
+
+  return canUsePortal ? createPortal(modalUi, document.body) : modalUi;
 }

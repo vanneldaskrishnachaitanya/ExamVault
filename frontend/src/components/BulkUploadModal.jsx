@@ -1,5 +1,6 @@
 // src/components/BulkUploadModal.jsx
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Upload, CheckCircle, AlertCircle, FileUp, Trash2, Loader2, Plus } from 'lucide-react';
 import { uploadFile, fetchBranches } from '../api/apiClient';
 
@@ -35,6 +36,7 @@ export default function BulkUploadModal({ isOpen, onClose, onDone, prefill = {} 
   const [branch,     setBranch]     = useState(prefill.branch || '');
   const [branches,   setBranches]   = useState(DEFAULT_BRANCHES);
   const [uploading,  setUploading]  = useState(false);
+  const canUsePortal = typeof document !== 'undefined' && !!document.body;
 
   useEffect(() => {
     fetchBranches().then(d => { if (d?.branches?.length) setBranches(d.branches.map(b => b.id)); }).catch(() => {});
@@ -49,6 +51,15 @@ export default function BulkUploadModal({ isOpen, onClose, onDone, prefill = {} 
     if (isOpen) document.addEventListener('keydown', handler);
     return () => document.removeEventListener('keydown', handler);
   }, [isOpen, onClose]);
+
+  useEffect(() => {
+    if (!isOpen || typeof document === 'undefined') return undefined;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -101,7 +112,7 @@ export default function BulkUploadModal({ isOpen, onClose, onDone, prefill = {} 
   const hasErrors = rows.some(r => r.status === 'error');
   const readyCount = rows.filter(r => r.file && r.subject.trim()).length;
 
-  return (
+  const modalUi = (
     <div className="modal-overlay modal-overlay--upload" onClick={e => e.target === e.currentTarget && onClose()}>
       <div className="modal modal--upload modal--bulk" role="dialog" aria-modal="true">
         <div className="modal__header">
@@ -239,4 +250,6 @@ export default function BulkUploadModal({ isOpen, onClose, onDone, prefill = {} 
       </div>
     </div>
   );
+
+  return canUsePortal ? createPortal(modalUi, document.body) : modalUi;
 }
