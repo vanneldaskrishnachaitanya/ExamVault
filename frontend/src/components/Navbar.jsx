@@ -8,6 +8,7 @@ import {
 import { useAuth } from '../hooks/useAuth';
 import { fetchNotifications, markAllNotificationsRead, deleteNotification, fetchBookmarks, fetchSavedItems } from '../api/apiClient';
 import { getSavedItems } from '../utils/featureStorage';
+import ConfirmDialog from './ConfirmDialog';
 
 const THEME_LABELS = {
   system: 'System Auto',
@@ -36,6 +37,7 @@ export default function Navbar({
   const [unread, setUnread] = useState(0);
   const [pinned, setPinned] = useState([]);
   const [loadingPins, setLoadingPins] = useState(false);
+  const [signOutOpen, setSignOutOpen] = useState(false);
 
   const dropdownRef  = useRef(null);
   const dropdownBtn  = useRef(null);
@@ -155,8 +157,6 @@ export default function Navbar({
   }, [drawerOpen, backendUser]);
 
   const handleLogout = async () => {
-    if (!window.confirm('Sign out?')) return;
-    setDropdownOpen(false);
     try { await logout(); } catch {}
   };
 
@@ -360,7 +360,12 @@ export default function Navbar({
                     <Download size={14} /> Download History
                   </button>
                   <div className="navbar__dropdown-divider" />
-                  <button className="navbar__dropdown-item navbar__dropdown-item--danger" onClick={handleLogout} role="menuitem">
+                  <button
+                    className="navbar__dropdown-item navbar__dropdown-item--danger"
+                    onClick={() => { setDropdownOpen(false); setSignOutOpen(true); }}
+                    role="menuitem"
+                    type="button"
+                  >
                     <LogOut size={14} /> Sign out
                   </button>
                 </div>
@@ -369,6 +374,18 @@ export default function Navbar({
           </div>
         </div>
       </nav>
+
+      <ConfirmDialog
+        open={signOutOpen}
+        title="Sign out of KalaSetu?"
+        message="You will need to sign back in to access your account."
+        icon={<LogOut size={22} />}
+        confirmLabel="Sign Out"
+        confirmTone="danger"
+        confirmIcon={<LogOut size={14} />}
+        onConfirm={handleLogout}
+        onCancel={() => setSignOutOpen(false)}
+      />
 
       {/* ── Mobile drawer overlay ── */}
       {drawerOpen && (

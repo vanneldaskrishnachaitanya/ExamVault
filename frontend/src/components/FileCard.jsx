@@ -11,6 +11,7 @@ import api, {
   addSavedItem, removeSavedItem as removeSavedItemApi,
 } from '../api/apiClient';
 import { useAuth } from '../hooks/useAuth';
+import ConfirmDialog from './ConfirmDialog';
 import StarRating from './StarRating';
 import { isSavedItem, toggleSavedItem } from '../utils/featureStorage';
 import { saveFileOffline, removeFileOffline, checkFileOffline } from '../utils/offlineStorage';
@@ -74,6 +75,7 @@ export default function FileCard({ file, showStatus = false, onReport, compact =
   const [saved,         setSaved]         = useState(isSavedItem({ type: 'file', id: file._id }));
   const [offline,       setOffline]       = useState(false);
   const [offlineLoading, setOfflineLoading] = useState(false);
+  const [deleteOpen,    setDeleteOpen]    = useState(false);
   const canUsePortal = typeof document !== 'undefined' && !!document.body;
 
   useEffect(() => {
@@ -193,9 +195,13 @@ export default function FileCard({ file, showStatus = false, onReport, compact =
   };
 
   const handleDelete = async () => {
-    if (!window.confirm(`Delete "${file.originalName}"?`)) return;
+    setDeleteOpen(true);
+  };
+
+  const confirmDelete = async () => {
     try { await api.delete(`/admin/files/${file._id}`); window.location.reload(); }
     catch { alert('Delete failed'); }
+    finally { setDeleteOpen(false); }
   };
 
   const handleRatingSubmit = async () => {
@@ -242,41 +248,41 @@ export default function FileCard({ file, showStatus = false, onReport, compact =
 
           <div className="file-card__actions">
             {canPreview && (
-              <button className="fc-btn fc-btn--preview" onClick={() => setPreviewOpen(true)}>
+              <button type="button" className="fc-btn fc-btn--preview" onClick={() => setPreviewOpen(true)}>
                 <Eye size={14} /><span>Preview</span>
               </button>
             )}
-            <button className="fc-btn fc-btn--download" onClick={handleDownload}>
+              <button type="button" className="fc-btn fc-btn--download" onClick={handleDownload}>
               <Download size={14} /><span>Download</span>
             </button>
-            <button className="fc-btn fc-btn--share" onClick={handleShare} title="Copy link">
+              <button type="button" className="fc-btn fc-btn--share" onClick={handleShare} title="Copy link">
               <Share2 size={13} />
               {copied && <span style={{ fontSize: '0.7rem' }}>Copied!</span>}
             </button>
-            <button className={`fc-btn fc-btn--pin${saved ? ' fc-btn--pin-active' : ''}`} onClick={handlePin} title={saved ? 'Unpin' : 'Pin to saved items'}>
+              <button type="button" className={`fc-btn fc-btn--pin${saved ? ' fc-btn--pin-active' : ''}`} onClick={handlePin} title={saved ? 'Unpin' : 'Pin to saved items'}>
               <Pin size={13} fill={saved ? 'currentColor' : 'none'} />
             </button>
-            <button className={`fc-btn fc-btn--offline${offline ? ' fc-btn--offline-active' : ''}`} onClick={handleOfflineToggle} title={offline ? 'Available Offline' : 'Save Offline'}>
+              <button type="button" className={`fc-btn fc-btn--offline${offline ? ' fc-btn--offline-active' : ''}`} onClick={handleOfflineToggle} title={offline ? 'Available Offline' : 'Save Offline'}>
               {offlineLoading ? <Loader2 size={13} className="spin" /> : offline ? <HardDrive size={13} color="var(--blue)" /> : <HardDriveDownload size={13} />}
             </button>
             {!isAdmin && (
-              <button className="fc-btn fc-btn--rate" onClick={() => setRatingOpen(r => !r)} title="Rate">
+                <button type="button" className="fc-btn fc-btn--rate" onClick={() => setRatingOpen(r => !r)} title="Rate">
                 <Star size={13} fill={myStars > 0 ? 'currentColor' : 'none'} />
               </button>
             )}
             {isAdmin && (
-              <button className="fc-btn fc-btn--important" title={important ? 'Unmark important' : 'Mark as important'}
+                <button type="button" className="fc-btn fc-btn--important" title={important ? 'Unmark important' : 'Mark as important'}
                 onClick={async () => { try { await toggleImportant(file._id); setImportant(p => !p); } catch {} }}>
                 {important ? '⭐' : '☆'}
               </button>
             )}
             {isAdmin && (
-              <button className="fc-btn fc-btn--delete" onClick={handleDelete}>
+                <button type="button" className="fc-btn fc-btn--delete" onClick={handleDelete}>
                 <Trash2 size={14} /><span>Delete</span>
               </button>
             )}
             {!isAdmin && onReport && (
-              <button className="fc-btn fc-btn--flag" onClick={() => onReport(file)}>
+                <button type="button" className="fc-btn fc-btn--flag" onClick={() => onReport(file)}>
                 <Flag size={13} />
               </button>
             )}
@@ -291,10 +297,10 @@ export default function FileCard({ file, showStatus = false, onReport, compact =
             <input className="file-card__rating-comment" placeholder="Optional comment…"
               value={ratingComment} onChange={e => setRatingComment(e.target.value)} maxLength={300} />
             <div className="file-card__rating-actions">
-              <button className="btn btn--primary btn--sm" disabled={!myStars || ratingLoading} onClick={handleRatingSubmit}>
+              <button type="button" className="btn btn--primary btn--sm" disabled={!myStars || ratingLoading} onClick={handleRatingSubmit}>
                 {ratingLoading ? <Loader2 size={13} className="spin" /> : <Star size={13} />} Submit
               </button>
-              <button className="btn btn--ghost btn--sm" onClick={() => setRatingOpen(false)}>Cancel</button>
+              <button type="button" className="btn btn--ghost btn--sm" onClick={() => setRatingOpen(false)}>Cancel</button>
             </div>
           </div>
         )}
@@ -324,6 +330,18 @@ export default function FileCard({ file, showStatus = false, onReport, compact =
         </div>,
         document.body
       )}
+
+      <ConfirmDialog
+        open={deleteOpen}
+        title="Delete this file?"
+        message={`This will permanently remove "${file.originalName}" from the repository. This action cannot be undone.`}
+        icon={<Trash2 size={22} />}
+        confirmLabel="Delete File"
+        confirmTone="danger"
+        confirmIcon={<Trash2 size={14} />}
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteOpen(false)}
+      />
     </>
   );
 }
