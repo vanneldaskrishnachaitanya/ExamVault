@@ -3301,6 +3301,101 @@ option {
   display: flex; flex-direction: column; justify-content: center;
 }
 
+.quote-banner--hidden,
+.poll-card--hidden {
+  min-height: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-raised) 100%);
+  border: 1px dashed var(--border);
+  box-shadow: 0 4px 32px rgba(0,0,0,0.25);
+}
+
+.quote-banner__hidden-state,
+.poll-card__hidden-state {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.quote-banner__hidden-copy {
+  min-width: 0;
+}
+
+.quote-banner__hidden-label {
+  display: inline-flex;
+  margin-bottom: 0.3rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 100px;
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--amber);
+  background: var(--amber-dim);
+  border: 1px solid var(--amber-border);
+}
+
+.quote-banner__hidden-copy p {
+  margin: 0;
+  color: var(--text-3);
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+.quote-banner__hide-btn,
+.quote-banner__unhide {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+  padding: 0.38rem 0.8rem;
+  border-radius: 100px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, border-color 0.18s, box-shadow 0.18s;
+}
+
+.quote-banner__hide-btn {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  z-index: 2;
+  color: var(--text-2);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.quote-banner__hide-btn:hover {
+  color: var(--text-1);
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.14);
+}
+
+.quote-banner__hide-btn--poll {
+  top: -0.45rem;
+  right: 0.9rem;
+}
+
+.quote-banner__unhide {
+  color: #fff;
+  background: linear-gradient(135deg, rgba(79,142,247,0.95), rgba(59,111,212,0.95));
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 10px 22px rgba(79,142,247,0.28);
+}
+
+.quote-banner__unhide:hover {
+  box-shadow: 0 12px 26px rgba(79,142,247,0.36);
+}
+
+.poll-card-wrap { position: relative; }
+
 /* Ambient gradient background */
 .quote-banner__bg {
   position: absolute; inset: 0;
@@ -3431,6 +3526,27 @@ option {
   box-shadow: 0 4px 24px rgba(0,0,0,0.1);
 }
 [data-theme="light"] .quote-banner__text { color: var(--text-1); }
+
+[data-theme="light"] .quote-banner__hide-btn {
+  background: rgba(17,24,39,0.04);
+  border-color: rgba(17,24,39,0.08);
+  color: var(--text-2);
+}
+
+[data-theme="light"] .quote-banner__hide-btn:hover {
+  background: rgba(17,24,39,0.08);
+  color: var(--text-1);
+}
+
+[data-theme="light"] .quote-banner--hidden,
+[data-theme="light"] .poll-card--hidden {
+  background: linear-gradient(135deg, #fff 0%, #f8f9fd 100%);
+  border-color: rgba(17,24,39,0.12);
+}
+
+[data-theme="light"] .quote-banner__hidden-copy p {
+  color: var(--text-2);
+}
 
 /* ══════════════════════════════════════════════════════════════
    QUOTE ADMIN PANEL

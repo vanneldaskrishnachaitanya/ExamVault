@@ -1,8 +1,9 @@
 // src/components/QuoteBanner.jsx
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import {
   Quote, Sparkles, ChevronLeft, ChevronRight, RefreshCw,
   BookOpen, X, Check, BarChart2, Clock, Pin,
+  EyeOff, Eye,
 } from 'lucide-react';
 import {
   fetchTodayQuotes, fetchActivePolls, votePoll as apiVotePoll,
@@ -16,6 +17,14 @@ const BG_PATTERNS = [
   'radial-gradient(ellipse at 50% 0%, rgba(245,166,35,0.11) 0%, transparent 55%), radial-gradient(ellipse at 90% 90%, rgba(244,114,182,0.07) 0%, transparent 50%)',
   'radial-gradient(ellipse at 5% 90%, rgba(34,211,238,0.1) 0%, transparent 55%), radial-gradient(ellipse at 95% 10%, rgba(245,166,35,0.08) 0%, transparent 50%)',
 ];
+
+function readStoredJson(key, fallback) {
+  try {
+    return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback));
+  } catch {
+    return fallback;
+  }
+}
 
 // ── Time remaining helper ─────────────────────────────────────
 function timeLeft(expiresAt) {
@@ -146,6 +155,8 @@ export default function QuoteBanner() {
   const [visible,     setVisible]     = useState(true);
   const [enabled,     setEnabled]     = useState(true);
   const [showAuthor,  setShowAuthor]  = useState(true);
+  const [hideQuotes, setHideQuotes] = useState(() => localStorage.getItem('ev-hide-quote-banner') === '1');
+  const [hiddenPolls, setHiddenPolls] = useState(() => readStoredJson('ev-hide-poll-banners', []));
 
   // Which "card" is active: 0 = quotes, 1 = polls
   const [cardIdx, setCardIdx] = useState(0);
@@ -190,6 +201,7 @@ export default function QuoteBanner() {
   const pollIdx     = isQuoteCard ? -1 : parseInt(currentCard.split('-')[1]);
 
   const canExpand = isQuoteCard && !!(q.description?.trim());
+  const isPollHidden = !isQuoteCard && pollIdx >= 0 && hiddenPolls.includes(polls[pollIdx]?._id);
 
   useEffect(() => {
     if (!isQuoteCard || !q._id) { setSaved(false); return; }
@@ -206,6 +218,19 @@ export default function QuoteBanner() {
   }, [isQuoteCard, q._id]);
 
   if (!enabled || (!loading && !hasCards)) return null;
+
+  const persistHideQuotes = (next) => {
+    setHideQuotes(next);
+    localStorage.setItem('ev-hide-quote-banner', next ? '1' : '0');
+  };
+
+  const persistHidePoll = (pollId, nextHidden) => {
+    setHiddenPolls(prev => {
+      const next = nextHidden ? [...new Set([...prev, pollId])] : prev.filter(id => id !== pollId);
+      localStorage.setItem('ev-hide-poll-banners', JSON.stringify(next));
+      return next;
+    });
+  };
 
   const handleSaveQuote = () => {
     if (!q._id) return;
@@ -265,12 +290,29 @@ export default function QuoteBanner() {
 
       {/* ── Quote Card ─────────────────────────────────── */}
       {isQuoteCard && (
+        hideQuotes ? (
+          <div className="quote-banner quote-banner--hidden" aria-label="Daily inspiration hidden">
+            <div className="quote-banner__hidden-state">
+              <div className="quote-banner__hidden-copy">
+                <span className="quote-banner__hidden-label">Quote section hidden</span>
+                <p>Bring back the daily quote card whenever you want.</p>
+              </div>
+              <button type="button" className="quote-banner__unhide" onClick={() => persistHideQuotes(false)}>
+                <Eye size={12} /> Unhide quote
+              </button>
+            </div>
+          </div>
+        ) : (
         <div className="quote-banner" aria-label="Daily inspiration">
           <div className="quote-banner__bg" style={{ background: pat }} aria-hidden="true" />
           {q.bgImageUrl && <div className="quote-banner__img" style={{ backgroundImage: `url(${q.bgImageUrl})` }} aria-hidden="true" />}
           <span className="quote-banner__dot quote-banner__dot--1" aria-hidden="true" />
           <span className="quote-banner__dot quote-banner__dot--2" aria-hidden="true" />
           <span className="quote-banner__dot quote-banner__dot--3" aria-hidden="true" />
+
+          <button type="button" className="quote-banner__hide-btn" onClick={() => persistHideQuotes(true)} title="Hide quote section">
+            <EyeOff size={12} /> Hide
+          </button>
 
           {loading ? (
             <div className="quote-banner__loader"><RefreshCw size={15} className="spin" /></div>
@@ -339,11 +381,31 @@ export default function QuoteBanner() {
             </div>
           )}
         </div>
+        )
       )}
 
       {/* ── Poll Card ──────────────────────────────────── */}
       {!isQuoteCard && pollIdx >= 0 && polls[pollIdx] && (
-        <PollCard poll={polls[pollIdx]} />
+        isPollHidden ? (
+          <div className="poll-card poll-card--hidden">
+            <div className="poll-card__hidden-state">
+              <div className="quote-banner__hidden-copy">
+                <span className="quote-banner__hidden-label">Poll section hidden</span>
+                <p>Unhide this poll to vote and see live results.</p>
+              </div>
+              <button type="button" className="quote-banner__unhide" onClick={() => persistHidePoll(polls[pollIdx]._id, false)}>
+                <Eye size={12} /> Unhide poll
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="poll-card-wrap">
+            <button type="button" className="quote-banner__hide-btn quote-banner__hide-btn--poll" onClick={() => persistHidePoll(polls[pollIdx]._id, true)} title="Hide poll section">
+              <EyeOff size={12} /> Hide
+            </button>
+            <PollCard poll={polls[pollIdx]} />
+          </div>
+        )
       )}
     </div>
   );
