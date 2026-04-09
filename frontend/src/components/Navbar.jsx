@@ -377,7 +377,7 @@ export default function Navbar({
 
       <ConfirmDialog
         open={signOutOpen}
-        title="Sign out of KalaSetu?"
+        title="Sign out of ExamVault?"
         message="You will need to sign back in to access your account."
         icon={<LogOut size={22} />}
         confirmLabel="Sign Out"
