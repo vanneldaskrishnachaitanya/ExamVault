@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  ArrowRight, Bell, Bookmark, Calendar, Clock, ExternalLink, FileText, Flame, Pin,
-  TriangleAlert, Quote, Download, Megaphone,
+  ArrowRight, Bell, Bookmark, BellRing, Calendar, Clock, ExternalLink, FileText, Flame, Pin,
+  TriangleAlert, Quote, Download, Megaphone, AlarmClock,
 } from 'lucide-react';
 import {
   fetchAnnouncements, fetchBookmarks, fetchDownloadHistory, fetchEvents,
@@ -196,8 +196,9 @@ function ReminderItem({ item }) {
   );
 }
 
-export default function DashboardHub() {
-  const navigate = useNavigate();
+export default function DashboardHub({ smartReminders = [], onSnooze, onNavigate }) {
+  const _navigate = useNavigate();
+  const navigate = onNavigate || _navigate;
   const [bookmarks, setBookmarks] = useState([]);
   const [savedItems, setSavedItems] = useState([]);
   const [announcements, setAnnouncements] = useState([]);
@@ -330,7 +331,7 @@ export default function DashboardHub() {
       .slice(0, 8);
   }, [announcements, events, exams, downloads]);
 
-  const reminders = useMemo(() => {
+  const localReminders = useMemo(() => {
     const now = Date.now();
     const sevenDays = 7 * 86400000;
     const examReminders = exams
@@ -420,6 +421,9 @@ export default function DashboardHub() {
     navigate(item.href || '/dashboard');
   };
 
+  const hasSmartReminders = smartReminders.length > 0;
+  const hasFeedReminders = localReminders.length > 0;
+
   return (
     <section className="dash-hub">
       <div className="dash-hub__grid">
@@ -453,7 +457,7 @@ export default function DashboardHub() {
           <div className="dash-hub__panel-head">
             <div>
               <p className="dash-hub__eyebrow"><Flame size={12} /> Activity</p>
-              <h2 className="dash-hub__title">What’s moving now</h2>
+              <h2 className="dash-hub__title">What's moving now</h2>
             </div>
           </div>
           {feed.length === 0 ? (
@@ -472,15 +476,46 @@ export default function DashboardHub() {
               <h2 className="dash-hub__title">Upcoming alerts</h2>
             </div>
           </div>
-          {reminders.length === 0 ? (
-            <div className="dash-hub__empty">No urgent reminders right now.</div>
-          ) : (
-            <div className="dash-hub__reminder-list">
-              {reminders.map((item, idx) => <ReminderItem key={`${item.title}-${idx}`} item={item} />)}
+
+          {/* Smart reminders with snooze from Dashboard */}
+          {hasSmartReminders && (
+            <div className="dash-hub__smart-reminders">
+              {smartReminders.map((item) => (
+                <div key={item.id} className={`hub-smart-reminder hub-smart-reminder--${item.tone}`}>
+                  <div className="hub-smart-reminder__header">
+                    <BellRing size={13} className="hub-smart-reminder__icon" />
+                    <button className="hub-smart-reminder__title" onClick={() => navigate(item.to)}>{item.title}</button>
+                  </div>
+                  <p className="hub-smart-reminder__msg">{item.message}</p>
+                  {onSnooze && (
+                    <div className="hub-smart-reminder__actions">
+                      <button className="hub-snooze-btn" onClick={() => onSnooze(item.id, '1h')} title="Snooze 1 hour">
+                        <AlarmClock size={11} /> +1h
+                      </button>
+                      <button className="hub-snooze-btn" onClick={() => onSnooze(item.id, 'tonight')} title="Snooze until tonight">
+                        Tonight
+                      </button>
+                      <button className="hub-snooze-btn" onClick={() => onSnooze(item.id, 'tomorrow')} title="Snooze until tomorrow">
+                        Tomorrow
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
           )}
+
+          {/* Regular local reminders */}
+          {!hasFeedReminders && !hasSmartReminders ? (
+            <div className="dash-hub__empty">No urgent reminders right now.</div>
+          ) : hasFeedReminders ? (
+            <div className="dash-hub__reminder-list">
+              {localReminders.map((item, idx) => <ReminderItem key={`${item.title}-${idx}`} item={item} />)}
+            </div>
+          ) : null}
         </div>
       </div>
     </section>
   );
 }
+

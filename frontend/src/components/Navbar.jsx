@@ -288,7 +288,7 @@ export default function Navbar({
                 aria-haspopup="menu"
               >
                 {backendUser?.avatarUrl ? (
-                  <img src={backendUser.avatarUrl} alt={backendUser.name} className="navbar__avatar-img" />
+                  <img src={backendUser.avatarUrl} alt={backendUser.name} className="navbar__avatar-img" referrerPolicy="no-referrer" />
                 ) : (
                   <span className="navbar__avatar-initials">{initials}</span>
                 )}
@@ -299,7 +299,7 @@ export default function Navbar({
                 <div className="navbar__dropdown" ref={dropdownRef} role="menu">
                   <div className="navbar__dropdown-info">
                     <div className="navbar__dropdown-avatar">
-                      {backendUser?.avatarUrl ? <img src={backendUser.avatarUrl} alt="" /> : <span>{initials}</span>}
+                      {backendUser?.avatarUrl ? <img src={backendUser.avatarUrl} alt="" referrerPolicy="no-referrer" /> : <span>{initials}</span>}
                     </div>
                     <div className="navbar__dropdown-text">
                       <p className="navbar__dropdown-name">{backendUser?.name}</p>
@@ -344,7 +344,7 @@ export default function Navbar({
         <div className="nav-drawer__header">
           <div className="nav-drawer__avatar">
             {backendUser?.avatarUrl
-              ? <img src={backendUser.avatarUrl} alt={backendUser.name} />
+              ? <img src={backendUser.avatarUrl} alt={backendUser.name} referrerPolicy="no-referrer" />
               : <span>{initials}</span>}
           </div>
           <div className="nav-drawer__user-info">

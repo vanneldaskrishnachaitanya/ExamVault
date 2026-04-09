@@ -32,7 +32,7 @@
   position: absolute; inset: 0; border-radius: inherit;
   pointer-events: none; z-index: 10; opacity: 0; transition: opacity .3s;
   background: radial-gradient(circle at var(--mx,50%) var(--my,50%),
-    rgba(79,142,247,.13) 0%, rgba(245,166,35,.06) 45%, transparent 65%);
+    rgba(79,142,247,.07) 0%, rgba(245,166,35,.03) 45%, transparent 65%);
 }
 .ev-tilt:hover .ev-tilt__shine { opacity: 1; }
 

@@ -70,24 +70,6 @@ function getSnoozeTimestamp(mode) {
   return tomorrow.getTime();
 }
 
-function DigestCard({ mode, onModeChange, summary }) {
-  return (
-    <section className="dash-section">
-      <h2 className="dash-section-title">Digest mode</h2>
-      <div className="digest-card">
-        <div className="digest-card__head">
-          <p className="digest-card__title">Study digest</p>
-          <select className="modal__select" value={mode} onChange={(e) => onModeChange(e.target.value)}>
-            <option value="off">Off</option>
-            <option value="daily">Daily</option>
-            <option value="weekly">Weekly</option>
-          </select>
-        </div>
-        <p className="digest-card__text">{summary}</p>
-      </div>
-    </section>
-  );
-}
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -109,7 +91,7 @@ export default function Dashboard() {
     return incoming.length ? incoming : DEFAULT_WIDGET_ORDER;
   });
   const [hiddenWidgets, setHiddenWidgets] = useState(() => Array.isArray(storedPref.hiddenWidgets) ? storedPref.hiddenWidgets : []);
-  const [digestMode, setDigestMode] = useState(storedPref.digestMode || 'daily');
+
   const [reminderSnoozes, setReminderSnoozes] = useState(storedPref.reminderSnoozes || {});
   const [lastSeenAt, setLastSeenAt] = useState(storedPref.lastSeenAt || backendUser?.lastSeenAt || null);
 
@@ -132,7 +114,6 @@ export default function Dashboard() {
           defaultContext: branchContext,
           widgetOrder,
           hiddenWidgets,
-          digestMode,
           reminderSnoozes,
           lastSeenAt,
         });
@@ -140,7 +121,7 @@ export default function Dashboard() {
     };
     const timer = setTimeout(save, 450);
     return () => clearTimeout(timer);
-  }, [branchContext, widgetOrder, hiddenWidgets, digestMode, reminderSnoozes, lastSeenAt]);
+  }, [branchContext, widgetOrder, hiddenWidgets, reminderSnoozes, lastSeenAt]);
 
   useEffect(() => {
     const loadWidgets = async () => {
@@ -252,13 +233,6 @@ export default function Dashboard() {
     return smartReminders.filter(r => !reminderSnoozes[r.id] || Number(reminderSnoozes[r.id]) <= now);
   }, [smartReminders, reminderSnoozes]);
 
-  const digestSummary = useMemo(() => {
-    if (digestMode === 'off') return 'Digest is off. Turn on daily or weekly summaries any time.';
-    const span = digestMode === 'daily' ? 'today' : 'this week';
-    const reminders = visibleReminders.length;
-    const uploads = widgetData.recentUploads.length;
-    return `For ${span}: ${reminders} active reminder${reminders === 1 ? '' : 's'}, ${uploads} recent upload${uploads === 1 ? '' : 's'}, and ${sinceLastSeen.exams} new exam update${sinceLastSeen.exams === 1 ? '' : 's'} since your last visit.`;
-  }, [digestMode, visibleReminders.length, widgetData.recentUploads.length, sinceLastSeen.exams]);
 
   const widgetMap = {
     timetable: (
@@ -360,9 +334,28 @@ export default function Dashboard() {
       </section>
 
       <section className="dash-section">
+        <h2 className="dash-section-title">Choose your Regulation</h2>
+        <div className="reg-grid">
+          {REGULATIONS.map((reg) => (
+            <button key={reg.id} className={`reg-card ${reg.accent}`} onClick={() => navigate(`/r/${reg.id}`)}>
+              <span className="reg-card__note">{reg.note}</span>
+              <span className="reg-card__watermark" aria-hidden="true">{reg.year}</span>
+              <div className="reg-card__body">
+                <span className="reg-card__emoji" aria-hidden="true">{reg.emoji}</span>
+                <div className="reg-card__id">{reg.id}</div>
+                <h3 className="reg-card__heading">{reg.heading}</h3>
+                <p className="reg-card__desc">{reg.desc}</p>
+              </div>
+              <span className="reg-card__cta">Browse <ArrowRight size={15} /></span>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section className="dash-section">
         <h2 className="dash-section-title">Personalized home page</h2>
         <div className="home-role-head"><p className="home-role-head__label">{roleHome.label}</p><p className="home-role-head__sub">Cards are tuned to your role so you can jump faster.</p></div>
-        <div className="home-role-grid blur-siblings">
+        <div className="home-role-grid">
           {roleHome.cards.map((card) => {
             const Icon = card.icon;
             return (
@@ -398,53 +391,11 @@ export default function Dashboard() {
         {widgetLoading ? (
           <div className="dash-widget-grid">{[1, 2, 3, 4].map((slot) => <div key={slot} className="dash-widget dash-widget--loading" />)}</div>
         ) : (
-          <div className="dash-widget-grid blur-siblings">{orderedVisibleWidgets.map(id => widgetMap[id]).filter(Boolean)}</div>
+          <div className="dash-widget-grid">{orderedVisibleWidgets.map(id => widgetMap[id]).filter(Boolean)}</div>
         )}
       </section>
 
-      <section className="dash-section">
-        <h2 className="dash-section-title">Reminder center with snooze</h2>
-        {visibleReminders.length === 0 ? (
-          <div className="dash-hub__empty">No active reminders right now.</div>
-        ) : (
-          <div className="smart-reminders blur-siblings">
-            {visibleReminders.map((item) => (
-              <div key={item.id} className={`smart-reminder smart-reminder--${item.tone}`}>
-                <button className="smart-reminder__title" onClick={() => navigate(item.to)}>{item.title}</button>
-                <span className="smart-reminder__msg">{item.message}</span>
-                <div className="smart-reminder__actions">
-                  <button className="btn btn--ghost btn--sm" onClick={() => setReminderSnoozes(prev => ({ ...prev, [item.id]: getSnoozeTimestamp('1h') }))}>+1h</button>
-                  <button className="btn btn--ghost btn--sm" onClick={() => setReminderSnoozes(prev => ({ ...prev, [item.id]: getSnoozeTimestamp('tonight') }))}>Tonight</button>
-                  <button className="btn btn--ghost btn--sm" onClick={() => setReminderSnoozes(prev => ({ ...prev, [item.id]: getSnoozeTimestamp('tomorrow') }))}>Tomorrow AM</button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
-
-      <DigestCard mode={digestMode} onModeChange={setDigestMode} summary={digestSummary} />
-
-      <DashboardHub />
-
-      <section className="dash-section">
-        <h2 className="dash-section-title">Choose your Regulation</h2>
-        <div className="reg-grid blur-siblings">
-          {REGULATIONS.map((reg) => (
-            <button key={reg.id} className={`reg-card ${reg.accent}`} onClick={() => navigate(`/r/${reg.id}`)}>
-              <span className="reg-card__note">{reg.note}</span>
-              <span className="reg-card__watermark" aria-hidden="true">{reg.year}</span>
-              <div className="reg-card__body">
-                <span className="reg-card__emoji" aria-hidden="true">{reg.emoji}</span>
-                <div className="reg-card__id">{reg.id}</div>
-                <h3 className="reg-card__heading">{reg.heading}</h3>
-                <p className="reg-card__desc">{reg.desc}</p>
-              </div>
-              <span className="reg-card__cta">Browse <ArrowRight size={15} /></span>
-            </button>
-          ))}
-        </div>
-      </section>
+      <DashboardHub smartReminders={visibleReminders} onSnooze={(id, mode) => setReminderSnoozes(prev => ({ ...prev, [id]: getSnoozeTimestamp(mode) }))} onNavigate={navigate} />
     </div>
   );
 }

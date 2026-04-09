@@ -52,8 +52,6 @@ export function initTilt() {
       '.event-card',
       '.feedback-card',
       '.feedback-item',
-      '.quote-banner',
-      '.poll-card',
       '.analytics-card:not(.analytics-card--wide)',
       '.branch-accordion',
       '.home-role-card',
