@@ -157,6 +157,7 @@ export function initMagnetic() {
   const apply = () => {
     document.querySelectorAll(SEL).forEach(btn => {
       if (btn._evMag) return; btn._evMag = true;
+      if (btn.hasAttribute('data-no-magnetic')) return;
       btn.classList.add('ev-magnetic');
       btn.addEventListener('mousemove', (e) => {
         const r = btn.getBoundingClientRect();

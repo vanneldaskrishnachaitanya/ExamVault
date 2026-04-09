@@ -237,7 +237,7 @@ export default function UploadModal({ isOpen, onClose, onSuccess, prefill = {} }
             </label>
           )}
           {/* Submit */}
-          <button type="submit" className="modal__submit"
+          <button type="submit" className="modal__submit" data-no-magnetic="true"
             disabled={status === 'uploading' || status === 'success'}>
             {status === 'uploading' ? `Uploading… ${progress}%` : 'Upload File'}
           </button>

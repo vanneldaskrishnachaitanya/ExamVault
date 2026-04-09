@@ -22,8 +22,14 @@ function shouldHideAdminListUser(user) {
   const email = String(user?.email || '').trim().toLowerCase();
   const emailLocal = email.split('@')[0] || '';
   const hiddenKeys = new Set(['faculty', 'demo', 'faculty demo']);
+  const facultyDemoPattern = /faculty[\s._-]*demo/;
 
-  return hiddenKeys.has(name) || hiddenKeys.has(emailLocal);
+  return (
+    hiddenKeys.has(name)
+    || hiddenKeys.has(emailLocal)
+    || facultyDemoPattern.test(name)
+    || facultyDemoPattern.test(emailLocal)
+  );
 }
 
 export default function UserManagementPage() {

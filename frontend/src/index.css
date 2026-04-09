@@ -5639,3 +5639,47 @@ option {
   color: var(--text-3);
   font-size: 0.82rem;
 }
+
+/* Daylight-only contrast and admin polish */
+[data-theme="light"] .online-modal-overlay {
+  background: rgba(15, 23, 42, 0.28) !important;
+  backdrop-filter: blur(4px);
+}
+[data-theme="light"] .online-modal {
+  background: #ffffff;
+  border-color: #d7ddea;
+  box-shadow: 0 18px 44px rgba(15, 23, 42, 0.2);
+}
+[data-theme="light"] .admin-file-row {
+  background: #f8faff;
+  border-color: #d9dfec;
+}
+[data-theme="light"] .admin-file-row .file-card {
+  background: #ffffff;
+  border: 1px solid #dde3ef;
+  padding: 0.72rem;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+[data-theme="light"] .fc-btn--pin,
+[data-theme="light"] .fc-btn--offline,
+[data-theme="light"] .fc-btn--rate,
+[data-theme="light"] .quote-banner__save {
+  background: #ffffff;
+  border-color: #d5dceb;
+  color: #243047;
+}
+[data-theme="light"] .fc-btn--pin-active,
+[data-theme="light"] .btn--saved,
+[data-theme="light"] .quote-banner__save--active {
+  background: linear-gradient(135deg, #f5a623, #e8950f);
+  border-color: #d4820a;
+  color: #1b1300 !important;
+  box-shadow: 0 8px 20px rgba(245, 166, 35, 0.28);
+}
+[data-theme="light"] .fc-btn--offline-active {
+  background: rgba(79,142,247,0.14);
+  border-color: rgba(79,142,247,0.36);
+  color: #1d4ed8;
+}

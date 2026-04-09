@@ -3,6 +3,7 @@ import PomodoroTimer from '../components/PomodoroTimer';
 import QuoteBanner from '../components/QuoteBanner';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import {
   fetchAnnouncements,
   fetchExams,
@@ -26,6 +27,20 @@ const REGULATIONS = [
 const BRANCHES = ['CSE', 'ECE', 'EEE', 'IT', 'MECH', 'CIVIL', 'AIML'];
 const YEARS = ['1', '2', '3', '4'];
 const DEFAULT_WIDGET_ORDER = ['timetable', 'exam', 'uploads', 'announcements', 'pomodoro'];
+const VALID_WIDGET_SET = new Set(DEFAULT_WIDGET_ORDER);
+
+const normalizeWidgetOrder = (incoming = []) => {
+  const merged = [...(Array.isArray(incoming) ? incoming : []), ...DEFAULT_WIDGET_ORDER];
+  const normalized = [];
+  merged.forEach((id) => {
+    if (VALID_WIDGET_SET.has(id) && !normalized.includes(id)) normalized.push(id);
+  });
+  return normalized;
+};
+
+const normalizeHiddenWidgets = (incoming = []) => (
+  Array.isArray(incoming) ? incoming.filter((id) => VALID_WIDGET_SET.has(id)) : []
+);
 
 const ROLE_HOME_CONFIG = {
   student: {
@@ -111,10 +126,9 @@ export default function Dashboard() {
     year: storedPref.defaultContext?.year || '1',
   }));
   const [widgetOrder, setWidgetOrder] = useState(() => {
-    const incoming = Array.isArray(storedPref.widgetOrder) ? storedPref.widgetOrder : [];
-    return incoming.length ? incoming : DEFAULT_WIDGET_ORDER;
+    return normalizeWidgetOrder(storedPref.widgetOrder);
   });
-  const [hiddenWidgets, setHiddenWidgets] = useState(() => Array.isArray(storedPref.hiddenWidgets) ? storedPref.hiddenWidgets : []);
+  const [hiddenWidgets, setHiddenWidgets] = useState(() => normalizeHiddenWidgets(storedPref.hiddenWidgets));
 
   const [reminderSnoozes, setReminderSnoozes] = useState(storedPref.reminderSnoozes || {});
   const [lastSeenAt, setLastSeenAt] = useState(storedPref.lastSeenAt || backendUser?.lastSeenAt || null);
@@ -126,6 +140,7 @@ export default function Dashboard() {
   const [sinceLastSeen, setSinceLastSeen] = useState({ files: 0, exams: 0, announcements: 0 });
   const [showOnlineDetails, setShowOnlineDetails] = useState(false);
   const [onlineData, setOnlineData] = useState({ count: 1, users: [] });
+  const canUsePortal = typeof document !== 'undefined' && !!document.body;
 
   useEffect(() => {
     fetchPublicStats().then(d => setStats(d)).catch(() => {});
@@ -146,6 +161,11 @@ export default function Dashboard() {
     const timer = setTimeout(save, 450);
     return () => clearTimeout(timer);
   }, [branchContext, widgetOrder, hiddenWidgets, reminderSnoozes, lastSeenAt]);
+
+  useEffect(() => {
+    setWidgetOrder((prev) => normalizeWidgetOrder(prev));
+    setHiddenWidgets((prev) => normalizeHiddenWidgets(prev));
+  }, []);
 
   useEffect(() => {
     const loadWidgets = async () => {
@@ -252,6 +272,15 @@ export default function Dashboard() {
     return () => window.removeEventListener('pointermove', onMove);
   }, []);
 
+  useEffect(() => {
+    if (!showOnlineDetails) return undefined;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [showOnlineDetails]);
+
   const visibleReminders = useMemo(() => {
     const now = Date.now();
     return smartReminders.filter(r => !reminderSnoozes[r.id] || Number(reminderSnoozes[r.id]) <= now);
@@ -335,7 +364,7 @@ export default function Dashboard() {
         </div>
       </section>
 
-      {showOnlineDetails && (
+      {showOnlineDetails && canUsePortal && createPortal(
         <div className="online-modal-overlay" onClick={() => setShowOnlineDetails(false)}>
           <div className="online-modal" onClick={(e) => e.stopPropagation()}>
             <div className="online-modal__header"><h3>Active users ({onlineData.count})</h3><button className="btn btn--ghost btn--sm" onClick={() => setShowOnlineDetails(false)}>Close</button></div>
@@ -348,7 +377,8 @@ export default function Dashboard() {
               ))}
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       <div className="dash-sections-container">
