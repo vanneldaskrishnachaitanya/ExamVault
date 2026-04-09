@@ -6,6 +6,11 @@ import { AuthProvider } from './auth/AuthProvider';
 import App from './App';
 import './index.css';
 
+window.addEventListener('vite:preloadError', (event) => {
+  event.preventDefault();
+  window.location.reload();
+});
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>

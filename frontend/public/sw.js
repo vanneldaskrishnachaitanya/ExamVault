@@ -1,4 +1,4 @@
-const STATIC_CACHE = 'examvault-static-v3';
+const STATIC_CACHE = 'examvault-static-v4';
 const DATA_CACHE = 'examvault-data-v1';
 const FILE_CACHE = 'examvault-files-v1';
 const STATIC = ['/', '/index.html', '/manifest.json', '/icon-192.png', '/icon-512.png'];
@@ -7,6 +7,7 @@ const DATA_PATHS = ['/announcements', '/events', '/exams', '/quotes/today', '/sy
 const isDataRequest = (url) => DATA_PATHS.some(path => url.pathname.startsWith(path));
 const isCloudinary = (url) => url.hostname.includes('cloudinary.com');
 const isStaticAsset = (url) => /\.(js|css|png|jpg|jpeg|webp|gif|svg|ico|woff2?)$/i.test(url.pathname);
+const isAppBundle = (url) => url.hostname === self.location.hostname && /\/assets\/.+\.(js|css)$/i.test(url.pathname);
 
 async function cacheFirst(request, cacheName) {
   const cached = await caches.match(request);
@@ -51,6 +52,12 @@ self.addEventListener('fetch', e => {
 
   if (e.request.mode === 'navigate') {
     e.respondWith(networkFirst(e.request, STATIC_CACHE).catch(() => caches.match('/index.html')));
+    return;
+  }
+
+  if (isAppBundle(url)) {
+    // Avoid stale chunk/runtime mismatches after deployments.
+    e.respondWith(networkFirst(e.request, STATIC_CACHE).catch(() => caches.match(e.request)));
     return;
   }
 
