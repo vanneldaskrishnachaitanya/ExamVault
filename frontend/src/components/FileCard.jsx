@@ -3,6 +3,7 @@ import {
   Download, Eye, FileText, Flag, Image, Presentation,
   FileSpreadsheet, Calendar, User, Clock, TrendingDown,
   X, Loader2, HardDriveDownload, HardDrive,
+  CheckCircle, Timer, AlertCircle, Star, Share2, Pin, Trash2,
 } from 'lucide-react';
 import api, {
   getFileRatings, rateFile, recordDownloadApi, toggleImportant,
