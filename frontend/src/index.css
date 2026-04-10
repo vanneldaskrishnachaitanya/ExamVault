@@ -1796,6 +1796,10 @@ a.breadcrumb__item:hover { color: var(--amber); background: var(--amber-dim); }
   gap: 1rem;
   padding: 1rem 1rem 1.2rem;
 }
+.pomodoro-shell--fullscreen .pomodoro-shell__body {
+  justify-content: space-between;
+  padding-bottom: 2.1rem;
+}
 .pomodoro-shell__mode {
   font-size: 0.75rem;
   font-weight: 700;
@@ -1846,6 +1850,19 @@ a.breadcrumb__item:hover { color: var(--amber); background: var(--amber-dim); }
   justify-content: center;
   gap: 0.55rem;
 }
+.pomodoro-shell__controls .fc-btn {
+  background: rgba(79, 142, 247, 0.16);
+  color: #dbeafe;
+  border-color: rgba(79, 142, 247, 0.38);
+}
+.pomodoro-shell__controls .fc-btn:hover:not(:disabled) {
+  background: rgba(79, 142, 247, 0.24);
+}
+.pomodoro-shell__controls .fc-btn.fc-btn--delete {
+  background: rgba(239, 68, 68, 0.16);
+  color: #ffd1d1;
+  border-color: rgba(239, 68, 68, 0.34);
+}
 .pomodoro-shell--fullscreen .pomodoro-shell__controls {
   gap: 0.75rem;
 }
@@ -1870,6 +1887,11 @@ a.breadcrumb__item:hover { color: var(--amber); background: var(--amber-dim); }
 @media (max-width: 720px) {
   .pomodoro-shell--fullscreen {
     padding: 0.55rem;
+  }
+
+  .pomodoro-shell--fullscreen .pomodoro-shell__display {
+    width: min(72vw, 320px);
+    height: min(72vw, 320px);
   }
 
   .pomodoro-shell__head {
