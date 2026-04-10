@@ -4,7 +4,6 @@ import { Maximize2, Minimize2, Pause, Play, RotateCcw, Timer, X } from 'lucide-r
 const DEFAULT_WORK = 25 * 60;
 const DEFAULT_BREAK = 5 * 60;
 const STORAGE_KEY = 'ev-pomodoro-v2';
-const START_EVENT = 'ev:pomodoro:start';
 
 const getInitialState = () => {
   try {
@@ -39,33 +38,12 @@ const getInitialState = () => {
 };
 
 export default function PomodoroTimer() {
-  const [{ timeLeft, isActive, phase, viewMode, isClosed, hasStarted }, setPomodoroState] = useState(() => ({
-    ...getInitialState(),
-    isClosed: true,
-    hasStarted: false,
-  }));
+  const [{ timeLeft, isActive, phase, viewMode, isClosed }, setPomodoroState] = useState(getInitialState);
   const audioRef = useRef(null);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ timeLeft, isActive, phase, viewMode, isClosed }));
   }, [timeLeft, isActive, phase, viewMode, isClosed]);
-
-  useEffect(() => {
-    const onStartTimer = () => {
-      setPomodoroState((prev) => ({
-        ...prev,
-        hasStarted: true,
-        isClosed: false,
-        isActive: true,
-        viewMode: 'fullscreen',
-        phase: prev.phase || 'work',
-        timeLeft: prev.timeLeft > 0 ? prev.timeLeft : DEFAULT_WORK,
-      }));
-    };
-
-    window.addEventListener(START_EVENT, onStartTimer);
-    return () => window.removeEventListener(START_EVENT, onStartTimer);
-  }, []);
 
   useEffect(() => {
     if (!isActive) return undefined;
@@ -97,11 +75,11 @@ export default function PomodoroTimer() {
   }, [isActive, timeLeft]);
 
   const setFullscreen = () => {
-    setPomodoroState((prev) => ({ ...prev, viewMode: 'fullscreen', isClosed: false, hasStarted: true }));
+    setPomodoroState((prev) => ({ ...prev, viewMode: 'fullscreen', isClosed: false }));
   };
 
   const setMinimized = () => {
-    setPomodoroState((prev) => ({ ...prev, viewMode: 'minimized', isClosed: false, hasStarted: true }));
+    setPomodoroState((prev) => ({ ...prev, viewMode: 'minimized', isClosed: false }));
   };
 
   const closeTimer = () => {
@@ -111,7 +89,6 @@ export default function PomodoroTimer() {
       phase: 'work',
       viewMode: 'minimized',
       isClosed: true,
-      hasStarted: false,
     });
   };
 
@@ -122,7 +99,6 @@ export default function PomodoroTimer() {
         ...prev,
         isActive: nextActive,
         isClosed: false,
-        hasStarted: true,
         viewMode: nextActive ? 'fullscreen' : prev.viewMode,
       };
     });
@@ -135,7 +111,6 @@ export default function PomodoroTimer() {
       phase: 'work',
       timeLeft: DEFAULT_WORK,
       isClosed: false,
-      hasStarted: true,
     }));
   };
 
@@ -150,8 +125,13 @@ export default function PomodoroTimer() {
     ? ((DEFAULT_BREAK - timeLeft) / DEFAULT_BREAK) * 100
     : ((DEFAULT_WORK - timeLeft) / DEFAULT_WORK) * 100;
 
-  if (!hasStarted || isClosed) {
-    return null;
+  if (isClosed) {
+    return (
+      <button className="pomodoro-launcher" onClick={setMinimized} aria-label="Open focus timer">
+        <Timer size={16} />
+        Focus
+      </button>
+    );
   }
 
   const isFullscreen = viewMode === 'fullscreen';

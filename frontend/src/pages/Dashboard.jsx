@@ -13,7 +13,7 @@ import {
 } from '../api/apiClient';
 import {
   ArrowRight, BellRing, BookOpen, CalendarDays, Clock3, EyeOff,
-  FileUp, GraduationCap, GripVertical, Layers, Play, Search, ShieldCheck,
+  FileUp, GraduationCap, GripVertical, Layers, Search, ShieldCheck,
   Sparkles, Users,
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
@@ -90,9 +90,6 @@ const DEFAULT_SECTION_ORDER = ['regulation', 'personalized', 'recent', 'widgets'
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const launchFocusTimer = () => {
-    window.dispatchEvent(new Event('ev:pomodoro:start'));
-  };
   const [sectionOrder, setSectionOrder] = useState(() => {
     return JSON.parse(localStorage.getItem('ev-section-order') || JSON.stringify(DEFAULT_SECTION_ORDER));
   });
@@ -436,11 +433,6 @@ export default function Dashboard() {
           if (sectionId === 'widgets') return (
             <section key="widgets" className="dash-section dash-section--draggable" draggable onDragStart={() => { dragSectionRef.current = 'widgets'; }} onDragOver={(e) => e.preventDefault()} onDrop={() => handleSectionDrop('widgets')}>
               <h2 className="dash-section-title"><GripVertical size={16} /> Smart dashboard widgets</h2>
-              <div className="widget-customizer" style={{ marginBottom: '0.6rem' }}>
-                <button className="widget-toggle" onClick={launchFocusTimer}>
-                  <Play size={13} /> Start focus timer
-                </button>
-              </div>
               <div className="widget-customizer">
                 {DEFAULT_WIDGET_ORDER.map(id => (
                   <button key={id} className={`widget-toggle ${hiddenWidgets.includes(id) ? 'widget-toggle--off' : ''}`} onClick={() => setHiddenWidgets(prev => prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id])}>
