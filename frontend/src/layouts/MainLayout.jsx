@@ -1,4 +1,5 @@
 import OnboardingTour from '../components/OnboardingTour';
+import PomodoroTimer from '../components/PomodoroTimer';
 import RecentlyViewed from '../components/RecentlyViewed';
 import BottomNav from '../components/BottomNav';
 import { useEffect, useRef, useState } from 'react';
@@ -273,6 +274,8 @@ export default function MainLayout() {
       <main className="layout__main">
         <Outlet />
       </main>
+
+      <PomodoroTimer />
 
       <CommandPalette open={commandOpen} onClose={() => setCommandOpen(false)} />
     </div>

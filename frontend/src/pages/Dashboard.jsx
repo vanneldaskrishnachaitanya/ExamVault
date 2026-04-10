@@ -1,5 +1,4 @@
 import DashboardHub from '../components/DashboardHub';
-import PomodoroTimer from '../components/PomodoroTimer';
 import QuoteBanner from '../components/QuoteBanner';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -26,7 +25,7 @@ const REGULATIONS = [
 ];
 const BRANCHES = ['CSE', 'ECE', 'EEE', 'IT', 'MECH', 'CIVIL', 'AIML'];
 const YEARS = ['1', '2', '3', '4'];
-const DEFAULT_WIDGET_ORDER = ['timetable', 'exam', 'uploads', 'announcements', 'pomodoro'];
+const DEFAULT_WIDGET_ORDER = ['timetable', 'exam', 'uploads', 'announcements'];
 const VALID_WIDGET_SET = new Set(DEFAULT_WIDGET_ORDER);
 
 const normalizeWidgetOrder = (incoming = []) => {
@@ -315,9 +314,6 @@ export default function Dashboard() {
         <p className="dash-widget__title">{widgetData.announcement?.title || 'No active announcement'}</p>
         <p className="dash-widget__meta">{widgetData.announcement?.message || 'Important notices will appear here'}</p>
       </button>
-    ),
-    pomodoro: (
-      <PomodoroTimer key="pomodoro" />
     ),
   };
 
