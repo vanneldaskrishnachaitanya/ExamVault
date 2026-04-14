@@ -6177,7 +6177,7 @@ option {
   flex-direction: column;
   gap: 0.55rem;
   animation: cardIn 0.3s var(--ease);
-  min-height: 360px;          /* tall enough for bg image to show fully */
+  min-height: 500px;          /* tall so background image shows fully */
 }
 
 /* Dim background — same opacity/filter as quote-banner__img */
