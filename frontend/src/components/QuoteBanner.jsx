@@ -143,6 +143,7 @@ export default function QuoteBanner() {
   const [hideQuotes,  setHideQuotes]  = useState(() => localStorage.getItem('ev-hide-quote-banner') === '1');
   const [hiddenPolls, setHiddenPolls] = useState(() => readStoredJson('ev-hide-poll-banners', []));
   const [hideSong,    setHideSong]    = useState(() => localStorage.getItem('ev-hide-song-banner') === '1');
+  const [previewImage, setPreviewImage] = useState(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -429,7 +430,7 @@ export default function QuoteBanner() {
               {song.imageUrls?.length > 0 && (
                 <div className="song-card__images">
                   {song.imageUrls.map((url, i) => (
-                    <img key={i} src={url} alt={`${song.title} ${i + 1}`} className="song-card__image" loading="lazy" />
+                    <img key={i} src={url} alt={`${song.title} ${i + 1}`} className="song-card__image" loading="lazy" style={{ cursor: 'pointer' }} onClick={() => setPreviewImage(url)} />
                   ))}
                 </div>
               )}
@@ -437,6 +438,22 @@ export default function QuoteBanner() {
           </div>
         )
       )}
+
+      {/* ── Image Preview Modal ─────────────────────────────── */}
+      {previewImage && (
+        <div className="image-preview-overlay" onClick={() => setPreviewImage(null)}>
+          <div className="image-preview-content" onClick={e => e.stopPropagation()}>
+            <button className="image-preview-close" onClick={() => setPreviewImage(null)}>
+              <X size={24} />
+            </button>
+            <img src={previewImage} alt="Preview" className="image-preview-img" />
+            <a href={previewImage} download="song-image.jpg" className="image-preview-download" target="_blank" rel="noreferrer">
+              <Download size={18} /> Download Image
+            </a>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
