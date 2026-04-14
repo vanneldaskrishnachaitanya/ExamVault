@@ -198,7 +198,7 @@ export default function QuoteBanner() {
   const cards = [
     ...(quotes.length ? ['quotes'] : []),
     ...polls.map((_, i) => `poll-${i}`),
-    ...(songEnabled && song ? ['song'] : []),
+    // Note: song is NOT a tab — it appears as a separate side panel
   ];
 
   const hasPolls  = polls.length > 0;
@@ -210,11 +210,10 @@ export default function QuoteBanner() {
 
   const currentCard = cards[cardIdx] || 'quotes';
   const isQuoteCard = currentCard === 'quotes';
-  const isSongCard  = currentCard === 'song';
-  const pollIdx     = (isQuoteCard || isSongCard) ? -1 : parseInt(currentCard.split('-')[1]);
+  const pollIdx     = isQuoteCard ? -1 : parseInt(currentCard.split('-')[1]);
 
-  const canExpand = isQuoteCard && !!(q.description?.trim());
-  const isPollHidden = !isQuoteCard && !isSongCard && pollIdx >= 0 && hiddenPolls.includes(polls[pollIdx]?._id);
+  const canExpand    = isQuoteCard && !!(q.description?.trim());
+  const isPollHidden = !isQuoteCard && pollIdx >= 0 && hiddenPolls.includes(polls[pollIdx]?._id);
 
   useEffect(() => {
     if (!isQuoteCard || !q._id) { setSaved(false); return; }
@@ -289,26 +288,27 @@ export default function QuoteBanner() {
   };
 
   return (
-    <div className="quote-banner-wrap">
+    <div className="quote-banner-outer">
 
-      {/* Card switcher tabs — only if more than one card type */}
-      {cards.length > 1 && (
-        <div className="qb-tabs">
-          {cards.map((c, i) => (
-            <button
-              key={c}
-              className={`qb-tab${cardIdx === i ? ' qb-tab--active' : ''}`}
-              onClick={() => { setCardIdx(i); setDescOpen(false); }}
-            >
-              {c === 'quotes'
-                ? <><Quote size={12} /> Quote</>
-                : c === 'song'
-                  ? <><Music size={12} /> Song</>
+      {/* ── Left panel: Quote / Poll tabs ──────────────── */}
+      <div className="quote-banner-wrap">
+
+        {/* Card switcher tabs — only if polls exist */}
+        {cards.length > 1 && (
+          <div className="qb-tabs">
+            {cards.map((c, i) => (
+              <button
+                key={c}
+                className={`qb-tab${cardIdx === i ? ' qb-tab--active' : ''}`}
+                onClick={() => { setCardIdx(i); setDescOpen(false); }}
+              >
+                {c === 'quotes'
+                  ? <><Quote size={12} /> Quote</>
                   : <><BarChart2 size={12} /> Poll {polls.length > 1 ? parseInt(c.split('-')[1]) + 1 : ''}</>}
-            </button>
-          ))}
-        </div>
-      )}
+              </button>
+            ))}
+          </div>
+        )}
 
       {/* ── Quote Card ─────────────────────────────────── */}
       {isQuoteCard && (
@@ -407,7 +407,7 @@ export default function QuoteBanner() {
       )}
 
       {/* ── Poll Card ──────────────────────────────────── */}
-      {!isQuoteCard && !isSongCard && pollIdx >= 0 && polls[pollIdx] && (
+      {!isQuoteCard && pollIdx >= 0 && polls[pollIdx] && (
         isPollHidden ? (
           <div className="poll-card poll-card--hidden">
             <div className="poll-card__hidden-state">
@@ -430,17 +430,18 @@ export default function QuoteBanner() {
         )
       )}
 
-      {/* ── Song Card ──────────────────────────────────── */}
-      {isSongCard && song && (
+      </div>{/* end .quote-banner-wrap (left panel) */}
+
+      {/* ── Right panel: Song Card (always beside, not a tab) ── */}
+      {hasSong && (
         hideSong ? (
           <div className="song-card song-card--hidden">
             <div className="song-card__hidden-state">
               <div className="quote-banner__hidden-copy">
-                <span className="quote-banner__hidden-label">Song section hidden</span>
-                <p>Bring back the song of the day whenever you want.</p>
+                <span className="quote-banner__hidden-label">Song hidden</span>
               </div>
               <button type="button" className="quote-banner__unhide" onClick={() => persistHideSong(false)}>
-                <Eye size={12} /> Unhide song
+                <Eye size={12} /> Show
               </button>
             </div>
           </div>
@@ -456,45 +457,37 @@ export default function QuoteBanner() {
               <EyeOff size={12} /> Hide
             </button>
 
-            {/* Header */}
-            <div className="song-card__header">
-              <div className="song-card__title-wrap">
-                <Music size={15} className="song-card__icon" />
-                <div>
-                  <p className="song-card__title">{song.title}</p>
-                  {song.artist && <p className="song-card__artist">— {song.artist}</p>}
-                </div>
+            {/* Title + Artist */}
+            <div className="song-card__title-row">
+              <Music size={14} className="song-card__icon" />
+              <div>
+                <p className="song-card__title">{song.title}</p>
+                {song.artist && <p className="song-card__artist">— {song.artist}</p>}
               </div>
-
-              {/* Audio controls */}
-              {song.audioUrl && (
-                <div className="song-card__audio-wrap">
-                  <audio
-                    controls
-                    src={song.audioUrl}
-                    className="song-card__audio"
-                    preload="none"
-                  />
-                  <a
-                    href={song.audioUrl}
-                    download={song.audioFileName || 'song.mp3'}
-                    className="song-card__download"
-                    title="Download song"
-                  >
-                    <Download size={13} /> Download
-                  </a>
-                </div>
-              )}
             </div>
 
-            {/* Body: lyrics + images side by side */}
+            {/* Audio + Download */}
+            {song.audioUrl && (
+              <div className="song-card__audio-wrap">
+                <audio controls src={song.audioUrl} className="song-card__audio" preload="none" />
+                <a
+                  href={song.audioUrl}
+                  download={song.audioFileName || 'song.mp3'}
+                  className="song-card__download"
+                  title="Download song"
+                >
+                  <Download size={12} /> Download
+                </a>
+              </div>
+            )}
+
+            {/* Body: lyrics left, images right with equal vertical gaps */}
             <div className="song-card__body">
               {song.lyrics && (
                 <div className="song-card__lyrics-wrap">
                   <p className="song-card__lyrics" style={{ whiteSpace: 'pre-wrap' }}>{song.lyrics}</p>
                 </div>
               )}
-
               {song.imageUrls?.length > 0 && (
                 <div className="song-card__images">
                   {song.imageUrls.map((url, i) => (
@@ -512,6 +505,7 @@ export default function QuoteBanner() {
           </div>
         )
       )}
-    </div>
+
+    </div>{/* end .quote-banner-outer */}
   );
 }
