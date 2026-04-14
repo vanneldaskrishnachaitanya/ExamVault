@@ -243,8 +243,13 @@ const start = async () => {
 
   process.on('SIGTERM', () => shutdown('SIGTERM'));
   process.on('SIGINT',  () => shutdown('SIGINT'));
-  process.on('unhandledRejection', (reason) => {
-    logger.error(`Unhandled rejection: ${reason}`);
+  process.on('unhandledRejection', (reason, promise) => {
+    // Log but do NOT exit — a single rejected promise should not crash the server.
+    // Render will restart the process on real crashes (uncaughtException).
+    logger.error(`Unhandled rejection: ${reason instanceof Error ? reason.stack : JSON.stringify(reason)}`);
+  });
+  process.on('uncaughtException', (err) => {
+    logger.error(`Uncaught exception: ${err.stack}`);
     server.close(() => process.exit(1));
   });
 };

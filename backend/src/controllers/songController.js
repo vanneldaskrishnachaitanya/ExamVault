@@ -32,6 +32,7 @@ const uploadAudioToCloudinary = (file, publicId) =>
       },
       (err, result) => err ? reject(err) : resolve(result)
     );
+    stream.on('error', reject);   // catch stream-level errors so they don't escape as unhandled rejections
     stream.end(file.buffer);
   });
 
@@ -47,6 +48,7 @@ const uploadImageToCloudinary = (file, publicId) =>
       },
       (err, result) => err ? reject(err) : resolve(result)
     );
+    stream.on('error', reject);   // catch stream-level errors
     stream.end(file.buffer);
   });
 
@@ -172,7 +174,9 @@ exports.createSong = async (req, res) => {
 
     res.status(201).json({ success: true, data: song });
   } catch (e) {
-    res.status(500).json({ success: false, message: e.message });
+    const msg = e instanceof Error ? e.message : JSON.stringify(e);
+    console.error('[createSong] error:', e);
+    res.status(500).json({ success: false, message: msg });
   }
 };
 
