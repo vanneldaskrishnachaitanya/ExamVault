@@ -36,7 +36,7 @@ const {
   timetableRouter,
   statsRouter,
   feedbackRouter,
-  quoteRouter, pollRouter,
+  quoteRouter, pollRouter, songRouter,
 } = require('./routes/newRoutes');
 const { seedCodingData } = require('./controllers/codingController');
 
@@ -132,6 +132,7 @@ app.use('/stats',         statsRouter);
 app.use('/feedback',      feedbackRouter);
 app.use('/quotes',        quoteRouter);
 app.use('/polls',         pollRouter);
+app.use('/songs',         songRouter);
 app.use('/admin',         adminRouter);
 app.use('/admin',         adminReportRouter);
 app.use('/admin',         adminExtrasRouter);

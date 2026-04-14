@@ -26,6 +26,10 @@ const {
   getActivePolls, votePoll, getAllPolls, createPoll, togglePoll, deletePoll,
 } = require('../controllers/quoteController');
 const {
+  upload: songUpload, getTodaySong, getSongSettings, toggleSongEnabled,
+  getAllSongs, createSong, updateSong, deleteSong,
+} = require('../controllers/songController');
+const {
   upload: syllabusUpload,
   getSyllabus, uploadSyllabus, deleteSyllabus,
   getTimetable, uploadTimetable, deleteTimetable,
@@ -117,6 +121,10 @@ const pollRouter = express.Router();
 pollRouter.get('/',           protect, getActivePolls);
 pollRouter.post('/:id/vote',  protect, votePoll);
 
+// ── Songs (public — auth required) ───────────────────────────
+const songRouter = express.Router();
+songRouter.get('/today', protect, getTodaySong);
+
 // ── Admin extras ──────────────────────────────────────────────
 const adminExtrasRouter = express.Router();
 adminExtrasRouter.get('/analytics',              protect, restrictTo('admin'), getAnalytics);
@@ -167,10 +175,18 @@ adminExtrasRouter.post('/polls',          protect, restrictTo('admin'), createPo
 adminExtrasRouter.patch('/polls/:id',     protect, restrictTo('admin'), togglePoll);
 adminExtrasRouter.delete('/polls/:id',    protect, restrictTo('admin'), deletePoll);
 
+// ── Admin Songs ───────────────────────────────────────────────
+adminExtrasRouter.get('/songs/settings',          protect, restrictTo('admin'), getSongSettings);
+adminExtrasRouter.patch('/songs/settings/toggle', protect, restrictTo('admin'), toggleSongEnabled);
+adminExtrasRouter.get('/songs',                   protect, restrictTo('admin'), getAllSongs);
+adminExtrasRouter.post('/songs',                  protect, restrictTo('admin'), songUpload.fields([{ name: 'audio', maxCount: 1 }, { name: 'images', maxCount: 6 }]), createSong);
+adminExtrasRouter.patch('/songs/:id',             protect, restrictTo('admin'), updateSong);
+adminExtrasRouter.delete('/songs/:id',            protect, restrictTo('admin'), deleteSong);
+
 module.exports = {
   notificationRouter, announcementRouter, bookmarkRouter, savedItemRouter,
   adminExtrasRouter, ratingRouter, historyRouter, searchRouter,
   branchRouter, eventRouter, codingRouter, syllabusRouter,
   timetableRouter, statsRouter, feedbackRouter, examRouter,
-  quoteRouter, pollRouter,
+  quoteRouter, pollRouter, songRouter,
 };

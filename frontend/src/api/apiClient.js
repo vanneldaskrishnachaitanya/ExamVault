@@ -173,4 +173,19 @@ export const createPoll        = async (payload)     => { const { data } = await
 export const togglePoll        = async (id)          => { const { data } = await api.patch(`/admin/polls/${id}`); return data.data; };
 export const deletePoll        = async (id)          => { const { data } = await api.delete(`/admin/polls/${id}`); return data; };
 
+// ── Songs ─────────────────────────────────────────────────────
+export const fetchTodaySong      = async ()          => { const { data } = await api.get('/songs/today'); return data.data; };
+export const fetchSongSettings   = async ()          => { const { data } = await api.get('/admin/songs/settings'); return data.data; };
+export const toggleSongEnabled   = async ()          => { const { data } = await api.patch('/admin/songs/settings/toggle'); return data.data; };
+export const fetchAllSongs       = async ()          => { const { data } = await api.get('/admin/songs'); return data.data; };
+export const createSong          = async (formData)  => {
+  const { data } = await api.post('/admin/songs', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+    timeout: 120_000,
+  });
+  return data.data;
+};
+export const updateSong          = async (id, payload) => { const { data } = await api.patch(`/admin/songs/${id}`, payload); return data.data; };
+export const deleteSong          = async (id)          => { const { data } = await api.delete(`/admin/songs/${id}`); return data; };
+
 export default api;

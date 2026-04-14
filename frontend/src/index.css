@@ -6159,3 +6159,472 @@ option {
   border-color: rgba(79,142,247,0.36);
   color: #1d4ed8;
 }
+
+/* ══════════════════════════════════════════════════════════════
+   SONG SECTION — Student Card
+══════════════════════════════════════════════════════════════ */
+
+/* ── Song Card wrapper (same base as quote-banner) ─────────── */
+.song-card {
+  position: relative;
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  padding: 1.15rem 1.2rem 1.1rem;
+  animation: cardIn 0.3s var(--ease);
+}
+
+/* Dim background image — same magnitude as quote-banner__img */
+.song-card__bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.18;
+  filter: brightness(0.55);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Everything above the bg */
+.song-card > *:not(.song-card__bg) {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Hidden state ────────────────────────────────────────────── */
+.song-card--hidden {
+  padding: 0;
+  border-style: dashed;
+  border-color: var(--border-lite);
+  background: transparent;
+  box-shadow: none;
+}
+
+.song-card__hidden-state {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  flex-wrap: wrap;
+}
+
+/* ── Header row ──────────────────────────────────────────────── */
+.song-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.85rem;
+}
+
+.song-card__title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.song-card__icon {
+  color: var(--amber);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.song-card__title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-1);
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.song-card__artist {
+  font-size: 0.75rem;
+  color: var(--text-3);
+  margin-top: 0.15rem;
+  font-style: italic;
+}
+
+/* ── Audio controls ─────────────────────────────────────────── */
+.song-card__audio-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+.song-card__audio {
+  height: 32px;
+  max-width: 220px;
+  border-radius: var(--radius-sm);
+  accent-color: var(--amber);
+  background: var(--bg-raised);
+  outline: none;
+}
+
+.song-card__download {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--amber);
+  border: 1px solid var(--amber-border);
+  border-radius: var(--radius-sm);
+  padding: 0.3rem 0.65rem;
+  background: var(--amber-dim);
+  transition: background var(--transition), color var(--transition), transform 0.14s;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.song-card__download:hover {
+  background: var(--amber-glow);
+  color: var(--amber-bright);
+  transform: translateY(-1px);
+}
+
+/* ── Body: lyrics + images side-by-side ────────────────────── */
+.song-card__body {
+  display: flex;
+  gap: 0.9rem;
+  align-items: flex-start;
+}
+
+/* Lyrics take remaining width */
+.song-card__lyrics-wrap {
+  flex: 1 1 0;
+  min-width: 0;
+  max-height: 220px;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+
+.song-card__lyrics {
+  font-size: 0.82rem;
+  line-height: 1.65;
+  color: var(--text-2);
+  font-family: var(--font-mono);
+}
+
+/* Images stacked on the right with equal vertical gap */
+.song-card__images {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  flex-shrink: 0;
+  width: 130px;
+}
+
+.song-card__image {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-lite);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s var(--ease);
+}
+
+.song-card__image:hover {
+  transform: scale(1.03);
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 500px) {
+  .song-card__body {
+    flex-direction: column;
+  }
+
+  .song-card__images {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .song-card__image {
+    width: calc(50% - 0.2rem);
+    aspect-ratio: 16 / 9;
+  }
+
+  .song-card__audio {
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SONG ADMIN PANEL
+══════════════════════════════════════════════════════════════ */
+
+.song-admin {
+  padding: 0;
+}
+
+.song-admin__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.song-admin__title-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+}
+
+.song-admin__title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-1);
+  margin: 0 0 0.2rem;
+}
+
+.song-admin__sub {
+  font-size: 0.75rem;
+  color: var(--text-3);
+  max-width: 380px;
+  line-height: 1.5;
+}
+
+/* ── Create form ────────────────────────────────────────────── */
+.song-admin__form {
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.1rem 1rem;
+  margin-bottom: 1.25rem;
+  animation: slideDown 0.2s var(--ease);
+}
+
+.song-admin__form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem;
+}
+
+@media (max-width: 540px) {
+  .song-admin__form-row { grid-template-columns: 1fr; }
+}
+
+.song-admin__file-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.song-admin__file-input {
+  font-size: 0.78rem;
+  color: var(--text-2);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.35rem 0.6rem;
+  cursor: pointer;
+  width: 100%;
+}
+
+.song-admin__file-input::file-selector-button {
+  font-size: 0.72rem;
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.2rem 0.55rem;
+  margin-right: 0.55rem;
+  cursor: pointer;
+  color: var(--text-2);
+  transition: background var(--transition);
+}
+
+.song-admin__file-input::file-selector-button:hover {
+  background: var(--bg-hover);
+}
+
+.song-admin__file-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.72rem;
+  color: var(--amber);
+  background: var(--amber-dim);
+  border: 1px solid var(--amber-border);
+  border-radius: 20px;
+  padding: 0.2rem 0.55rem;
+  white-space: nowrap;
+}
+
+/* ── Image previews ─────────────────────────────────────────── */
+.song-admin__img-previews {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.5rem 0 0.75rem;
+}
+
+.song-admin__img-preview-wrap {
+  position: relative;
+  width: 72px;
+  height: 72px;
+}
+
+.song-admin__img-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+.song-admin__img-remove {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--danger);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  font-size: 0;
+  transition: transform 0.15s;
+}
+
+.song-admin__img-remove:hover {
+  transform: scale(1.15);
+}
+
+/* ── Archive list ────────────────────────────────────────────── */
+.song-admin__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 0.75rem;
+}
+
+.song-admin__list-label {
+  font-size: 0.72rem;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.1rem;
+}
+
+.song-admin__row {
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.8rem 0.9rem;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  transition: opacity var(--transition), border-color var(--transition);
+  flex-wrap: wrap;
+}
+
+.song-admin__row--dim {
+  opacity: 0.55;
+}
+
+.song-admin__row-body {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.song-admin__row-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.3rem;
+}
+
+.song-admin__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  border-radius: 20px;
+  padding: 0.15rem 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.song-admin__badge--today {
+  background: var(--amber-dim);
+  border: 1px solid var(--amber-border);
+  color: var(--amber);
+}
+
+.song-admin__badge--off {
+  background: rgba(239,68,68,0.1);
+  border: 1px solid rgba(239,68,68,0.25);
+  color: var(--danger);
+}
+
+.song-admin__timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.68rem;
+  color: var(--text-3);
+}
+
+.song-admin__row-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-1);
+  margin-bottom: 0.15rem;
+}
+
+.song-admin__row-artist {
+  font-size: 0.75rem;
+  color: var(--text-3);
+  font-style: italic;
+  margin-bottom: 0.35rem;
+}
+
+.song-admin__row-chips {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.song-admin__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: 0.65rem;
+  color: var(--text-3);
+  background: var(--bg-card);
+  border: 1px solid var(--border-lite);
+  border-radius: 20px;
+  padding: 0.1rem 0.45rem;
+}
+
+.song-admin__row-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}

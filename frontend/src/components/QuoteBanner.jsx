@@ -3,11 +3,12 @@ import { useEffect, useState, useCallback } from 'react';
 import {
   Quote, Sparkles, ChevronLeft, ChevronRight, RefreshCw,
   BookOpen, X, Check, BarChart2, Clock, Pin,
-  EyeOff, Eye,
+  EyeOff, Eye, Music, Download,
 } from 'lucide-react';
 import {
   fetchTodayQuotes, fetchActivePolls, votePoll as apiVotePoll,
   addSavedItem, removeSavedItem as removeSavedItemApi,
+  fetchTodaySong,
 } from '../api/apiClient';
 import { isSavedItem, toggleSavedItem } from '../utils/featureStorage';
 
@@ -146,10 +147,12 @@ function PollCard({ poll: initialPoll }) {
   );
 }
 
-// ── Main QuoteBanner (swipeable: quotes | polls) ──────────────
+// ── Main QuoteBanner (swipeable: quotes | polls | song) ──────
 export default function QuoteBanner() {
   const [quotes,      setQuotes]      = useState([]);
   const [polls,       setPolls]       = useState([]);
+  const [song,        setSong]        = useState(null);      // today's song
+  const [songEnabled, setSongEnabled] = useState(false);
   const [quoteIdx,    setQuoteIdx]    = useState(0);
   const [loading,     setLoading]     = useState(true);
   const [visible,     setVisible]     = useState(true);
@@ -157,8 +160,9 @@ export default function QuoteBanner() {
   const [showAuthor,  setShowAuthor]  = useState(true);
   const [hideQuotes, setHideQuotes] = useState(() => localStorage.getItem('ev-hide-quote-banner') === '1');
   const [hiddenPolls, setHiddenPolls] = useState(() => readStoredJson('ev-hide-poll-banners', []));
+  const [hideSong,   setHideSong]   = useState(() => localStorage.getItem('ev-hide-song-banner') === '1');
 
-  // Which "card" is active: 0 = quotes, 1 = polls
+  // Which "card" is active: 0 = quotes, 1..n = polls, last = song
   const [cardIdx, setCardIdx] = useState(0);
 
   // Description expand state
@@ -168,11 +172,17 @@ export default function QuoteBanner() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const [qd, pd] = await Promise.all([fetchTodayQuotes(), fetchActivePolls().catch(() => [])]);
+      const [qd, pd, sd] = await Promise.all([
+        fetchTodayQuotes(),
+        fetchActivePolls().catch(() => []),
+        fetchTodaySong().catch(() => ({ enabled: false, song: null })),
+      ]);
       setEnabled(qd.enabled);
       setShowAuthor(qd.showAuthor !== false);
       if (qd.enabled && qd.quotes?.length) { setQuotes(qd.quotes); setQuoteIdx(0); }
       setPolls(Array.isArray(pd) ? pd : []);
+      setSongEnabled(sd?.enabled ?? false);
+      setSong(sd?.song || null);
     } catch { /* non-critical */ }
     finally { setLoading(false); }
   }, []);
@@ -188,20 +198,23 @@ export default function QuoteBanner() {
   const cards = [
     ...(quotes.length ? ['quotes'] : []),
     ...polls.map((_, i) => `poll-${i}`),
+    ...(songEnabled && song ? ['song'] : []),
   ];
 
-  const hasPolls = polls.length > 0;
-  const hasCards = quotes.length > 0 || hasPolls;
+  const hasPolls  = polls.length > 0;
+  const hasSong   = songEnabled && !!song;
+  const hasCards  = quotes.length > 0 || hasPolls || hasSong;
 
   const q   = quotes[quoteIdx] || {};
   const pat = BG_PATTERNS[quoteIdx % BG_PATTERNS.length];
 
   const currentCard = cards[cardIdx] || 'quotes';
   const isQuoteCard = currentCard === 'quotes';
-  const pollIdx     = isQuoteCard ? -1 : parseInt(currentCard.split('-')[1]);
+  const isSongCard  = currentCard === 'song';
+  const pollIdx     = (isQuoteCard || isSongCard) ? -1 : parseInt(currentCard.split('-')[1]);
 
   const canExpand = isQuoteCard && !!(q.description?.trim());
-  const isPollHidden = !isQuoteCard && pollIdx >= 0 && hiddenPolls.includes(polls[pollIdx]?._id);
+  const isPollHidden = !isQuoteCard && !isSongCard && pollIdx >= 0 && hiddenPolls.includes(polls[pollIdx]?._id);
 
   useEffect(() => {
     if (!isQuoteCard || !q._id) { setSaved(false); return; }
@@ -230,6 +243,11 @@ export default function QuoteBanner() {
       localStorage.setItem('ev-hide-poll-banners', JSON.stringify(next));
       return next;
     });
+  };
+
+  const persistHideSong = (next) => {
+    setHideSong(next);
+    localStorage.setItem('ev-hide-song-banner', next ? '1' : '0');
   };
 
   const handleSaveQuote = () => {
@@ -273,8 +291,8 @@ export default function QuoteBanner() {
   return (
     <div className="quote-banner-wrap">
 
-      {/* Card switcher tabs — only if polls exist */}
-      {hasPolls && cards.length > 1 && (
+      {/* Card switcher tabs — only if more than one card type */}
+      {cards.length > 1 && (
         <div className="qb-tabs">
           {cards.map((c, i) => (
             <button
@@ -282,7 +300,11 @@ export default function QuoteBanner() {
               className={`qb-tab${cardIdx === i ? ' qb-tab--active' : ''}`}
               onClick={() => { setCardIdx(i); setDescOpen(false); }}
             >
-              {c === 'quotes' ? <><Quote size={12} /> Quote</> : <><BarChart2 size={12} /> Poll {polls.length > 1 ? parseInt(c.split('-')[1]) + 1 : ''}</>}
+              {c === 'quotes'
+                ? <><Quote size={12} /> Quote</>
+                : c === 'song'
+                  ? <><Music size={12} /> Song</>
+                  : <><BarChart2 size={12} /> Poll {polls.length > 1 ? parseInt(c.split('-')[1]) + 1 : ''}</>}
             </button>
           ))}
         </div>
@@ -385,7 +407,7 @@ export default function QuoteBanner() {
       )}
 
       {/* ── Poll Card ──────────────────────────────────── */}
-      {!isQuoteCard && pollIdx >= 0 && polls[pollIdx] && (
+      {!isQuoteCard && !isSongCard && pollIdx >= 0 && polls[pollIdx] && (
         isPollHidden ? (
           <div className="poll-card poll-card--hidden">
             <div className="poll-card__hidden-state">
@@ -404,6 +426,89 @@ export default function QuoteBanner() {
               <EyeOff size={12} /> Hide
             </button>
             <PollCard poll={polls[pollIdx]} />
+          </div>
+        )
+      )}
+
+      {/* ── Song Card ──────────────────────────────────── */}
+      {isSongCard && song && (
+        hideSong ? (
+          <div className="song-card song-card--hidden">
+            <div className="song-card__hidden-state">
+              <div className="quote-banner__hidden-copy">
+                <span className="quote-banner__hidden-label">Song section hidden</span>
+                <p>Bring back the song of the day whenever you want.</p>
+              </div>
+              <button type="button" className="quote-banner__unhide" onClick={() => persistHideSong(false)}>
+                <Eye size={12} /> Unhide song
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="song-card">
+            {/* Dim background image */}
+            {song.bgImageUrl && (
+              <div className="song-card__bg" style={{ backgroundImage: `url(${song.bgImageUrl})` }} aria-hidden="true" />
+            )}
+
+            {/* Hide button */}
+            <button type="button" className="quote-banner__hide-btn" onClick={() => persistHideSong(true)} title="Hide song section">
+              <EyeOff size={12} /> Hide
+            </button>
+
+            {/* Header */}
+            <div className="song-card__header">
+              <div className="song-card__title-wrap">
+                <Music size={15} className="song-card__icon" />
+                <div>
+                  <p className="song-card__title">{song.title}</p>
+                  {song.artist && <p className="song-card__artist">— {song.artist}</p>}
+                </div>
+              </div>
+
+              {/* Audio controls */}
+              {song.audioUrl && (
+                <div className="song-card__audio-wrap">
+                  <audio
+                    controls
+                    src={song.audioUrl}
+                    className="song-card__audio"
+                    preload="none"
+                  />
+                  <a
+                    href={song.audioUrl}
+                    download={song.audioFileName || 'song.mp3'}
+                    className="song-card__download"
+                    title="Download song"
+                  >
+                    <Download size={13} /> Download
+                  </a>
+                </div>
+              )}
+            </div>
+
+            {/* Body: lyrics + images side by side */}
+            <div className="song-card__body">
+              {song.lyrics && (
+                <div className="song-card__lyrics-wrap">
+                  <p className="song-card__lyrics" style={{ whiteSpace: 'pre-wrap' }}>{song.lyrics}</p>
+                </div>
+              )}
+
+              {song.imageUrls?.length > 0 && (
+                <div className="song-card__images">
+                  {song.imageUrls.map((url, i) => (
+                    <img
+                      key={i}
+                      src={url}
+                      alt={`${song.title} ${i + 1}`}
+                      className="song-card__image"
+                      loading="lazy"
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         )
       )}

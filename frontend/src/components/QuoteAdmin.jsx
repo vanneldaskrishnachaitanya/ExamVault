@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import {
   Quote, Plus, Trash2, Eye, EyeOff, Loader2, ChevronDown, ChevronRight,
-  Sparkles, Check, ToggleLeft, ToggleRight, User, UserX, BarChart2, Clock, X,
+  Sparkles, Check, ToggleLeft, ToggleRight, User, UserX, BarChart2, Clock, X, Music,
 } from 'lucide-react';
 import {
   fetchQuoteSettings, toggleQuoteEnabled, toggleQuoteAutoFallback, toggleQuoteShowAuthor,
@@ -10,6 +10,7 @@ import {
   fetchQuotesBySection, createQuote, deleteQuote, updateQuote,
   fetchAllPolls, createPoll, togglePoll, deletePoll,
 } from '../api/apiClient';
+import SongAdmin from './SongAdmin';
 
 function useToast() {
   const [msg, setMsg] = useState('');
@@ -474,6 +475,9 @@ export default function QuoteAdmin() {
         <button className={`qs-section-tab${activeTab === 'polls' ? ' qs-section-tab--active' : ''}`} onClick={() => setActiveTab('polls')}>
           <BarChart2 size={13} /> Polls
         </button>
+        <button className={`qs-section-tab${activeTab === 'song' ? ' qs-section-tab--active' : ''}`} onClick={() => setActiveTab('song')}>
+          <Music size={13} /> Song
+        </button>
       </div>
 
       {/* Quotes tab */}
@@ -519,6 +523,9 @@ export default function QuoteAdmin() {
 
       {/* Polls tab */}
       {activeTab === 'polls' && <PollAdmin toast={toast} />}
+
+      {/* Song tab */}
+      {activeTab === 'song' && <SongAdmin toast={toast} />}
 
       {toast.msg && <div className="toast">{toast.msg}</div>}
     </section>
