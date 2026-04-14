@@ -6313,18 +6313,17 @@ option {
   display: flex;
   gap: 0.6rem;
   align-items: flex-start;
-  flex: 1 1 0;             /* take remaining height */
-  min-height: 0;
   overflow: hidden;
+  max-height: 300px;
 }
 
 /* Lyrics — fills remaining width, scrollable */
 .song-card__lyrics-wrap {
   flex: 1 1 0;
   min-width: 0;
+  max-height: 300px;
   overflow-y: auto;
   overflow-x: hidden;
-  height: 100%;
 }
 
 .song-card__lyrics {
@@ -6340,10 +6339,10 @@ option {
   flex-direction: column;
   gap: 0.45rem;
   flex-shrink: 0;
-  width: 90px;             /* medium width as requested */
+  width: 90px;
+  max-height: 300px;
   overflow-y: auto;
   overflow-x: hidden;
-  height: 100%;
 }
 
 .song-card__image {

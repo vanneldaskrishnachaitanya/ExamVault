@@ -506,6 +506,6 @@ export default function QuoteBanner() {
         )
       )}
 
-    </div>{/* end .quote-banner-outer */}
+    </div>
   );
 }
