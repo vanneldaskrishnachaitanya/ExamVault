@@ -27,7 +27,6 @@ function readStoredJson(key, fallback) {
   }
 }
 
-// ── Time remaining helper ─────────────────────────────────────
 function timeLeft(expiresAt) {
   const diff = new Date(expiresAt) - new Date();
   if (diff <= 0) return 'Expired';
@@ -38,7 +37,7 @@ function timeLeft(expiresAt) {
   return `${h}h ${m}m left`;
 }
 
-// ── Single Poll Card ──────────────────────────────────────────
+// ── Poll Card ─────────────────────────────────────────────────
 function PollCard({ poll: initialPoll }) {
   const [poll,     setPoll]     = useState(initialPoll);
   const [selected, setSelected] = useState([]);
@@ -61,12 +60,7 @@ function PollCard({ poll: initialPoll }) {
     setVoting(true);
     try {
       const d = await apiVotePoll(poll._id, selected);
-      setPoll(prev => ({
-        ...prev,
-        options:    d.options,
-        totalVotes: d.totalVotes,
-        userVoted:  true,
-      }));
+      setPoll(prev => ({ ...prev, options: d.options, totalVotes: d.totalVotes, userVoted: true }));
       setSelected([]);
       showToast('Vote recorded ✓');
     } catch (e) { showToast(e.message); }
@@ -79,13 +73,11 @@ function PollCard({ poll: initialPoll }) {
     <div className="poll-card">
       <div className="poll-card__header">
         <div className="poll-card__label">
-          <BarChart2 size={11} />
-          <span>POLL</span>
+          <BarChart2 size={11} /><span>POLL</span>
           {poll.multiSelect && <span className="poll-card__multi">multi-select</span>}
         </div>
         <div className="poll-card__timer">
-          <Clock size={11} />
-          <span>{timeLeft(poll.expiresAt)}</span>
+          <Clock size={11} /><span>{timeLeft(poll.expiresAt)}</span>
         </div>
       </div>
 
@@ -93,39 +85,28 @@ function PollCard({ poll: initialPoll }) {
 
       <div className="poll-card__options">
         {poll.options.map(opt => {
-          const pct     = poll.totalVotes > 0 ? Math.round((opt.votes / poll.totalVotes) * 100) : 0;
+          const pct        = poll.totalVotes > 0 ? Math.round((opt.votes / poll.totalVotes) * 100) : 0;
           const isSelected = selected.includes(opt._id.toString());
           const isWinner   = poll.userVoted && opt.votes === maxVotes && poll.totalVotes > 0;
-
           return (
             <button
               key={opt._id}
               className={[
                 'poll-option',
-                poll.userVoted ? 'poll-option--result' : '',
-                isSelected ? 'poll-option--selected' : '',
+                poll.userVoted   ? 'poll-option--result'  : '',
+                isSelected       ? 'poll-option--selected' : '',
                 poll.userVoted && opt.voted ? 'poll-option--my-vote' : '',
-                isWinner ? 'poll-option--winner' : '',
+                isWinner         ? 'poll-option--winner'  : '',
               ].filter(Boolean).join(' ')}
               onClick={() => handleSelect(opt._id.toString())}
               disabled={poll.userVoted || voting}
             >
-              {/* Progress bar fill behind */}
-              {poll.userVoted && (
-                <div className="poll-option__bar" style={{ width: `${pct}%` }} />
-              )}
-
+              {poll.userVoted && <div className="poll-option__bar" style={{ width: `${pct}%` }} />}
               <span className="poll-option__check">
-                {poll.userVoted && opt.voted
-                  ? <Check size={11} />
-                  : isSelected
-                    ? <Check size={11} />
-                    : null}
+                {poll.userVoted && opt.voted ? <Check size={11} /> : isSelected ? <Check size={11} /> : null}
               </span>
               <span className="poll-option__text">{opt.text}</span>
-              {poll.userVoted && (
-                <span className="poll-option__pct">{pct}%</span>
-              )}
+              {poll.userVoted && <span className="poll-option__pct">{pct}%</span>}
             </button>
           );
         })}
@@ -137,37 +118,31 @@ function PollCard({ poll: initialPoll }) {
           {poll.multiSelect ? `Vote (${selected.length} selected)` : 'Submit Vote'}
         </button>
       )}
-
       {poll.userVoted && (
         <p className="poll-card__votes">{poll.totalVotes} {poll.totalVotes === 1 ? 'vote' : 'votes'} total</p>
       )}
-
       {toast && <div className="poll-toast">{toast}</div>}
     </div>
   );
 }
 
-// ── Main QuoteBanner (swipeable: quotes | polls | song) ──────
+// ── Main QuoteBanner (tabs: Quote | Poll | Song) ─────────────
 export default function QuoteBanner() {
   const [quotes,      setQuotes]      = useState([]);
   const [polls,       setPolls]       = useState([]);
-  const [song,        setSong]        = useState(null);      // today's song
+  const [song,        setSong]        = useState(null);
   const [songEnabled, setSongEnabled] = useState(false);
   const [quoteIdx,    setQuoteIdx]    = useState(0);
+  const [cardIdx,     setCardIdx]     = useState(0);
   const [loading,     setLoading]     = useState(true);
   const [visible,     setVisible]     = useState(true);
   const [enabled,     setEnabled]     = useState(true);
   const [showAuthor,  setShowAuthor]  = useState(true);
-  const [hideQuotes, setHideQuotes] = useState(() => localStorage.getItem('ev-hide-quote-banner') === '1');
+  const [descOpen,    setDescOpen]    = useState(false);
+  const [saved,       setSaved]       = useState(false);
+  const [hideQuotes,  setHideQuotes]  = useState(() => localStorage.getItem('ev-hide-quote-banner') === '1');
   const [hiddenPolls, setHiddenPolls] = useState(() => readStoredJson('ev-hide-poll-banners', []));
-  const [hideSong,   setHideSong]   = useState(() => localStorage.getItem('ev-hide-song-banner') === '1');
-
-  // Which "card" is active: 0 = quotes, 1..n = polls, last = song
-  const [cardIdx, setCardIdx] = useState(0);
-
-  // Description expand state
-  const [descOpen, setDescOpen] = useState(false);
-  const [saved, setSaved] = useState(false);
+  const [hideSong,    setHideSong]    = useState(() => localStorage.getItem('ev-hide-song-banner') === '1');
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -189,32 +164,28 @@ export default function QuoteBanner() {
 
   useEffect(() => { load(); }, [load]);
 
-  const goQuote = (dir) => {
-    setVisible(false);
-    setDescOpen(false);
-    setTimeout(() => { setQuoteIdx(i => (i + dir + quotes.length) % quotes.length); setVisible(true); }, 180);
-  };
-
+  // Build card list: quotes | poll-0 | poll-1 | ... | song
   const cards = [
     ...(quotes.length ? ['quotes'] : []),
     ...polls.map((_, i) => `poll-${i}`),
-    // Note: song is NOT a tab — it appears as a separate side panel
+    ...(songEnabled && song ? ['song'] : []),
   ];
 
-  const hasPolls  = polls.length > 0;
-  const hasSong   = songEnabled && !!song;
-  const hasCards  = quotes.length > 0 || hasPolls || hasSong;
+  const hasCards = quotes.length > 0 || polls.length > 0 || (songEnabled && !!song);
+  if (!enabled || (!loading && !hasCards)) return null;
 
   const q   = quotes[quoteIdx] || {};
   const pat = BG_PATTERNS[quoteIdx % BG_PATTERNS.length];
 
-  const currentCard = cards[cardIdx] || 'quotes';
+  const currentCard = cards[cardIdx] || cards[0] || 'quotes';
   const isQuoteCard = currentCard === 'quotes';
-  const pollIdx     = isQuoteCard ? -1 : parseInt(currentCard.split('-')[1]);
+  const isSongCard  = currentCard === 'song';
+  const pollIdx     = (isQuoteCard || isSongCard) ? -1 : parseInt(currentCard.split('-')[1]);
 
   const canExpand    = isQuoteCard && !!(q.description?.trim());
-  const isPollHidden = !isQuoteCard && pollIdx >= 0 && hiddenPolls.includes(polls[pollIdx]?._id);
+  const isPollHidden = !isQuoteCard && !isSongCard && pollIdx >= 0 && hiddenPolls.includes(polls[pollIdx]?._id);
 
+  // Save state
   useEffect(() => {
     if (!isQuoteCard || !q._id) { setSaved(false); return; }
     setSaved(isSavedItem({ type: 'quote', id: q._id }));
@@ -229,7 +200,10 @@ export default function QuoteBanner() {
     return () => window.removeEventListener('ev:saved-changed', sync);
   }, [isQuoteCard, q._id]);
 
-  if (!enabled || (!loading && !hasCards)) return null;
+  const goQuote = (dir) => {
+    setVisible(false); setDescOpen(false);
+    setTimeout(() => { setQuoteIdx(i => (i + dir + quotes.length) % quotes.length); setVisible(true); }, 180);
+  };
 
   const persistHideQuotes = (next) => {
     setHideQuotes(next);
@@ -251,69 +225,54 @@ export default function QuoteBanner() {
 
   const handleSaveQuote = () => {
     if (!q._id) return;
-    const query = encodeURIComponent(q.author || q.sectionName || q.text?.slice(0, 28) || 'quote');
+    const query   = encodeURIComponent(q.author || q.sectionName || q.text?.slice(0, 28) || 'quote');
     const payload = {
-      type: 'quote',
-      id: q._id,
-      title: q.sectionName ? `${q.sectionName} quote` : 'Daily quote',
+      type: 'quote', id: q._id,
+      title:    q.sectionName ? `${q.sectionName} quote` : 'Daily quote',
       subtitle: q.author || q.text?.slice(0, 60) || 'Inspirational quote',
-      href: `/search?source=quotes&q=${query}`,
-      meta: {
-        text: q.text || '',
-        author: q.author || 'Unknown',
-        description: q.description || '',
-      },
+      href:     `/search?source=quotes&q=${query}`,
+      meta:     { text: q.text || '', author: q.author || 'Unknown', description: q.description || '' },
     };
-
     const sync = async () => {
       try {
         if (saved) {
           await removeSavedItemApi({ type: 'quote', itemId: String(q._id) });
         } else {
-          await addSavedItem({
-            type: 'quote',
-            itemId: String(q._id),
-            title: payload.title,
-            subtitle: payload.subtitle,
-            href: payload.href,
-            meta: payload.meta,
-          });
+          await addSavedItem({ type: 'quote', itemId: String(q._id), title: payload.title, subtitle: payload.subtitle, href: payload.href, meta: payload.meta });
         }
         const next = toggleSavedItem(payload);
-        setSaved(next.some(entry => entry.type === 'quote' && String(entry.id) === String(q._id)));
+        setSaved(next.some(e => e.type === 'quote' && String(e.id) === String(q._id)));
       } catch {}
     };
-
     sync();
   };
 
   return (
-    <div className="quote-banner-outer">
+    <div className="quote-banner-wrap">
 
-      {/* ── Left panel: Quote / Poll tabs ──────────────── */}
-      <div className="quote-banner-wrap">
-
-        {/* Card switcher tabs — only if polls exist */}
-        {cards.length > 1 && (
-          <div className="qb-tabs">
-            {cards.map((c, i) => (
-              <button
-                key={c}
-                className={`qb-tab${cardIdx === i ? ' qb-tab--active' : ''}`}
-                onClick={() => { setCardIdx(i); setDescOpen(false); }}
-              >
-                {c === 'quotes'
-                  ? <><Quote size={12} /> Quote</>
+      {/* ── Tabs: Quote / Poll / Song ────────────────────── */}
+      {cards.length > 1 && (
+        <div className="qb-tabs">
+          {cards.map((c, i) => (
+            <button
+              key={c}
+              className={`qb-tab${cardIdx === i ? ' qb-tab--active' : ''}`}
+              onClick={() => { setCardIdx(i); setDescOpen(false); }}
+            >
+              {c === 'quotes'
+                ? <><Quote size={12} /> Quote</>
+                : c === 'song'
+                  ? <><Music size={12} /> Song</>
                   : <><BarChart2 size={12} /> Poll {polls.length > 1 ? parseInt(c.split('-')[1]) + 1 : ''}</>}
-              </button>
-            ))}
-          </div>
-        )}
+            </button>
+          ))}
+        </div>
+      )}
 
-      {/* ── Quote Card ─────────────────────────────────── */}
+      {/* ── Quote Card ────────────────────────────────────── */}
       {isQuoteCard && (
         hideQuotes ? (
-          <div className="quote-banner quote-banner--hidden" aria-label="Daily inspiration hidden">
+          <div className="quote-banner quote-banner--hidden">
             <div className="quote-banner__hidden-state">
               <div className="quote-banner__hidden-copy">
                 <span className="quote-banner__hidden-label">Quote section hidden</span>
@@ -325,89 +284,75 @@ export default function QuoteBanner() {
             </div>
           </div>
         ) : (
-        <div className="quote-banner" aria-label="Daily inspiration">
-          <div className="quote-banner__bg" style={{ background: pat }} aria-hidden="true" />
-          {q.bgImageUrl && <div className="quote-banner__img" style={{ backgroundImage: `url(${q.bgImageUrl})` }} aria-hidden="true" />}
-          <span className="quote-banner__dot quote-banner__dot--1" aria-hidden="true" />
-          <span className="quote-banner__dot quote-banner__dot--2" aria-hidden="true" />
-          <span className="quote-banner__dot quote-banner__dot--3" aria-hidden="true" />
+          <div className="quote-banner" aria-label="Daily inspiration">
+            <div className="quote-banner__bg" style={{ background: pat }} aria-hidden="true" />
+            {q.bgImageUrl && <div className="quote-banner__img" style={{ backgroundImage: `url(${q.bgImageUrl})` }} aria-hidden="true" />}
+            <span className="quote-banner__dot quote-banner__dot--1" aria-hidden="true" />
+            <span className="quote-banner__dot quote-banner__dot--2" aria-hidden="true" />
+            <span className="quote-banner__dot quote-banner__dot--3" aria-hidden="true" />
 
-          <button type="button" className="quote-banner__hide-btn" onClick={() => persistHideQuotes(true)} title="Hide quote section">
-            <EyeOff size={12} /> Hide
-          </button>
+            <button type="button" className="quote-banner__hide-btn" onClick={() => persistHideQuotes(true)}>
+              <EyeOff size={12} /> Hide
+            </button>
 
-          {loading ? (
-            <div className="quote-banner__loader"><RefreshCw size={15} className="spin" /></div>
-          ) : (
-            <div className={`quote-banner__body${visible ? ' quote-banner__body--visible' : ''}`}>
-
-              {q.sectionName && (
-                <div className="quote-banner__section">
-                  <Sparkles size={10} />
-                  <span>{q.sectionName.toUpperCase()}</span>
-                  {q.isFallback && <span className="quote-banner__auto">auto</span>}
-                </div>
-              )}
-
-              <div className="quote-banner__quote-wrap">
-                <Quote size={16} className="quote-banner__openquote" aria-hidden="true" />
-                <p className="quote-banner__text" style={{ whiteSpace: 'pre-wrap' }}>{q.text}</p>
-              </div>
-
-              {showAuthor && q.author && (
-                <p className="quote-banner__author">— {q.author}</p>
-              )}
-
-              {isQuoteCard && q._id && (
-                <button className={`quote-banner__save${saved ? ' quote-banner__save--active' : ''}`} onClick={handleSaveQuote}>
-                  <Pin size={12} /> {saved ? 'Saved' : 'Save quote'}
-                </button>
-              )}
-
-              {/* Learn More button — only if description exists */}
-              {canExpand && !descOpen && (
-                <button className="quote-banner__learn-more" onClick={() => setDescOpen(true)}>
-                  <BookOpen size={12} /> Learn more
-                </button>
-              )}
-
-              {/* Description expand panel */}
-              {descOpen && (
-                <div className="quote-banner__desc">
-                  <div className="quote-banner__desc-header">
-                    <span>About this quote</span>
-                    <button className="quote-banner__desc-close" onClick={() => setDescOpen(false)}>
-                      <X size={13} />
-                    </button>
+            {loading ? (
+              <div className="quote-banner__loader"><RefreshCw size={15} className="spin" /></div>
+            ) : (
+              <div className={`quote-banner__body${visible ? ' quote-banner__body--visible' : ''}`}>
+                {q.sectionName && (
+                  <div className="quote-banner__section">
+                    <Sparkles size={10} />
+                    <span>{q.sectionName.toUpperCase()}</span>
+                    {q.isFallback && <span className="quote-banner__auto">auto</span>}
                   </div>
-                  <p className="quote-banner__desc-text" style={{ whiteSpace: 'pre-wrap' }}>{q.description}</p>
+                )}
+                <div className="quote-banner__quote-wrap">
+                  <Quote size={16} className="quote-banner__openquote" aria-hidden="true" />
+                  <p className="quote-banner__text" style={{ whiteSpace: 'pre-wrap' }}>{q.text}</p>
                 </div>
-              )}
-            </div>
-          )}
-
-          {/* Quote nav — only when description not open */}
-          {quotes.length > 1 && !descOpen && (
-            <div className="quote-banner__nav">
-              <button className="quote-banner__arrow" onClick={() => goQuote(-1)} aria-label="Previous quote"><ChevronLeft size={14} /></button>
-              <div className="quote-banner__dots">
-                {quotes.map((_, i) => (
-                  <button key={i}
-                    className={`quote-banner__pip${i === quoteIdx ? ' quote-banner__pip--active' : ''}`}
-                    onClick={() => { setVisible(false); setDescOpen(false); setTimeout(() => { setQuoteIdx(i); setVisible(true); }, 180); }}
-                    aria-label={`Quote ${i + 1}`}
-                  />
-                ))}
+                {showAuthor && q.author && <p className="quote-banner__author">— {q.author}</p>}
+                {isQuoteCard && q._id && (
+                  <button className={`quote-banner__save${saved ? ' quote-banner__save--active' : ''}`} onClick={handleSaveQuote}>
+                    <Pin size={12} /> {saved ? 'Saved' : 'Save quote'}
+                  </button>
+                )}
+                {canExpand && !descOpen && (
+                  <button className="quote-banner__learn-more" onClick={() => setDescOpen(true)}>
+                    <BookOpen size={12} /> Learn more
+                  </button>
+                )}
+                {descOpen && (
+                  <div className="quote-banner__desc">
+                    <div className="quote-banner__desc-header">
+                      <span>About this quote</span>
+                      <button className="quote-banner__desc-close" onClick={() => setDescOpen(false)}><X size={13} /></button>
+                    </div>
+                    <p className="quote-banner__desc-text" style={{ whiteSpace: 'pre-wrap' }}>{q.description}</p>
+                  </div>
+                )}
               </div>
-              <button className="quote-banner__arrow" onClick={() => goQuote(1)} aria-label="Next quote"><ChevronRight size={14} /></button>
-            </div>
-          )}
-        </div>
+            )}
+
+            {quotes.length > 1 && !descOpen && (
+              <div className="quote-banner__nav">
+                <button className="quote-banner__arrow" onClick={() => goQuote(-1)}><ChevronLeft size={14} /></button>
+                <div className="quote-banner__dots">
+                  {quotes.map((_, i) => (
+                    <button key={i}
+                      className={`quote-banner__pip${i === quoteIdx ? ' quote-banner__pip--active' : ''}`}
+                      onClick={() => { setVisible(false); setDescOpen(false); setTimeout(() => { setQuoteIdx(i); setVisible(true); }, 180); }}
+                    />
+                  ))}
+                </div>
+                <button className="quote-banner__arrow" onClick={() => goQuote(1)}><ChevronRight size={14} /></button>
+              </div>
+            )}
+          </div>
         )
       )}
 
-      {/* ── Poll Card ──────────────────────────────────── */}
-      {!isQuoteCard && pollIdx >= 0 && polls[pollIdx] && (
+      {/* ── Poll Card ─────────────────────────────────────── */}
+      {!isQuoteCard && !isSongCard && pollIdx >= 0 && polls[pollIdx] && (
         isPollHidden ? (
           <div className="poll-card poll-card--hidden">
             <div className="poll-card__hidden-state">
@@ -422,7 +367,8 @@ export default function QuoteBanner() {
           </div>
         ) : (
           <div className="poll-card-wrap">
-            <button type="button" className="quote-banner__hide-btn quote-banner__hide-btn--poll" onClick={() => persistHidePoll(polls[pollIdx]._id, true)} title="Hide poll section">
+            <button type="button" className="quote-banner__hide-btn quote-banner__hide-btn--poll"
+              onClick={() => persistHidePoll(polls[pollIdx]._id, true)}>
               <EyeOff size={12} /> Hide
             </button>
             <PollCard poll={polls[pollIdx]} />
@@ -430,58 +376,50 @@ export default function QuoteBanner() {
         )
       )}
 
-      </div>{/* end .quote-banner-wrap (left panel) */}
-
-      {/* ── Right panel: Song Card (always beside, not a tab) ── */}
-      {hasSong && (
+      {/* ── Song Card (tab content) ───────────────────────── */}
+      {isSongCard && song && (
         hideSong ? (
-          <div className="song-card song-card--hidden">
-            <div className="song-card__hidden-state">
+          <div className="quote-banner quote-banner--hidden">
+            <div className="quote-banner__hidden-state">
               <div className="quote-banner__hidden-copy">
-                <span className="quote-banner__hidden-label">Song hidden</span>
+                <span className="quote-banner__hidden-label">Song section hidden</span>
+                <p>Bring back the song of the day whenever you want.</p>
               </div>
               <button type="button" className="quote-banner__unhide" onClick={() => persistHideSong(false)}>
-                <Eye size={12} /> Show
+                <Eye size={12} /> Unhide song
               </button>
             </div>
           </div>
         ) : (
           <div className="song-card">
-            {/* Dim background image */}
             {song.bgImageUrl && (
               <div className="song-card__bg" style={{ backgroundImage: `url(${song.bgImageUrl})` }} aria-hidden="true" />
             )}
 
-            {/* Hide button */}
-            <button type="button" className="quote-banner__hide-btn" onClick={() => persistHideSong(true)} title="Hide song section">
+            <button type="button" className="quote-banner__hide-btn" onClick={() => persistHideSong(true)}>
               <EyeOff size={12} /> Hide
             </button>
 
             {/* Title + Artist */}
             <div className="song-card__title-row">
-              <Music size={14} className="song-card__icon" />
+              <Music size={15} className="song-card__icon" />
               <div>
                 <p className="song-card__title">{song.title}</p>
                 {song.artist && <p className="song-card__artist">— {song.artist}</p>}
               </div>
             </div>
 
-            {/* Audio + Download */}
+            {/* Audio player + Download */}
             {song.audioUrl && (
               <div className="song-card__audio-wrap">
                 <audio controls src={song.audioUrl} className="song-card__audio" preload="none" />
-                <a
-                  href={song.audioUrl}
-                  download={song.audioFileName || 'song.mp3'}
-                  className="song-card__download"
-                  title="Download song"
-                >
-                  <Download size={12} /> Download
+                <a href={song.audioUrl} download={song.audioFileName || 'song.mp3'} className="song-card__download">
+                  <Download size={13} /> Download
                 </a>
               </div>
             )}
 
-            {/* Body: lyrics left, images right with equal vertical gaps */}
+            {/* Lyrics (left) + Images (right, stacked with equal gaps) */}
             <div className="song-card__body">
               {song.lyrics && (
                 <div className="song-card__lyrics-wrap">
@@ -491,13 +429,7 @@ export default function QuoteBanner() {
               {song.imageUrls?.length > 0 && (
                 <div className="song-card__images">
                   {song.imageUrls.map((url, i) => (
-                    <img
-                      key={i}
-                      src={url}
-                      alt={`${song.title} ${i + 1}`}
-                      className="song-card__image"
-                      loading="lazy"
-                    />
+                    <img key={i} src={url} alt={`${song.title} ${i + 1}`} className="song-card__image" loading="lazy" />
                   ))}
                 </div>
               )}
@@ -505,7 +437,6 @@ export default function QuoteBanner() {
           </div>
         )
       )}
-
     </div>
   );
 }

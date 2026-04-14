@@ -6161,40 +6161,23 @@ option {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   SONG SECTION — outer layout & student card
+   SONG SECTION — tab card (same space as Quote / Poll)
 ══════════════════════════════════════════════════════════════ */
 
-/* Outer row: left = quote/poll card, right = song card always visible */
-.quote-banner-outer {
-  display: flex;
-  gap: 1rem;
-  align-items: flex-start;  /* song card does NOT stretch to quote height */
-  width: 100%;
-}
-
-/* Left panel takes remaining space */
-.quote-banner-outer > .quote-banner-wrap {
-  flex: 1 1 0;
-  min-width: 0;
-}
-
-/* ── Song Card — right panel ────────────────────────────────── */
+/* Song card fills the full width of quote-banner-wrap, same as quote-banner */
 .song-card {
   position: relative;
-  width: 38%;               /* about 38% of the total row */
-  max-width: 420px;
-  min-width: 260px;
-  flex-shrink: 0;
   border-radius: var(--radius-lg);
   background: var(--bg-card);
   border: 1px solid var(--border);
   box-shadow: var(--shadow);
   overflow: hidden;
-  padding: 1rem 1rem 0.85rem;
+  padding: 1.1rem 1.25rem 1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: 0.65rem;
   animation: cardIn 0.3s var(--ease);
+  min-height: 160px;
 }
 
 /* Dim background — same as quote-banner__img */
