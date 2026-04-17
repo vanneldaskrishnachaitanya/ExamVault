@@ -4,7 +4,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth, signInWithGoogle, firebaseSignOut } from './firebase';
 import { isAdminEmail } from './adminWhitelist';
 import axios from 'axios';
-import { API_BASE_URL, API_TARGET_LABEL } from '../config/apiBaseUrl';
+import { API_BASE_URL } from '../config/apiBaseUrl';
 
 export const AuthContext = createContext(null);
 
@@ -62,10 +62,7 @@ const syncWithBackend = async (idToken, firebaseUser) => {
     // Network error — backend not running
     if (!err.response) {
       throw new Error(
-        'Cannot reach backend at ' + API_TARGET_LABEL + '. ' +
-        (import.meta.env.DEV
-          ? 'Start your backend with: npm run dev'
-          : 'Verify the server is up and VITE_API_BASE_URL points to a live API.')
+        'Server is down. Please try again in a few minutes.'
       );
     }
 
