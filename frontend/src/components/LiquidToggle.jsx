@@ -1,11 +1,4 @@
 // src/components/LiquidToggle.jsx
-// ─────────────────────────────────────────────────────────────
-// Exact port of the Jhey Tompkins liquid-glass toggle.
-// CSS NEVER transitions `translate` — GSAP owns it via --complete.
-// Only height / width / margin / scale / opacity / filter are
-// CSS-transitioned (matching the original @layer transitions).
-// ─────────────────────────────────────────────────────────────
-
 import { useEffect, useRef } from 'react';
 
 // ── GSAP loader (singleton promise) ─────────────────────────
@@ -32,24 +25,25 @@ function ensureFilters() {
   _filtersReady = true;
 
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  svg.setAttribute('aria-hidden', 'true');
-  svg.style.cssText = 'position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;';
+  svg.setAttribute('class', 'sr-only');
+  svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
   svg.innerHTML = `
     <defs>
-      <filter id="lt-goo">
-        <feGaussianBlur id="lt-goo-blur" in="SourceGraphic" stdDeviation="13" result="blur" />
-        <feColorMatrix id="lt-goo-cm" in="blur"
-          values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 13 -10"
-          type="matrix" result="cm" />
-        <feComposite in="cm" operator="atop" />
+      <filter id="goo">
+        <feGaussianBlur id="SvgjsFeGaussianBlur1000" result="SvgjsFeGaussianBlur1000" in="SourceGraphic" stdDeviation="13"></feGaussianBlur>
+        <feColorMatrix id="SvgjsFeColorMatrix1001" result="SvgjsFeColorMatrix1001" in="SvgjsFeGaussianBlur1000" values="
+                1 0 0 0 0
+                0 1 0 0 0
+                0 0 1 0 0
+                0 0 0 16 -10
+            " type="matrix"></feColorMatrix>
+        <feComposite id="SvgjsFeComposite1002" result="SvgjsFeComposite1002" in="SvgjsFeColorMatrix1001" operator="atop"></feComposite>
       </filter>
-
-      <filter id="lt-knockout" colorInterpolationFilters="sRGB">
-        <feColorMatrix result="knocked" type="matrix"
-          values="1 0 0 0 0
-                  0 1 0 0 0
-                  0 0 1 0 0
-                  -1 -1 -1 1 0" />
+      <filter id="knockout" colorInterpolationFilters="sRGB">
+        <feColorMatrix result="knocked" type="matrix" values="1 0 0 0 0
+                    0 1 0 0 0
+                    0 0 1 0 0
+                    -1 -1 -1 1 0" />
         <feComponentTransfer>
           <feFuncR type="linear" slope="3" intercept="-1" />
           <feFuncG type="linear" slope="3" intercept="-1" />
@@ -61,15 +55,13 @@ function ensureFilters() {
           <feFuncB type="table" tableValues="0 0 0 0 0 1 1 1 1 1" />
         </feComponentTransfer>
       </filter>
-
-      <filter id="lt-remove-black" color-interpolation-filters="sRGB">
-        <feColorMatrix type="matrix"
-          values="1 0 0 0 0
-                  0 1 0 0 0
-                  0 0 1 0 0
-                  -255 -255 -255 0 1" result="bp" />
-        <feMorphology in="bp" operator="dilate" radius="0.5" result="sm" />
-        <feComposite in="SourceGraphic" in2="sm" operator="out" />
+      <filter id="remove-black" color-interpolation-filters="sRGB">
+        <feColorMatrix type="matrix" values="1 0 0 0 0
+                      0 1 0 0 0
+                      0 0 1 0 0
+                      -255 -255 -255 0 1" result="black-pixels" />
+        <feMorphology in="black-pixels" operator="dilate" radius="0.5" result="smoothed" />
+        <feComposite in="SourceGraphic" in2="smoothed" operator="out" />
       </filter>
     </defs>
   `;
@@ -82,7 +74,7 @@ export default function LiquidToggle({
   onChange,
   disabled = false,
   label,
-  hue      = 144,
+  hue      = 144, // always 144 now, based on your instruction "keep every toggle green color only"
 }) {
   const btnRef = useRef(null);
 
@@ -90,25 +82,22 @@ export default function LiquidToggle({
   useEffect(() => {
     const btn = btnRef.current;
     if (!btn) return;
-    // Only set --complete if GSAP is NOT mid-animation
-    // (GSAP sets a __animating flag we check below)
     if (!btn.__ltAnimating) {
       btn.style.setProperty('--complete', checked ? '100' : '0');
     }
     btn.setAttribute('aria-pressed', String(checked));
-    btn.style.setProperty('--hue', String(hue));
+    btn.style.setProperty('--hue', '144'); // Always green per instruction
   }, [checked, hue]);
 
   // Wire up GSAP once on mount
   useEffect(() => {
     ensureFilters();
-    const btn = btnRef.current;
-    if (!btn) return;
+    const toggle = btnRef.current;
+    if (!toggle) return;
 
-    // Set initial state
-    btn.style.setProperty('--complete', checked ? '100' : '0');
-    btn.setAttribute('aria-pressed', String(checked));
-    btn.style.setProperty('--hue', String(hue));
+    toggle.style.setProperty('--complete', checked ? '100' : '0');
+    toggle.setAttribute('aria-pressed', String(checked));
+    toggle.style.setProperty('--hue', '144');
 
     let mounted = true;
     let cleanup = null;
@@ -116,70 +105,67 @@ export default function LiquidToggle({
     getGSAP().then(({ gsap, Draggable }) => {
       if (!mounted || !btnRef.current) return;
 
-      // ── toggleState — mirrors the original babel.js exactly ──
       const toggleState = async () => {
         if (disabled || !btnRef.current) return;
-        const b = btnRef.current;
-
-        b.dataset.pressed = 'true';
-        b.dataset.active  = 'true';
-
-        // Wait for any running CSS animations (bounce)
+        
+        toggle.dataset.pressed = true;
+        toggle.dataset.active = true; // bubble=true in original config
+        
         await Promise.allSettled(
-          b.getAnimations({ subtree: true }).map(a => a.finished)
+          toggle.getAnimations({ subtree: true }).map((a) => a.finished)
         );
+        
+        const pressed = toggle.matches('[aria-pressed=true]');
+        toggle.__ltAnimating = true;
 
-        const pressed = b.getAttribute('aria-pressed') === 'true';
-
-        b.__ltAnimating = true;
         gsap.timeline({
           onComplete: () => {
             gsap.delayedCall(0.05, () => {
               if (!btnRef.current) return;
-              b.dataset.active  = 'false';
-              b.dataset.pressed = 'false';
-              b.__ltAnimating   = false;
-              const next = !pressed;
-              b.setAttribute('aria-pressed', String(next));
+              toggle.dataset.active = false;
+              toggle.dataset.pressed = false;
+              toggle.__ltAnimating = false;
+              const next = !toggle.matches('[aria-pressed=true]');
+              toggle.setAttribute('aria-pressed', String(next));
               if (onChange) onChange(next);
             });
           },
-        }).to(b, {
+        }).to(toggle, {
           '--complete': pressed ? 0 : 100,
           duration: 0.12,
-          delay: 0.18,          // bubble delay — matches original
+          delay: 0.18,
         });
       };
 
-      // ── Draggable proxy — mirrors original exactly ──
       const proxy = document.createElement('div');
-
       const [drg] = Draggable.create(proxy, {
         allowContextMenu: true,
-        handle: btn,
+        handle: toggle,
 
         onDragStart: function () {
           if (disabled) return;
-          const rect    = btn.getBoundingClientRect();
-          const pressed = btn.getAttribute('aria-pressed') === 'true';
-          this.dragBounds = pressed
-            ? rect.left - this.pointerX
-            : rect.left + rect.width - this.pointerX;
-          btn.dataset.active = 'true';
+          const toggleBounds = toggle.getBoundingClientRect();
+          const pressed = toggle.matches('[aria-pressed=true]');
+          const bounds = pressed
+            ? toggleBounds.left - this.pointerX
+            : toggleBounds.left + toggleBounds.width - this.pointerX;
+          this.dragBounds = bounds;
+          toggle.dataset.active = true;
         },
 
         onDrag: function () {
           if (disabled) return;
-          const pressed  = btn.getAttribute('aria-pressed') === 'true';
-          const dragged  = this.x - this.startX;
+          const pressed = toggle.matches('[aria-pressed=true]');
+          const dragged = this.x - this.startX;
           const complete = gsap.utils.clamp(
-            0, 100,
+            0,
+            100,
             pressed
               ? gsap.utils.mapRange(this.dragBounds, 0, 0, 100, dragged)
               : gsap.utils.mapRange(0, this.dragBounds, 0, 100, dragged)
           );
           this.complete = complete;
-          gsap.set(btn, {
+          gsap.set(toggle, {
             '--complete': complete,
             '--delta': Math.min(Math.abs(this.deltaX), 12),
           });
@@ -187,21 +173,20 @@ export default function LiquidToggle({
 
         onDragEnd: function () {
           if (disabled) return;
-          const target = this.complete >= 50 ? 100 : 0;
-          btn.__ltAnimating = true;
+          toggle.__ltAnimating = true;
           gsap.fromTo(
-            btn,
+            toggle,
             { '--complete': this.complete },
             {
-              '--complete': target,
+              '--complete': this.complete >= 50 ? 100 : 0,
               duration: 0.15,
               onComplete: () => {
                 gsap.delayedCall(0.05, () => {
                   if (!btnRef.current) return;
-                  btn.dataset.active = 'false';
-                  btn.__ltAnimating  = false;
-                  const next = target === 100;
-                  btn.setAttribute('aria-pressed', String(next));
+                  toggle.dataset.active = false;
+                  toggle.__ltAnimating = false;
+                  const next = this.complete >= 50;
+                  toggle.setAttribute('aria-pressed', String(next));
                   if (onChange) onChange(next);
                 });
               },
@@ -212,22 +197,22 @@ export default function LiquidToggle({
         onPress: function () {
           this.__pressTime = Date.now();
           if ('ontouchstart' in window && navigator.maxTouchPoints > 0) {
-            btn.dataset.active = 'true';
+            toggle.dataset.active = true;
           }
         },
 
         onRelease: function () {
           this.__releaseTime = Date.now();
-          gsap.set(btn, { '--delta': 0 });
+          gsap.set(toggle, { '--delta': 0 });
           if (
             'ontouchstart' in window &&
             navigator.maxTouchPoints > 0 &&
             ((this.startX !== undefined &&
-              this.endX   !== undefined &&
+              this.endX !== undefined &&
               Math.abs(this.endX - this.startX) < 4) ||
               this.endX === undefined)
           ) {
-            btn.dataset.active = 'false';
+            toggle.dataset.active = false;
           }
           if (this.__releaseTime - this.__pressTime <= 150) {
             toggleState();
@@ -235,21 +220,21 @@ export default function LiquidToggle({
         },
       });
 
-      // ── Keyboard ──
       const onKeyDown = (e) => {
         if (e.key === 'Enter') toggleState();
-        if (e.key === ' ')     e.preventDefault();
+        if (e.key === ' ') e.preventDefault();
       };
       const onKeyUp = (e) => {
         if (e.key === ' ') toggleState();
       };
-      btn.addEventListener('keydown', onKeyDown);
-      btn.addEventListener('keyup',   onKeyUp);
+      
+      toggle.addEventListener('keydown', onKeyDown);
+      toggle.addEventListener('keyup', onKeyUp);
 
       cleanup = () => {
         if (drg && drg.kill) drg.kill();
-        btn.removeEventListener('keydown', onKeyDown);
-        btn.removeEventListener('keyup',   onKeyUp);
+        toggle.removeEventListener('keydown', onKeyDown);
+        toggle.removeEventListener('keyup', onKeyUp);
       };
     });
 
@@ -265,28 +250,25 @@ export default function LiquidToggle({
       ref={btnRef}
       aria-label={label || 'toggle'}
       aria-pressed={checked ? 'true' : 'false'}
-      className="lt-toggle"
+      className="liquid-toggle"
       disabled={disabled}
       data-active="false"
       data-pressed="false"
     >
-      {/* Knockout layer — makes a "hole" in the background */}
-      <div className="lt-knockout">
-        <div className="lt-indicator lt-indicator--masked">
-          <div className="lt-mask" />
+      <div className="knockout">
+        <div className="indicator indicator--masked">
+          <div className="mask"></div>
         </div>
       </div>
-
-      {/* Liquid goo layer */}
-      <div className="lt-indicator__liquid">
-        <div className="lt-liq-shadow" />
-        <div className="lt-wrapper">
-          <div className="lt-liquids">
-            <div className="lt-liquid__shadow" />
-            <div className="lt-liquid__track" />
+      <div className="indicator__liquid">
+        <div className="shadow"></div>
+        <div className="wrapper">
+          <div className="liquids">
+            <div className="liquid__shadow"></div>
+            <div className="liquid__track"></div>
           </div>
         </div>
-        <div className="lt-cover" />
+        <div className="cover"></div>
       </div>
     </button>
   );
