@@ -211,49 +211,28 @@ export default function Navbar({
 
           {/* Desktop nav links */}
           <div className="navbar__links">
-            <div className="button-wrap navbar__link-wrap">
-              <NavLink to="/dashboard" className={({ isActive }) => 'navbar__link' + (isActive ? ' navbar__link--active' : '')}>
-                <span><LayoutDashboard size={15} /> Repository</span>
-              </NavLink>
-              <div className="button-shadow" />
-            </div>
-            <div className="button-wrap navbar__link-wrap">
-              <NavLink to="/coding" className={({ isActive }) => 'navbar__link' + (isActive ? ' navbar__link--active' : '')}>
-                <span><BookOpen size={15} /> Coding</span>
-              </NavLink>
-              <div className="button-shadow" />
-            </div>
-            <div className="button-wrap navbar__link-wrap">
-              <NavLink to="/events" className={({ isActive }) => 'navbar__link' + (isActive ? ' navbar__link--active' : '')}>
-                <span><Clock2 size={15} /> Events</span>
-              </NavLink>
-              <div className="button-shadow" />
-            </div>
-            <div className="button-wrap navbar__link-wrap">
-              <NavLink to="/syllabus" className={({ isActive }) => 'navbar__link' + (isActive ? ' navbar__link--active' : '')}>
-                <span><BookMarked size={15} /> Syllabus</span>
-              </NavLink>
-              <div className="button-shadow" />
-            </div>
-            <div className="button-wrap navbar__link-wrap">
-              <NavLink to="/timetable" className={({ isActive }) => 'navbar__link' + (isActive ? ' navbar__link--active' : '')}>
-                <span><Clock size={15} /> Timetable</span>
-              </NavLink>
-              <div className="button-shadow" />
-            </div>
-            <div className="button-wrap navbar__link-wrap">
-              <NavLink to="/feedback" className={({ isActive }) => 'navbar__link' + (isActive ? ' navbar__link--active' : '')}>
-                <span><MessageSquare size={15} /> Feedback</span>
-              </NavLink>
-              <div className="button-shadow" />
-            </div>
+            <NavLink to="/dashboard" className={({ isActive }) => 'navbar__link' + (isActive ? ' navbar__link--active' : '')}>
+              <LayoutDashboard size={15} /> Repository
+            </NavLink>
+            <NavLink to="/coding" className={({ isActive }) => 'navbar__link' + (isActive ? ' navbar__link--active' : '')}>
+              <BookOpen size={15} /> Coding
+            </NavLink>
+            <NavLink to="/events" className={({ isActive }) => 'navbar__link' + (isActive ? ' navbar__link--active' : '')}>
+              <Clock2 size={15} /> Events
+            </NavLink>
+            <NavLink to="/syllabus" className={({ isActive }) => 'navbar__link' + (isActive ? ' navbar__link--active' : '')}>
+              <BookMarked size={15} /> Syllabus
+            </NavLink>
+            <NavLink to="/timetable" className={({ isActive }) => 'navbar__link' + (isActive ? ' navbar__link--active' : '')}>
+              <Clock size={15} /> Timetable
+            </NavLink>
+            <NavLink to="/feedback" className={({ isActive }) => 'navbar__link' + (isActive ? ' navbar__link--active' : '')}>
+              <MessageSquare size={15} /> Feedback
+            </NavLink>
             {isAdmin && (
-              <div className="button-wrap navbar__link-wrap">
-                <NavLink to="/admin" className={({ isActive }) => 'navbar__link navbar__link--admin' + (isActive ? ' navbar__link--active' : '')}>
-                  <span><Shield size={15} /> Admin</span>
-                </NavLink>
-                <div className="button-shadow" />
-              </div>
+              <NavLink to="/admin" className={({ isActive }) => 'navbar__link navbar__link--admin' + (isActive ? ' navbar__link--active' : '')}>
+                <Shield size={15} /> Admin
+              </NavLink>
             )}
           </div>
 
