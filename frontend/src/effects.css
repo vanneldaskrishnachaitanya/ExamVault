@@ -375,123 +375,140 @@
 
 /* ═══════════════════════════════════════════════════════════════
    LIQUID TOGGLE  — lt-* namespace
-   Matches the Jhey Tompkins liquid-glass toggle exactly.
-   Filters (#lt-goo, #lt-knockout, #lt-remove-black) are injected
-   by LiquidToggle.jsx at runtime.
+   Exact 1-to-1 port of Jhey Tompkins' liquid-glass toggle.
+   ⚠️  GSAP animates --complete. CSS NEVER transitions `translate`.
+       Only height / width / margin / scale / opacity / filter
+       are CSS-transitioned (matching the original @layer transitions).
 ════════════════════════════════════════════════════════════════ */
 
-/* Hidden SVG injected once into <body> */
-.lt-sr-only {
-  position: absolute; width: 1px; height: 1px; padding: 0;
-  margin: -1px; overflow: hidden; clip: rect(0,0,0,0);
-  white-space: nowrap; border-width: 0;
-}
+/* ── The toggle button (= .liquid-toggle in the original) ─── */
+.lt-toggle {
+  /* ── same custom-property defaults as the original ── */
+  --complete:  0;       /* animated by GSAP (0-100) */
+  --delta:     0;       /* drag delta, set by GSAP */
+  --hue:       144;
+  --border:    5px;     /* keep original var name so calcs copy verbatim */
+  --width:     72;
+  --height:    34;
 
-/* Outer wrapper */
-.lt-wrapper {
-  display: inline-flex;
-  align-items: center;
-  flex-shrink: 0;
-}
-
-/* ── Toggle button ── */
-.lt-btn {
-  --lt-border:    4px;
-  --lt-width:     72;
-  --lt-height:    34;
-  --lt-hue:       144;
-  --complete:     0;
-  --lt-delta:     0;
-
-  --lt-checked: hsl(
-    var(--lt-hue, 144),
-    calc((8 + (var(--complete, 0) / 100 * 92)) * 1%),
-    calc((81 - (var(--complete, 0) / 100 * 38)) * 1%)
+  --unchecked: hsl(218, 8%, 81%);
+  --checked: hsl(
+    var(--hue, 144),
+    calc((8 + (var(--complete) / 100 * 92)) * 1%),
+    calc((81 - (var(--complete) / 100 * 38)) * 1%)
   );
+  --control: hsl(300, 100%, 100%);
 
-  height:           calc(var(--lt-height) * 1px);
-  width:            calc(var(--lt-width)  * 1px);
-  border-radius:    100px;
-  border:           0;
-  padding:          0;
-  cursor:           pointer;
-  position:         relative;
-  overflow:         visible;
-  container-type:   inline-size;
-  background:       transparent;
-  flex-shrink:      0;
-  outline-offset:   2px;
-  transition:       outline 0.2s ease-out;
+  height:         calc(var(--height) * 1px);
+  width:          calc(var(--width)  * 1px);
+  border-radius:  100px;
+  border:         0;
+  padding:        0;
+  cursor:         pointer;
+  position:       relative;
+  overflow:       visible;
+  container-type: inline-size;   /* needed for cqi units in children */
+  background:     transparent;
+  flex-shrink:    0;
+  outline-offset: 2px;
+  transition:     outline 0.2s ease-out;
 }
 
-.lt-btn:focus-visible {
-  outline: 3px solid color-mix(in oklch, hsl(var(--lt-hue,144), 80%, 55%), transparent 30%);
+.lt-toggle:focus-visible {
+  outline: 4px solid color-mix(in oklch, var(--checked), transparent 40%);
 }
-.lt-btn:active,
-.lt-btn[data-active='true']:focus-visible { outline: none; }
-.lt-btn:disabled { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
+.lt-toggle:active,
+.lt-toggle[data-active='true']:focus-visible { outline: none; }
+.lt-toggle:disabled { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
 
-/* ── Knockout layer ── */
+/* ── Knockout (= .knockout in the original) ── */
 .lt-knockout {
-  height: calc(var(--lt-height) * 1px);
-  width:  calc(var(--lt-width)  * 1px);
+  height:        calc(var(--height) * 1px);
+  width:         calc(var(--width)  * 1px);
   border-radius: 100px;
-  filter: url(#lt-remove-black);
-  position: absolute;
-  inset: 0;
-  will-change: filter;
-  transform: translate3d(0,0,0);
+  filter:        url(#lt-remove-black);
+  position:      absolute;
+  inset:         0;
+  will-change:   filter, scale;
+  transform:     translate3d(0, 0, 0);
 }
 
-/* ── Masked indicator ── */
+/* ── Indicator (= .indicator in the original) ── */
+.lt-indicator {
+  border-radius:  100px;
+  pointer-events: none;
+  height:         100%;
+  width:          100%;
+  background:     var(--checked);
+  position:       absolute;
+  top:            50%;
+  scale:          1;
+  left:           50%;
+  translate:      -50% -50%;
+}
+
+/* ── Masked indicator (= .indicator--masked) ── */
 .lt-indicator--masked {
-  background:     var(--lt-checked);
+  background:     var(--checked);
   z-index:        12;
   height:         100%;
   width:          100%;
   translate:      -50% -50%;
-  container-type: inline-size;
-  position:       absolute;
-  top:  50%;
-  left: 50%;
-  border-radius: 100px;
+  container-type: inline-size;   /* cqi inside .lt-mask refers to THIS */
 }
 
+/* ── Mask (= .mask in the original) ── */
+/*
+ * CRITICAL: translate is computed from --complete (GSAP animates --complete).
+ * translate is NOT in transition-property — only height/width/margin/scale are.
+ */
 .lt-mask {
   position:      absolute;
-  height:        calc(100% - 2 * var(--lt-border));
-  width:         calc(60%  - 2 * var(--lt-border));
+  height:        calc(100% - (2 * var(--border)));
+  width:         calc(60%  - (2 * var(--border)));
   top:           50%;
   background:    #000;
-  left:          var(--lt-border);
+  left:          var(--border);
   border-radius: 100px;
-  translate: calc((var(--complete, 0) / 100) * (100cqi - 60cqi)) -50%;
-  transition-property: height, width, margin, translate;
+  /* position driven by --complete — GSAP owns this, no CSS transition */
+  translate: calc(
+    (var(--complete) / 100) * (100cqi - 60cqi - (0 * var(--border)))
+  ) -50%;
+  /* Only transition the scale-up geometry on press */
+  transition-property: height, width, margin, scale;
   transition-duration: 0.2s;
   transition-timing-function: ease-out;
-  will-change: height, width, translate;
+  will-change: height, width, margin;
 }
 
-/* ── Liquid indicator ── */
+/* ── Liquid indicator (= .indicator__liquid) ── */
+/*
+ * Again: translate driven by --complete. NOT CSS-transitioned.
+ */
 .lt-indicator__liquid {
   position:       absolute;
-  height:         calc(100% - 2 * var(--lt-border));
-  width:          calc(60%  - 2 * var(--lt-border));
-  container-type: inline-size;
+  height:         calc(100% - (2 * var(--border)));
+  width:          calc(60%  - (2 * var(--border)));
+  container-type: inline-size;   /* cqi inside liquid children refers to THIS */
   top:            50%;
   background:     transparent;
-  left:           var(--lt-border);
+  left:           var(--border);
   border-radius:  100px;
-  translate: calc((var(--complete, 0) / 100) * (100cqi - 100% - 2 * var(--lt-border))) -50%;
+  translate: calc(
+    (var(--complete) / 100) * (100cqi - 100% - (2 * var(--border)))
+  ) -50%;
+  /* Only scale is CSS-transitioned (the active pop animation) */
   transition-property: scale;
   transition-duration: 0.2s;
   transition-timing-function: ease-out;
 }
 
-.lt-shadow {
-  opacity: 0;
-  position: absolute;
-  inset: 0;
+/* ── Shadow (= .shadow in the original) ── */
+.lt-liq-shadow {
+  opacity:       0;
+  content:       '';
+  position:      absolute;
+  inset:         0;
   border-radius: 100px;
   box-shadow:
     1px -1px 2px hsl(0 0% 100% / 0.5) inset,
@@ -509,7 +526,9 @@
   transition: opacity 0.2s ease-out;
 }
 
+/* ── Cover (= .cover in the original) ── */
 .lt-cover {
+  content:       '';
   position:      absolute;
   inset:         0;
   background:    white;
@@ -517,7 +536,8 @@
   transition:    opacity 0.2s ease-out;
 }
 
-.lt-liquid-wrapper {
+/* ── Goo wrapper (= .wrapper in the original) ── */
+.lt-wrapper {
   position:      absolute;
   inset:         0;
   border-radius: 100px;
@@ -526,63 +546,108 @@
   transition:    filter 0.2s ease-out;
 }
 
+/* ── Liquids container (= .liquids in the original) ── */
 .lt-liquids {
   position:      absolute;
   inset:         0;
-  transform:     translate3d(0,0,0);
+  transform:     translate3d(0, 0, 0);
   border-radius: 100px;
   overflow:      hidden;
   filter:        url(#lt-goo);
 }
 
+/* ── Liquid shadow (= .liquid__shadow in the original) ── */
 .lt-liquid__shadow {
   position:      absolute;
   inset:         0;
   border-radius: 100px;
   box-shadow:
-    inset 0px 0px 3px 4px var(--lt-checked),
-    inset calc(((var(--complete, 0) / 100) * 8px) + -4px) 0px 3px 4px var(--lt-checked);
+    inset 0px 0px 3px 4px var(--checked),
+    inset calc(((var(--complete) / 100) * 8px) + -4px) 0px 3px 4px var(--checked);
 }
 
+/* ── Liquid track (= .liquid__track in the original) ── */
+/*
+ * translate driven by --complete (GSAP). NOT CSS-transitioned.
+ * Only height / width / filter / left are CSS-transitioned
+ * (for the active press animation).
+ */
 .lt-liquid__track {
-  height:        calc(var(--lt-height) * 1px);
-  width:         calc(var(--lt-width)  * 1px);
-  background:    var(--lt-checked);
+  content:       '';
+  height:        calc(var(--height) * 1px);
+  width:         calc(var(--width)  * 1px);
+  background:    var(--checked);
   border-radius: 100px;
   position:      absolute;
   top:           50%;
   left:          0;
-  translate: calc((var(--complete, 0) / 100) * (100cqi - 100% - 6 * var(--lt-border))) -50%;
-  transition-property: height, width, filter, left, translate;
+  translate: calc(
+    (var(--complete) / 100) * (100cqi - 100% - (6 * var(--border)))
+  ) -50%;
+  transition-property: height, width, filter, left;
   transition-duration: 0.2s;
   transition-timing-function: ease-out;
 }
 
-/* ── Active states ── */
-.lt-btn[data-active='true'] .lt-mask,
-.lt-btn:active .lt-mask {
-  height: calc((100% - 2 * var(--lt-border)) * 1.65);
-  width:  calc((60%  - 2 * var(--lt-border)) * 1.65);
-  margin-left: calc((60% - 2 * var(--lt-border)) * -0.325);
-}
-.lt-btn[data-active='true'] .lt-indicator__liquid,
-.lt-btn:active .lt-indicator__liquid { scale: 1.65; }
-.lt-btn[data-active='true'] .lt-liquid-wrapper,
-.lt-btn:active .lt-liquid-wrapper { filter: blur(0px); }
-.lt-btn[data-active='true'] .lt-shadow,
-.lt-btn:active .lt-shadow { opacity: 1; }
-.lt-btn[data-active='true'] .lt-cover,
-.lt-btn:active .lt-cover  { opacity: 0; }
-.lt-btn[data-active='true'] .lt-liquid__track,
-.lt-btn:active .lt-liquid__track {
-  left:   calc(var(--lt-border) * 3);
-  height: calc(var(--lt-height) * 1px - 6 * var(--lt-border));
+/* ── aria-pressed=true at rest: track shifts right ── */
+.lt-toggle[aria-pressed='true']:not([data-active='true']) .lt-liquid__track {
+  left: calc(var(--border) * 6);
 }
 
-/* Pressed — min-height for goo bubble */
-.lt-btn[data-pressed='true'] .lt-liquid__track { min-height: 15px; }
-
-/* Checked: track rests at right side */
-.lt-btn[aria-pressed='true']:not([data-active='true']) .lt-liquid__track {
-  left: calc(var(--lt-border) * 6);
+/* ── Pressed: bubble enlarges the goo ── */
+.lt-toggle[data-pressed='true'] .lt-liquid__track {
+  min-height: 30px;   /* matches original exactly */
 }
+
+/* ──────────────────────────────────────────────────────────
+   ACTIVE / PRESSED STATES
+   (= the [data-active='true'] and :active rules in original)
+   These drive the "bubble squish" when you press the toggle.
+   ────────────────────────────────────────────────────────── */
+
+/* Mask grows (squish effect) */
+.lt-toggle[data-active='true'] .lt-mask,
+.lt-toggle:active                .lt-mask {
+  height: calc(
+    (100% - (2 * var(--border))) * (1.65 - (var(--delta, 0) * 0.025))
+  );
+  width: calc(
+    (60% - (2 * var(--border))) * (1.65 + (var(--delta, 0) * 0.025))
+  );
+  margin-left: calc(
+    (60% - (2 * var(--border))) * ((0.65 + (var(--delta, 0) * 0.025)) * -0.5)
+  );
+}
+
+/* Liquid indicator scales up */
+.lt-toggle[data-active='true'] .lt-indicator__liquid,
+.lt-toggle:active                .lt-indicator__liquid {
+  scale: calc(1.65 + (var(--delta, 0) * 0.025))
+         calc(1.65 - (var(--delta, 0) * 0.025));
+}
+
+/* Goo wrapper blur drops to 0 so shape is sharp */
+.lt-toggle[data-active='true'] .lt-wrapper,
+.lt-toggle:active                .lt-wrapper {
+  filter: blur(0px);
+}
+
+/* Shadow appears (inset glass highlight) */
+.lt-toggle[data-active='true'] .lt-liq-shadow,
+.lt-toggle:active                .lt-liq-shadow {
+  opacity: 1;
+}
+
+/* White cover disappears so you see through */
+.lt-toggle[data-active='true'] .lt-cover,
+.lt-toggle:active                .lt-cover {
+  opacity: 0;
+}
+
+/* Track height & left shift while active */
+.lt-toggle[data-active='true'] .lt-liquid__track,
+.lt-toggle:active                .lt-liquid__track {
+  left:   calc(var(--border) * 3);
+  height: calc((var(--height) * 1px) - (6 * var(--border)));
+}
+
