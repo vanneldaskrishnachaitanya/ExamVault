@@ -115,7 +115,7 @@ export default function LiquidToggle({
           toggle.getAnimations({ subtree: true }).map((a) => a.finished)
         );
         
-        const pressed = toggle.matches('[aria-pressed=true]');
+        const pressed = toggle.matches('[aria-pressed="true"]');
         toggle.__ltAnimating = true;
 
         gsap.timeline({
@@ -125,7 +125,7 @@ export default function LiquidToggle({
               toggle.dataset.active = false;
               toggle.dataset.pressed = false;
               toggle.__ltAnimating = false;
-              const next = !toggle.matches('[aria-pressed=true]');
+              const next = !toggle.matches('[aria-pressed="true"]');
               toggle.setAttribute('aria-pressed', String(next));
               if (onChange) onChange(next);
             });
@@ -145,7 +145,7 @@ export default function LiquidToggle({
         onDragStart: function () {
           if (disabled) return;
           const toggleBounds = toggle.getBoundingClientRect();
-          const pressed = toggle.matches('[aria-pressed=true]');
+          const pressed = toggle.matches('[aria-pressed="true"]');
           const bounds = pressed
             ? toggleBounds.left - this.pointerX
             : toggleBounds.left + toggleBounds.width - this.pointerX;
@@ -155,7 +155,7 @@ export default function LiquidToggle({
 
         onDrag: function () {
           if (disabled) return;
-          const pressed = toggle.matches('[aria-pressed=true]');
+          const pressed = toggle.matches('[aria-pressed="true"]');
           const dragged = this.x - this.startX;
           const complete = gsap.utils.clamp(
             0,

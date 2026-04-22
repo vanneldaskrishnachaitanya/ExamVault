@@ -173,7 +173,6 @@ export default function QuoteBanner() {
   ];
 
   const hasCards = quotes.length > 0 || polls.length > 0 || (songEnabled && !!song);
-  if (!enabled || (!loading && !hasCards)) return null;
 
   const q   = quotes[quoteIdx] || {};
   const pat = BG_PATTERNS[quoteIdx % BG_PATTERNS.length];
@@ -247,6 +246,8 @@ export default function QuoteBanner() {
     };
     sync();
   };
+
+  if (!enabled || (!loading && !hasCards)) return null;
 
   return (
     <div className="quote-banner-wrap">
