@@ -966,7 +966,6 @@ p, li, .dash-hero__sub, .reg-card__desc, .sp-header__meta, .login__domain-note,
   position: absolute;
   inset: 0;
   background: rgba(255, 255, 255, 0.22);
-  filter: url(#glass-distortion);
 }
 
 .liquidGlass-shine {
@@ -990,7 +989,8 @@ p, li, .dash-hero__sub, .reg-card__desc, .sp-header__meta, .login__domain-note,
   width: 100%;
   height: 100%;
   border-radius: 999px;
-  overflow: hidden;
+  overflow: visible;
+  filter: url(#glass-distortion);
 }
 
 .navbar__liquid-glass .liquidGlass-text {
