@@ -235,7 +235,7 @@ export default function Navbar({
           <feDisplacementMap
             in="SourceGraphic"
             in2="softMap"
-            scale={240}
+            scale={150}
             xChannelSelector="R"
             yChannelSelector="G"
           />
