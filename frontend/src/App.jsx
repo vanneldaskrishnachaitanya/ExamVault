@@ -73,15 +73,7 @@ function LazyPage({ children }) {
 // ── Route tree ────────────────────────────────────────────────
 export default function App() {
   return (
-    <div className="app-shell">
-      <div className="app-bg-video" aria-hidden="true">
-        <video autoPlay muted loop playsInline>
-          <source src="/Background.mp4" type="video/mp4" />
-        </video>
-      </div>
-
-      <div className="app-shell__content">
-        <Routes>
+    <Routes>
 
       {/* ── Public ─────────────────────────────────────────── */}
       <Route path="/login" element={
@@ -117,10 +109,8 @@ export default function App() {
       </Route>
 
       {/* ── Catch-all ──────────────────────────────────────── */}
-          <Route path="/"  element={<Navigate to="/login"   replace />} />
-          <Route path="*"  element={<LazyPage><NotFoundPage /></LazyPage>} />
-        </Routes>
-      </div>
-    </div>
+      <Route path="/"  element={<Navigate to="/login"   replace />} />
+      <Route path="*"  element={<LazyPage><NotFoundPage /></LazyPage>} />
+    </Routes>
   );
 }
