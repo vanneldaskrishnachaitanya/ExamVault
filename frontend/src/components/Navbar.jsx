@@ -186,31 +186,92 @@ export default function Navbar({
 
   return (
     <>
-      <nav className="navbar" role="navigation" aria-label="Main navigation">
-        <div className="navbar__inner">
+      <svg style={{ display: 'none' }} aria-hidden="true" focusable="false">
+        <filter
+          id="glass-distortion"
+          x="0%"
+          y="0%"
+          width="100%"
+          height="100%"
+          filterUnits="objectBoundingBox"
+        >
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.01 0.01"
+            numOctaves="1"
+            seed="5"
+            result="turbulence"
+          />
 
-          {/* ── Hamburger (mobile only) ── */}
-          <button
-            className="navbar__hamburger"
-            onClick={() => setDrawerOpen(prev => !prev)}
-            aria-label={drawerOpen ? 'Close menu' : 'Open menu'}
-            aria-expanded={drawerOpen}
+          <feComponentTransfer in="turbulence" result="mapped">
+            <feFuncR type="gamma" amplitude="1" exponent="10" offset="0.5" />
+            <feFuncG type="gamma" amplitude="0" exponent="1" offset="0" />
+            <feFuncB type="gamma" amplitude="0" exponent="1" offset="0.5" />
+          </feComponentTransfer>
+
+          <feGaussianBlur in="turbulence" stdDeviation="3" result="softMap" />
+
+          <feSpecularLighting
+            in="softMap"
+            surfaceScale="5"
+            specularConstant="1"
+            specularExponent="100"
+            lightingColor="white"
+            result="specLight"
           >
-            {drawerOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
+            <fePointLight x="-200" y="-200" z="300" />
+          </feSpecularLighting>
 
-          {/* Brand */}
-          <Link to="/dashboard" className="navbar__brand">
-            <div className="navbar__brand-icon">
-              <BookOpen size={18} strokeWidth={2.5} />
-            </div>
-            <span className="navbar__brand-wordmark">
-              VNR<span className="navbar__brand-accent">VJIET</span>
-            </span>
-          </Link>
+          <feComposite
+            in="specLight"
+            operator="arithmetic"
+            k1="0"
+            k2="1"
+            k3="1"
+            k4="0"
+            result="litImage"
+          />
 
-          {/* Desktop nav links */}
-          <div className="navbar__links">
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="softMap"
+            scale="150"
+            xChannelSelector="R"
+            yChannelSelector="G"
+          />
+        </filter>
+      </svg>
+
+      <nav className="navbar" role="navigation" aria-label="Main navigation">
+        <div className="liquidGlass-wrapper navbar__liquid-glass">
+          <div className="liquidGlass-effect" />
+          <div className="liquidGlass-tint" />
+          <div className="liquidGlass-shine" />
+          <div className="liquidGlass-text">
+            <div className="navbar__inner">
+
+              {/* ── Hamburger (mobile only) ── */}
+              <button
+                className="navbar__hamburger"
+                onClick={() => setDrawerOpen(prev => !prev)}
+                aria-label={drawerOpen ? 'Close menu' : 'Open menu'}
+                aria-expanded={drawerOpen}
+              >
+                {drawerOpen ? <X size={20} /> : <Menu size={20} />}
+              </button>
+
+              {/* Brand */}
+              <Link to="/dashboard" className="navbar__brand">
+                <div className="navbar__brand-icon">
+                  <BookOpen size={18} strokeWidth={2.5} />
+                </div>
+                <span className="navbar__brand-wordmark">
+                  VNR<span className="navbar__brand-accent">VJIET</span>
+                </span>
+              </Link>
+
+              {/* Desktop nav links */}
+              <div className="navbar__links">
             <div className="button-wrap navbar__link-wrap">
               <NavLink to="/dashboard" className={({ isActive }) => 'navbar__link' + (isActive ? ' navbar__link--active' : '')}>
                 <span><LayoutDashboard size={15} /> Repository</span>
@@ -255,10 +316,10 @@ export default function Navbar({
                 <div className="button-shadow" />
               </div>
             )}
-          </div>
+              </div>
 
-          {/* Right side icons */}
-          <div className="navbar__right">
+              {/* Right side icons */}
+              <div className="navbar__right">
 
             <button className="navbar__icon-btn" onClick={() => navigate('/search')} title="Search (/)">
               <Search size={17} />
@@ -341,8 +402,8 @@ export default function Navbar({
               )}
             </div>
 
-            {/* Avatar dropdown — profile + downloads + signout */}
-            <div className="navbar__user">
+              {/* Avatar dropdown — profile + downloads + signout */}
+              <div className="navbar__user">
               <button
                 ref={dropdownBtn}
                 className="navbar__avatar-btn"
@@ -391,6 +452,8 @@ export default function Navbar({
                   </button>
                 </div>
               )}
+                </div>
+              </div>
             </div>
           </div>
         </div>

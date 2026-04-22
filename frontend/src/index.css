@@ -928,24 +928,72 @@ p, li, .dash-hero__sub, .reg-card__desc, .sp-header__meta, .login__domain-note,
   height: var(--nav-h);
   margin: 0 auto;
   border-radius: 999px;
-  background: linear-gradient(180deg, rgba(10, 14, 24, 0.78), rgba(7, 10, 18, 0.62));
-  backdrop-filter: blur(28px) saturate(190%);
-  -webkit-backdrop-filter: blur(28px) saturate(190%);
-  border: 1px solid rgba(255,255,255,0.08);
-  box-shadow:
-    0 16px 40px rgba(0,0,0,0.28),
-    inset 0 1px 0 rgba(255,255,255,0.08),
-    0 0 0 1px rgba(245,166,35,0.05);
+  background: transparent;
+  border: none;
+  box-shadow: none;
   overflow: visible;
   isolation: isolate;
 }
 [data-theme="light"] .navbar {
-  background: linear-gradient(180deg, rgba(255,255,255,0.78), rgba(244,246,251,0.66));
-  border: 1px solid rgba(255,255,255,0.5);
-  box-shadow:
-    0 16px 36px rgba(0,0,0,0.08),
-    inset 0 1px 0 rgba(255,255,255,0.7),
-    0 0 0 1px rgba(0,0,0,0.04);
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+/* LIQUID GLASS STYLES */
+.liquidGlass-wrapper {
+  position: relative;
+  display: flex;
+  font-weight: 600;
+  overflow: hidden;
+
+  box-shadow: 0 6px 6px rgba(0, 0, 0, 0.2), 0 0 20px rgba(0, 0, 0, 0.1);
+
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 2.2);
+}
+
+.liquidGlass-effect {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+
+  backdrop-filter: blur(3px);
+  filter: url(#glass-distortion);
+  overflow: hidden;
+}
+
+.liquidGlass-tint {
+  z-index: 1;
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.50);
+}
+
+.liquidGlass-shine {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+
+  overflow: hidden;
+
+  box-shadow: inset 2px 2px 1px 0 rgba(255, 255, 255, 0.5),
+    inset -1px -1px 1px 1px rgba(255, 255, 255, 0.5);
+}
+
+.liquidGlass-text {
+  z-index: 3;
+  font-size: 2rem;
+  color: black;
+}
+
+.navbar__liquid-glass {
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+}
+
+.navbar__liquid-glass .liquidGlass-text {
+  width: 100%;
 }
 .navbar__inner {
   max-width: none; margin: 0 auto;
