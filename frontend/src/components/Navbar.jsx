@@ -186,7 +186,7 @@ export default function Navbar({
 
   return (
     <>
-      <svg style={{ display: 'none' }}>
+      <svg style={{ display: 'none' }} aria-hidden="true" focusable="false">
         <filter
           id="glass-distortion"
           x="0%"
@@ -216,7 +216,7 @@ export default function Navbar({
             surfaceScale="5"
             specularConstant="1"
             specularExponent="100"
-            lighting-color="white"
+            lightingColor="white"
             result="specLight"
           >
             <fePointLight x="-200" y="-200" z="300" />
@@ -235,7 +235,7 @@ export default function Navbar({
           <feDisplacementMap
             in="SourceGraphic"
             in2="softMap"
-            scale={150}
+            scale="150"
             xChannelSelector="R"
             yChannelSelector="G"
           />
