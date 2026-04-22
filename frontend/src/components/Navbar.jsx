@@ -214,7 +214,7 @@ export default function Navbar({
           <feSpecularLighting
             in="softMap"
             surfaceScale="5"
-            specularConstant="1.45"
+            specularConstant="1.7"
             specularExponent="100"
             lighting-color="white"
             result="specLight"
