@@ -243,8 +243,12 @@ export default function Navbar({
       </svg>
 
       <nav className="navbar" role="navigation" aria-label="Main navigation">
-        <div className="navbar__panel">
-          <div className="navbar__inner">
+        <div className="liquidGlass-wrapper navbar__liquid-glass">
+          <div className="liquidGlass-effect" />
+          <div className="liquidGlass-tint" />
+          <div className="liquidGlass-shine" />
+          <div className="liquidGlass-text">
+            <div className="navbar__inner">
 
               {/* ── Hamburger (mobile only) ── */}
               <button
@@ -429,6 +433,7 @@ export default function Navbar({
               )}
                 </div>
               </div>
+            </div>
           </div>
         </div>
       </nav>
