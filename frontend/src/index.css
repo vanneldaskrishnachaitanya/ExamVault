@@ -958,6 +958,7 @@ p, li, .dash-hero__sub, .reg-card__desc, .sp-header__meta, .login__domain-note,
   z-index: 0;
   inset: 0;
 
+  backdrop-filter: blur(3px);
   overflow: hidden;
 }
 
