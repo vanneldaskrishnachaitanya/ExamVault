@@ -1,15 +1,15 @@
-/* ═══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    VNRVJIET Academic Repository
-   Aesthetic: Deep-Space Academic · Cosmic Dark · Unforgettable
-   Fonts: Outfit (display) · Space Grotesk (body) · JetBrains Mono
+   Aesthetic: Deep-Space Academic Â· Cosmic Dark Â· Unforgettable
+   Fonts: Outfit (display) Â· Space Grotesk (body) Â· JetBrains Mono
    Theme: Midnight universe with amber-gold star accents
-═══════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
-/* ── Design Tokens ──────────────────────────────────────────── */
+/* â”€â”€ Design Tokens â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 :root {
-  /* Backgrounds — deep space layers */
+  /* Backgrounds â€” deep space layers */
   --bg:          #080c16;
   --bg-card:     #111626;
   --bg-raised:   #192033;
@@ -26,7 +26,7 @@
   --text-2:  #9ca8ca;
   --text-3:  #7381a6;
 
-  /* Brand — amber-gold star */
+  /* Brand â€” amber-gold star */
   --amber:        #f5a623;
   --amber-bright: #ffbe4d;
   --amber-dim:    #f5a62315;
@@ -78,7 +78,7 @@
   --mesh-4: rgba(0, 212, 184, 0.03);
 }
 
-/* ── Light theme ────────────────────────────────────────────── */
+/* â”€â”€ Light theme â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 [data-theme="light"] {
   --bg:          #f4f6fb;
   --bg-card:     #ffffff;
@@ -185,7 +185,7 @@
   --mesh-4: rgba(255, 188, 122, 0.04);
 }
 
-/* ── Reset ──────────────────────────────────────────────────── */
+/* â”€â”€ Reset â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 a { color: inherit; text-decoration: none; }
@@ -197,7 +197,7 @@ button, a, input, select, textarea, [role="button"] {
   touch-action: manipulation;
 }
 
-/* ── Body — Cosmic mesh background ─────────────────────────── */
+/* â”€â”€ Body â€” Cosmic mesh background â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 body {
   background: var(--bg);
   color: var(--text-1);
@@ -212,7 +212,7 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* Animated cosmic mesh overlay — the UNFORGETTABLE background */
+/* Animated cosmic mesh overlay â€” the UNFORGETTABLE background */
 body::before {
   content: '';
   position: fixed;
@@ -259,7 +259,7 @@ body::after {
 /* Layout z-index fix */
 #root, .layout { position: relative; z-index: 1; }
 
-/* ── Keyframes ──────────────────────────────────────────────── */
+/* â”€â”€ Keyframes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @keyframes meshDrift {
   0%   { transform: translate(0, 0) scale(1); }
   33%  { transform: translate(2%, 1%) scale(1.02); }
@@ -331,7 +331,7 @@ body::after {
 @keyframes toastIn      { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:translateX(0)} }
 @keyframes fileIn       { from{opacity:0;transform:translateX(-10px)} to{opacity:1;transform:translateX(0)} }
 
-/* ── Utility ────────────────────────────────────────────────── */
+/* â”€â”€ Utility â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .spin { animation: spin 0.8s linear infinite; }
 .sr-only { position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0; }
 .hl { background: rgba(245,166,35,0.25); color: var(--amber); border-radius: 3px; padding: 0 2px; }
@@ -408,17 +408,17 @@ p, li, .dash-hero__sub, .reg-card__desc, .sp-header__meta, .login__domain-note,
   color: var(--text-2);
 }
 
-/* ── Scrollbar ──────────────────────────────────────────────── */
+/* â”€â”€ Scrollbar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-3); }
 ::-webkit-scrollbar-corner { background: transparent; }
 
-/* ── Selection ──────────────────────────────────────────────── */
+/* â”€â”€ Selection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 ::selection { background: rgba(245,166,35,0.3); color: var(--amber-bright); }
 
-/* ── Focus ──────────────────────────────────────────────────── */
+/* â”€â”€ Focus â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 :focus-visible {
   outline: 2px solid var(--amber-border);
   outline-offset: 3px;
@@ -432,9 +432,9 @@ p, li, .dash-hero__sub, .reg-card__desc, .sp-header__meta, .login__domain-note,
   }
 }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    LAYOUT
-══════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .layout {
   --scroll-y: 0px;
   --scroll-p: 0;
@@ -856,9 +856,9 @@ p, li, .dash-hero__sub, .reg-card__desc, .sp-header__meta, .login__domain-note,
   }
 }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    APP LOADER
-══════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .app-loader {
   display: flex; flex-direction: column; align-items: center;
   justify-content: center; gap: 1.5rem;
@@ -886,9 +886,9 @@ p, li, .dash-hero__sub, .reg-card__desc, .sp-header__meta, .login__domain-note,
   background: rgba(255,255,255,0.03);
 }
 
-/* ══════════════════════════════════════════════════════════════
-   NAVBAR — Cosmic glass
-══════════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   NAVBAR â€” Cosmic glass
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .navbar {
   position: fixed; top: 0.75rem; left: 0; right: 0; z-index: 100;
   width: min(1480px, calc(100% - 1.25rem));
@@ -1150,9 +1150,9 @@ p, li, .dash-hero__sub, .reg-card__desc, .sp-header__meta, .login__domain-note,
 .navbar__notif-item:hover .navbar__notif-delete { opacity: 1; }
 .navbar__notif-delete:hover { color: var(--danger); }
 
-/* ══════════════════════════════════════════════════════════════
-   LOGIN PAGE — Cosmic auth portal
-══════════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   LOGIN PAGE â€” Cosmic auth portal
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .login {
   min-height: 100dvh;
   display: grid; place-items: center;
@@ -1384,9 +1384,9 @@ p, li, .dash-hero__sub, .reg-card__desc, .sp-header__meta, .login__domain-note,
   }
 }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    BREADCRUMB
-══════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .breadcrumb {
   display: inline-flex; align-items: center; gap: 0.25rem;
   flex-wrap: wrap; margin-bottom: 1.75rem;
@@ -1405,9 +1405,9 @@ a.breadcrumb__item:hover { color: var(--amber); background: var(--amber-dim); }
 .breadcrumb__item--active { color: var(--text-2); }
 .breadcrumb__sep { color: var(--text-3); flex-shrink: 0; }
 
-/* ══════════════════════════════════════════════════════════════
-   DASHBOARD — Hero + Regulation cards
-══════════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   DASHBOARD â€” Hero + Regulation cards
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .dashboard { animation: pageIn 0.4s var(--ease); }
 
 .dash-hero {
@@ -2081,9 +2081,9 @@ a.breadcrumb__item:hover { color: var(--amber); background: var(--amber-dim); }
 .reg--orange .reg-card__note { background: rgba(255,107,53,0.1); color: var(--orange); border: 1px solid rgba(255,107,53,0.22); }
 .reg--orange:hover { border-color: var(--orange); }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    REGULATION PAGE
-══════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .reg-page { animation: pageIn 0.4s var(--ease); }
 .reg-page__header {
   display: flex; align-items: flex-start; justify-content: space-between;
@@ -2169,9 +2169,9 @@ a.breadcrumb__item:hover { color: var(--amber); background: var(--amber-dim); }
 .subject-item__name { flex: 1; font-size: 0.87rem; color: var(--text-2); transition: color 0.15s; }
 .subject-item__arrow { color: var(--text-3); flex-shrink: 0; }
 
-/* ══════════════════════════════════════════════════════════════
-   DRILL STEP — Year/Semester navigation
-══════════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   DRILL STEP â€” Year/Semester navigation
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .drill-step { display: flex; flex-direction: column; gap: 0.75rem; }
 .drill-step--animate { animation: drillIn 0.25s var(--ease); }
 .drill-step__label {
@@ -2271,9 +2271,9 @@ a.breadcrumb__item:hover { color: var(--amber); background: var(--amber-dim); }
 .branch-subjects-error { color: var(--danger); }
 .branch-subjects-warning { display: flex; align-items: center; gap: 0.4rem; font-size: 0.78rem; color: var(--warning); padding: 0.35rem 0; }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    SUBJECT PAGE
-══════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .subject-page { animation: pageIn 0.4s var(--ease); }
 .sp-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
 .sp-header__left { display: flex; align-items: flex-start; gap: 0.8rem; }
@@ -2306,9 +2306,9 @@ a.breadcrumb__item:hover { color: var(--amber); background: var(--amber-dim); }
 .sp-file-list .file-card:nth-child(5){animation-delay:0.14s}
 .sp-empty-section { display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; padding: 1.35rem; background: var(--bg-card); border: 1px dashed var(--border); border-radius: var(--radius); color: var(--text-3); font-size: 0.875rem; }
 
-/* ══════════════════════════════════════════════════════════════
-   FILE CARD — Premium redesign
-══════════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   FILE CARD â€” Premium redesign
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .file-card-wrapper { display: flex; flex-direction: column; }
 .file-card {
   display: flex; align-items: flex-start; gap: 0.9rem;
@@ -2475,9 +2475,9 @@ a.breadcrumb__item:hover { color: var(--amber); background: var(--amber-dim); }
   }
 }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    TAB BAR
-══════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .tab-bar { display: flex; align-items: center; gap: 0.25rem; padding: 0.25rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 1.5rem; width: fit-content; }
 .tab-bar__tab { display: flex; align-items: center; gap: 0.4rem; padding: 0.45rem 1rem; border-radius: var(--radius-sm); font-size: 0.875rem; font-weight: 600; color: var(--text-3); transition: color 0.15s, background 0.15s; }
 .tab-bar__tab:hover { color: var(--text-1); }
@@ -2487,9 +2487,9 @@ a.breadcrumb__item:hover { color: var(--amber); background: var(--amber-dim); }
 .tab-bar__refresh { margin-left: auto; padding: 0.4rem; color: var(--text-3); border-radius: var(--radius-sm); transition: color 0.15s, background 0.15s; }
 .tab-bar__refresh:hover { color: var(--text-1); background: var(--bg-raised); }
 
-/* ══════════════════════════════════════════════════════════════
-   BUTTONS — Global
-══════════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   BUTTONS â€” Global
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .btn {
   display: inline-flex; align-items: center; gap: 0.45rem;
   padding: 0.58rem 1.15rem; border-radius: var(--radius-sm);
@@ -2515,9 +2515,9 @@ a.breadcrumb__item:hover { color: var(--amber); background: var(--amber-dim); }
 .btn--danger  { background: rgba(239,68,68,0.12); color: #f87171; border: 1px solid rgba(239,68,68,0.25); }
 .btn--danger:hover:not(:disabled) { box-shadow: 0 4px 14px rgba(239,68,68,0.25); }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    MODAL
-══════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .modal-overlay {
   position: fixed; inset: 0; z-index: 200;
   background: rgba(0,0,0,0.78);
@@ -2761,9 +2761,9 @@ option {
   }
 }
 
-/* ══════════════════════════════════════════════════════════════
-   BOTTOM NAV — Cosmic glass mobile nav
-══════════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   BOTTOM NAV â€” Cosmic glass mobile nav
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .bottom-nav {
   display: none;
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 90;
@@ -2813,9 +2813,9 @@ option {
   box-shadow: 0 0 8px rgba(245,166,35,0.6);
 }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    ANNOUNCEMENT BANNER
-══════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .announcement-banner {
   display: flex; align-items: center; gap: 0.65rem;
   padding: 0.65rem 1.5rem; border-bottom: 1px solid;
@@ -2833,9 +2833,9 @@ option {
 .announcement-banner__close { margin-left: auto; flex-shrink: 0; display: grid; place-items: center; padding: 0.22rem; border-radius: 4px; background: none; border: none; cursor: pointer; opacity: 0.7; transition: opacity 0.15s; color: inherit; }
 .announcement-banner__close:hover { opacity: 1; }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    TOAST
-══════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .toast {
   position: fixed; bottom: 5rem; right: 1.5rem; z-index: 300;
   padding: 0.85rem 1.35rem;
@@ -2846,9 +2846,9 @@ option {
   backdrop-filter: blur(12px);
 }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    SEARCH PAGE
-══════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .search-page { max-width: 880px; padding-top: 0.5rem; animation: pageIn 0.4s var(--ease); }
 .search-page__title { display: flex; align-items: center; gap: 0.65rem; font-family: var(--font-display); font-size: 1.65rem; font-weight: 900; margin-bottom: 1.5rem; color: var(--text-1); }
 .search-page__bar { display: flex; align-items: center; gap: 0.65rem; flex-wrap: nowrap; margin-bottom: 1rem; width: 100%; }
@@ -2864,9 +2864,9 @@ option {
 .search-filters { background: var(--bg-raised); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.1rem; margin-bottom: 1rem; animation: drillIn 0.2s var(--ease); }
 .search-filters__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.75rem; }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    PROFILE PAGE
-══════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .profile-page { max-width: 720px; animation: pageIn 0.4s var(--ease); }
 .profile-card {
   display: flex; align-items: center; gap: 1.75rem;
@@ -2906,9 +2906,9 @@ option {
 .bookmark-item__remove { padding: 0.75rem 1rem; color: var(--text-3); background: none; border: none; cursor: pointer; transition: color 0.15s; flex-shrink: 0; }
 .bookmark-item__remove:hover { color: var(--danger); }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    ADMIN PANEL
-══════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .admin-panel__header { margin-bottom: 1.85rem; }
 .admin-panel__title { display: flex; align-items: center; gap: 0.65rem; font-family: var(--font-display); font-size: clamp(1.3rem, 3vw, 1.85rem); font-weight: 900; }
 .admin-panel__loader { display: flex; align-items: center; gap: 0.8rem; color: var(--text-3); padding: 2rem 0; }
@@ -2957,14 +2957,14 @@ option {
 .branch-mgmt-label { font-size: 0.875rem; font-weight: 600; color: var(--text-1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .branch-mgmt-actions { display: flex; gap: 0.4rem; flex-shrink: 0; }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    ADMIN LOGIN
-══════════════════════════════════════════════════════════════ */
-/* ── Quote admin controls ── (see .qs-controls below) ── */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* â”€â”€ Quote admin controls â”€â”€ (see .qs-controls below) â”€â”€ */
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    ANALYTICS PAGE
-══════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .analytics-page { animation: pageIn 0.4s var(--ease); }
 .analytics-page__title { display: flex; align-items: center; gap: 0.65rem; font-family: var(--font-display); font-size: 1.65rem; font-weight: 900; margin-bottom: 1.85rem; }
 .analytics-stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: 0.8rem; margin-bottom: 1.85rem; }
@@ -2997,9 +2997,9 @@ option {
 .recent-upload-name { font-size: 0.85rem; font-weight: 600; color: var(--text-1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .recent-upload-meta { font-size: 0.72rem; color: var(--text-3); }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    DOWNLOAD HISTORY PAGE
-══════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .history-page { max-width: 700px; animation: pageIn 0.4s var(--ease); }
 .history-page__title { display: flex; align-items: center; gap: 0.65rem; font-family: var(--font-display); font-size: 1.65rem; font-weight: 900; margin-bottom: 1.5rem; }
 .history-list { display: flex; flex-direction: column; gap: 0.55rem; }
@@ -3013,9 +3013,9 @@ option {
 .history-item__arrow { color: var(--text-3); flex-shrink: 0; transition: color 0.15s; }
 .history-item:hover .history-item__arrow { color: var(--amber); }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    NOT FOUND PAGE
-══════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .notfound-page { min-height: 80vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; text-align: center; padding: 2rem; animation: pageIn 0.4s var(--ease); }
 .notfound-glow { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 400px; height: 400px; border-radius: 50%; background: radial-gradient(circle, rgba(245,166,35,0.07) 0%, transparent 70%); pointer-events: none; animation: floatSlow 6s ease-in-out infinite; }
 .notfound-content { position: relative; z-index: 1; max-width: 500px; width: 100%; }
@@ -3028,9 +3028,9 @@ option {
 .notfound-link   { display: flex; align-items: center; gap: 0.38rem; padding: 0.32rem 0.8rem; font-size: 0.8rem; color: var(--text-3); background: var(--bg-card); border: 1px solid var(--border); border-radius: 100px; text-decoration: none; transition: color 0.15s, border-color 0.15s; }
 .notfound-link:hover { color: var(--amber); border-color: var(--amber-border); }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    EVENTS PAGE
-══════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .events-page { max-width: 980px; animation: pageIn 0.4s var(--ease); }
 .events-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.8rem; }
 .events-title { display: flex; align-items: center; gap: 0.55rem; font-family: var(--font-display); font-size: 1.8rem; font-weight: 900; }
@@ -3063,9 +3063,9 @@ option {
 .event-card__actions { display: flex; gap: 0.45rem; flex-wrap: wrap; margin-top: auto; padding-top: 0.55rem; }
 .event-form { background: var(--bg-raised); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.35rem; margin-bottom: 1.5rem; }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    CGPA CALCULATOR
-══════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .cgpa-page { max-width: 620px; margin: 0 auto; animation: pageIn 0.4s var(--ease); }
 .cgpa-hero { display: flex; flex-direction: column; gap: 0.5rem; padding: 1rem 1.2rem; margin-bottom: 1rem; background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-raised) 100%); border:1px solid var(--border); border-radius: var(--radius-lg); }
 .cgpa-hero__icon { color: var(--amber); }
@@ -3085,9 +3085,9 @@ option {
 .cgpa-sem-row__badge { font-size: 0.8rem; border-radius: var(--radius-sm); padding: 0.22rem 0.5rem; }
 .cgpa-sem-row__remove { background: transparent; border: none; color: var(--text-3); cursor: pointer; }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    EVENT CARD DETAILS
-══════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 /* (Styles handled in comprehensive section below) */
 .event-form__title { font-family: var(--font-display); font-size: 0.95rem; font-weight: 800; color: var(--text-2); margin-bottom: 0.9rem; }
 .event-form__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.7rem; }
@@ -3097,9 +3097,9 @@ option {
 .events-section__title { font-family: var(--font-display); font-size: 1rem; font-weight: 800; margin-bottom: 0.9rem; display: flex; align-items: center; gap: 0.5rem; }
 .events-section__count { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: var(--amber-dim); color: var(--amber); font-size: 0.72rem; font-family: var(--font-mono); font-weight: 800; }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    USER MANAGEMENT
-══════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .users-list { display: flex; flex-direction: column; gap: 0.55rem; }
 .user-row {
   display: flex !important;
@@ -3162,9 +3162,9 @@ option {
 .user-row__status--active   { background: rgba(16,185,129,0.12); color: #34d399; border: 1px solid rgba(16,185,129,0.25); }
 .user-row__status--inactive { background: rgba(239,68,68,0.12);  color: #f87171; border: 1px solid rgba(239,68,68,0.25); }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    FEEDBACK PAGE  
-══════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .feedback-page { max-width: 760px; animation: pageIn 0.4s var(--ease); }
 .feedback-list { display: flex; flex-direction: column; gap: 0.8rem; }
 .feedback-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.35rem; display: flex; flex-direction: column; gap: 0.65rem; transition: border-color 0.18s; }
@@ -3181,9 +3181,9 @@ option {
 .feedback-item__review { width: 100%; padding-top: 0.8rem; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 0.55rem; animation: drillIn 0.18s var(--ease); }
 .feedback-item__review-btns { display: flex; gap: 0.45rem; flex-wrap: wrap; }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    RECENTLY VIEWED
-══════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .recently-viewed { margin-top: 2rem; }
 .recently-viewed__title { font-family: var(--font-display); font-size: 0.75rem; font-weight: 800; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.6rem; }
 .recently-viewed__title::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); }
@@ -3191,9 +3191,9 @@ option {
 .recently-viewed__item { display: flex; align-items: center; gap: 0.55rem; padding: 0.42rem 0.85rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 100px; font-size: 0.8rem; color: var(--text-2); text-decoration: none; transition: color 0.15s, border-color 0.15s, background 0.15s; }
 .recently-viewed__item:hover { color: var(--amber); border-color: var(--amber-border); background: var(--amber-dim); }
 
-/* ══════════════════════════════════════════════════════════════
-   LIGHT THEME — NAVBAR overrides
-══════════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   LIGHT THEME â€” NAVBAR overrides
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 [data-theme="light"] .login { background: var(--bg); }
 [data-theme="light"] .login__bg-blob { opacity: 0.12; }
 [data-theme="light"] .app-loader { background: var(--bg); }
@@ -3204,9 +3204,9 @@ option {
 [data-theme="light"] .navbar__dropdown { background: rgba(255,255,255,0.96); border: 1px solid rgba(0,0,0,0.08); }
 [data-theme="light"] .reg-card { background: linear-gradient(135deg, #fff 0%, #f8f9fd 100%); border: 1px solid var(--border); }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    RESPONSIVE
-══════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 @media (max-width: 640px) {
   .navbar {
     top: 0.5rem;
@@ -3253,9 +3253,9 @@ option {
   .sem-grid  { grid-template-columns: 1fr 1fr; }
 }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    CODING PAGE
-══════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .coding-page { animation: pageIn 0.4s var(--ease); }
 
 .coding-hero {
@@ -3397,9 +3397,9 @@ option {
 .coding-manage-type { display: inline-block; padding: 0.1rem 0.45rem; background: var(--amber-dim); border: 1px solid var(--amber-border); border-radius: 100px; font-size: 0.65rem; font-weight: 700; color: var(--amber); text-transform: capitalize; }
 .coding-manage-actions { display: flex; gap: 0.4rem; flex-shrink: 0; }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    SYLLABUS PAGE & TIMETABLE PAGE
-══════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .syllabus-page { animation: pageIn 0.4s var(--ease); }
 .syllabus-page__header {
   display: flex; align-items: center; justify-content: space-between;
@@ -3472,9 +3472,9 @@ option {
 .syllabus-item__meta { font-size: 0.75rem; color: var(--text-3); font-family: var(--font-mono); }
 .syllabus-item__actions { display: flex; gap: 0.45rem; flex-shrink: 0; flex-wrap: wrap; }
 
-/* ══════════════════════════════════════════════════════════════
-   QUOTE BANNER  — daily inspiration on the home page
-══════════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   QUOTE BANNER  â€” daily inspiration on the home page
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .quote-banner {
   position: relative; overflow: hidden;
   border-radius: var(--radius-xl);
@@ -3619,7 +3619,7 @@ option {
   height: 80px; color: var(--amber); opacity: 0.6;
 }
 
-/* Body — fade transition */
+/* Body â€” fade transition */
 .quote-banner__body {
   position: relative; z-index: 1;
   opacity: 0; transition: opacity 0.22s ease;
@@ -3735,9 +3735,9 @@ option {
   color: var(--text-2);
 }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    QUOTE ADMIN PANEL
-══════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .qs-admin { padding-top: 0; }
 
 .qs-admin__header {
@@ -3903,7 +3903,7 @@ option {
 }
 .qs-quote-item__actions { display: flex; gap: 0.35rem; flex-shrink: 0; }
 
-/* ── Quote admin controls (replaces old qs-autofallback-row) ── */
+/* â”€â”€ Quote admin controls (replaces old qs-autofallback-row) â”€â”€ */
 .qs-controls {
   display: flex; flex-direction: column; gap: 0.5rem;
   margin-bottom: 1.5rem;
@@ -3926,7 +3926,7 @@ option {
   border-color: rgba(0,212,184,0.3);
 }
 
-/* ── Quote/Poll tabs inside admin panel ──────────────────────── */
+/* â”€â”€ Quote/Poll tabs inside admin panel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .qs-section-tabs {
   display: flex; gap: 0.35rem; margin-bottom: 1.25rem;
   border-bottom: 1px solid var(--border); padding-bottom: 0.75rem;
@@ -3944,16 +3944,16 @@ option {
   border-color: var(--amber-border);
 }
 
-/* ── Newline hint in add-quote form ──────────────────────────── */
+/* â”€â”€ Newline hint in add-quote form â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .qs-newline-hint {
   display: block; font-size: 0.7rem; font-weight: 400;
   color: var(--amber); opacity: 0.8; margin: 0.2rem 0 0.35rem;
   font-family: var(--font-mono);
 }
 
-/* ══════════════════════════════════════════════════════════════
-   QUOTE BANNER — new wrappers, description expand, learn-more
-══════════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   QUOTE BANNER â€” new wrappers, description expand, learn-more
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .quote-banner-wrap { margin-bottom: 1.5rem; }
 
 /* Tabs for switching quote/poll cards */
@@ -4011,9 +4011,9 @@ option {
   font-size: 0.84rem; color: var(--text-2); line-height: 1.72;
 }
 
-/* ══════════════════════════════════════════════════════════════
-   POLL CARD — student-facing
-══════════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   POLL CARD â€” student-facing
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .poll-card {
   position: relative;
   background: var(--bg-card);
@@ -4148,9 +4148,9 @@ option {
   .poll-card__question { font-size: 0.95rem; }
 }
 
-/* ══════════════════════════════════════════════════════════════
-   POLL ADMIN — admin panel poll management
-══════════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   POLL ADMIN â€” admin panel poll management
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .poll-admin { animation: pageIn 0.35s var(--ease); }
 .poll-admin__header {
   display: flex; align-items: flex-start; justify-content: space-between;
@@ -4236,9 +4236,9 @@ option {
 }
 .poll-admin__row-actions { display: flex; gap: 0.4rem; flex-shrink: 0; align-items: flex-start; }
 
-/* ══════════════════════════════════════════════════════════════
-   ADMIN LOGIN PAGE — redesigned
-══════════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   ADMIN LOGIN PAGE â€” redesigned
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .admin-login-page {
   min-height: 100dvh;
   display: flex; align-items: center; justify-content: center;
@@ -4388,7 +4388,7 @@ option {
   box-shadow: 0 24px 72px rgba(0,0,0,0.16);
 }
 
-/* ── Reduce motion ──────────────────────────────────────────── */
+/* â”€â”€ Reduce motion â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -4398,9 +4398,9 @@ option {
   body::before, body::after { animation: none !important; }
 }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    PWA INSTALL BANNER
-══════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .pwa-banner {
   display: flex; align-items: center; gap: 0.75rem;
   padding: 0.65rem 1.25rem;
@@ -4422,9 +4422,9 @@ option {
 }
 .pwa-banner__dismiss:hover { color: var(--text-1); }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    ONLINE USERS INDICATOR (Dashboard admin)
-══════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .online-badge {
   display: inline-flex; align-items: center; gap: 0.4rem;
   padding: 0.3rem 0.8rem;
@@ -4467,9 +4467,9 @@ option {
 .online-user-item__name { font-weight: 700; color: var(--text-1); font-size: 0.9rem; }
 .online-user-item__role { font-size: 0.8rem; color: var(--text-3); }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    CONFIRM DIALOG
-══════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .confirm-dialog-overlay {
   position: fixed;
   inset: 0;
@@ -4640,9 +4640,9 @@ option {
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    EVENT DETAIL MODAL STYLING
-══════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .event-detail-modal-overlay { 
   position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 2100; 
   display: grid; place-items: center; padding: 1rem; overflow: auto;
@@ -4665,9 +4665,9 @@ option {
 .event-detail-item__label { font-weight: 700; color: var(--text-1); min-width: 140px; flex-shrink: 0; }
 .event-detail-item__value { color: var(--text-2); flex: 1; }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    IMAGE ZOOM MODAL
-══════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .image-zoom-overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2200;
   display: grid; place-items: center; padding: 1rem; cursor: zoom-out;
@@ -4685,9 +4685,9 @@ option {
 }
 .image-zoom__close:hover { opacity: 0.8; }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    ONBOARDING TOUR
-══════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .onboard-overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 3000;
   display: grid; place-items: center; padding: 1rem;
@@ -4772,9 +4772,9 @@ option {
   transform: translateY(-1px);
 }
 
-/* ══════════════════════════════════════════════════════════════
-   FEEDBACK PAGE — Full fix
-══════════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   FEEDBACK PAGE â€” Full fix
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .feedback-page { max-width: 800px; animation: pageIn 0.4s var(--ease); }
 
 .feedback-header {
@@ -4894,9 +4894,9 @@ option {
   padding: 4rem 1rem; color: var(--text-3); text-align: center;
 }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    CGPA CALCULATOR (Profile page button)
-══════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .profile-cgpa-btn {
   display: inline-flex; align-items: center; gap: 0.5rem;
   padding: 0.6rem 1.25rem;
@@ -4915,15 +4915,15 @@ option {
   transform: translateY(-1px);
 }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    LIGHT THEME extras
-══════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 [data-theme="light"] .app-loader { background: var(--bg); }
 [data-theme="light"] .app-loader__text { color: var(--text-3); background: rgba(0,0,0,0.04); border-color: var(--border); }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    MOBILE FIXES
-══════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 @media (max-width: 640px) {
   .coding-hero { padding: 1.5rem; }
   .coding-hero__stats { max-width: 100%; }
@@ -4938,9 +4938,9 @@ option {
   .user-row__meta { width: 100%; }
 }
 
-/* ══════════════════════════════════════════════════════════════
-   FEEDBACK PAGE — Full component styles
-══════════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   FEEDBACK PAGE â€” Full component styles
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .feedback-hero {
   position: relative; overflow: hidden;
   background: linear-gradient(135deg, var(--bg-card) 0%, rgba(10,13,23,0.95) 100%);
@@ -5060,7 +5060,7 @@ option {
 }
 .feedback-item__review-btns { display: flex; gap: 0.45rem; flex-wrap: wrap; }
 
-/* ── Dashboard hub / search / theme presets ───────────────── */
+/* â”€â”€ Dashboard hub / search / theme presets â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .dash-hub {
   margin: 1.5rem 0 1.75rem;
 }
@@ -5152,7 +5152,7 @@ option {
   font-size: 0.84rem;
 }
 
-/* ── Smart reminders inside hub reminders panel ───────────── */
+/* â”€â”€ Smart reminders inside hub reminders panel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .dash-hub__smart-reminders {
   display: flex;
   flex-direction: column;
@@ -5735,7 +5735,7 @@ option {
   .search-hit-card__action { width: 100%; justify-content: flex-end; }
 }
 
-/* ── Exam schedule page ───────────────────────────────────── */
+/* â”€â”€ Exam schedule page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .exam-page {
   display: flex;
   flex-direction: column;
@@ -6160,9 +6160,9 @@ option {
   color: #1d4ed8;
 }
 
-/* ══════════════════════════════════════════════════════════════
-   SONG SECTION — tab card (same space as Quote / Poll)
-══════════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   SONG SECTION â€” tab card (same space as Quote / Poll)
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 /* Song card: tall enough for background image to breathe */
 .song-card {
@@ -6180,7 +6180,7 @@ option {
   min-height: 500px;          /* tall so background image shows fully */
 }
 
-/* Dim background — same opacity/filter as quote-banner__img */
+/* Dim background â€” same opacity/filter as quote-banner__img */
 .song-card__bg {
   position: absolute;
   inset: 0;
@@ -6196,7 +6196,7 @@ option {
   z-index: 1;
 }
 
-/* ── Hide button — absolutely positioned top-right like quote card ── */
+/* â”€â”€ Hide button â€” absolutely positioned top-right like quote card â”€â”€ */
 .song-card > .quote-banner__hide-btn {
   position: absolute;
   top: 0.65rem;
@@ -6204,7 +6204,7 @@ option {
   z-index: 2;
 }
 
-/* ── Hidden state ────────────────────────────────────────────── */
+/* â”€â”€ Hidden state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .song-card--hidden {
   min-height: 0;
   padding: 0.85rem 1rem;
@@ -6223,7 +6223,7 @@ option {
   text-align: center;
 }
 
-/* ── Title + Artist ──────────────────────────────────────────── */
+/* â”€â”€ Title + Artist â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .song-card__title-row {
   display: flex;
   align-items: flex-start;
@@ -6250,7 +6250,7 @@ option {
   font-style: italic;
 }
 
-/* ── Audio + Download (compact row) ─────────────────────────── */
+/* â”€â”€ Audio + Download (compact row) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .song-card__audio-wrap {
   display: flex;
   align-items: center;
@@ -6287,7 +6287,7 @@ option {
   transform: translateY(-1px);
 }
 
-/* ── Body: lyrics left | images right ───────────────────────── */
+/* â”€â”€ Body: lyrics left | images right â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 /* flex: 1 takes all remaining card height, enabling height-based scroll */
 .song-card__body {
   display: flex;
@@ -6298,7 +6298,7 @@ option {
   overflow: hidden;
 }
 
-/* Lyrics column — scrollable within the body height */
+/* Lyrics column â€” scrollable within the body height */
 .song-card__lyrics-wrap {
   flex: 1 1 0;
   min-width: 0;
@@ -6313,7 +6313,7 @@ option {
   word-break: break-word;
 }
 
-/* Images column — stacked vertically, equal gap, ALL visible via scroll */
+/* Images column â€” stacked vertically, equal gap, ALL visible via scroll */
 .song-card__images {
   display: flex;
   flex-direction: column;
@@ -6339,7 +6339,7 @@ option {
   box-shadow: 0 4px 18px rgba(0,0,0,0.55);
 }
 
-/* ── Responsive ──────────────────────────────────────────────── */
+/* â”€â”€ Responsive â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @media (max-width: 600px) {
   .song-card {
     min-height: 300px;
@@ -6367,7 +6367,7 @@ option {
   }
 }
 
-/* ── Image Preview Modal ─────────────────────────────────────── */
+/* â”€â”€ Image Preview Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .image-preview-overlay {
   position: fixed;
   top: 0;
@@ -6451,10 +6451,10 @@ option {
 
 
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
    SONG ADMIN PANEL
-══════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 .song-admin {
   padding: 0;
@@ -6490,7 +6490,7 @@ option {
   line-height: 1.5;
 }
 
-/* ── Create form ────────────────────────────────────────────── */
+/* â”€â”€ Create form â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .song-admin__form {
   background: var(--bg-raised);
   border: 1px solid var(--border);
@@ -6557,7 +6557,7 @@ option {
   white-space: nowrap;
 }
 
-/* ── Image previews ─────────────────────────────────────────── */
+/* â”€â”€ Image previews â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .song-admin__img-previews {
   display: flex;
   flex-wrap: wrap;
@@ -6602,7 +6602,7 @@ option {
   transform: scale(1.15);
 }
 
-/* ── Archive list ────────────────────────────────────────────── */
+/* â”€â”€ Archive list â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .song-admin__list {
   display: flex;
   flex-direction: column;
@@ -6719,6 +6719,5 @@ option {
   flex-wrap: wrap;
   flex-shrink: 0;
 }
-/ *   d e p l o y - t r i g g e r :       * /  
- / *   c h o r e :   t r i g g e r   v e r c e l   r e d e p l o y   a f t e r   r e s e t   * /  
- 
+
+/* vercel-trigger: clean-build */
