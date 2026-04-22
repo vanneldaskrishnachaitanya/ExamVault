@@ -14,15 +14,10 @@ export default function BottomNav() {
   return (
     <nav className="bottom-nav" aria-label="Mobile navigation">
       {links.map(l => (
-        <div key={l.to} className="button-wrap bottom-nav__item-wrap">
-          <NavLink to={l.to} className={({ isActive }) => `bottom-nav__item${isActive ? ' bottom-nav__item--active' : ''}`}>
-            <span>
-              {l.icon}
-              <span className="bottom-nav__label">{l.label}</span>
-            </span>
-          </NavLink>
-          <div className="button-shadow" />
-        </div>
+        <NavLink key={l.to} to={l.to} className={({ isActive }) => `bottom-nav__item${isActive ? ' bottom-nav__item--active' : ''}`}>
+          {l.icon}
+          <span className="bottom-nav__label">{l.label}</span>
+        </NavLink>
       ))}
     </nav>
   );
