@@ -2,8 +2,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import {
   Quote, Plus, Trash2, Eye, EyeOff, Loader2, ChevronDown, ChevronRight,
-  Sparkles, Check, ToggleLeft, ToggleRight, User, UserX, BarChart2, Clock, X, Music,
+  Sparkles, Check, User, UserX, BarChart2, Clock, X, Music,
 } from 'lucide-react';
+import LiquidToggle from './LiquidToggle';
 import {
   fetchQuoteSettings, toggleQuoteEnabled, toggleQuoteAutoFallback, toggleQuoteShowAuthor,
   fetchQuoteSections, createQuoteSection, updateQuoteSection, deleteQuoteSection,
@@ -428,11 +429,16 @@ export default function QuoteAdmin() {
             <p className="qs-admin__sub">Manage quotes and polls shown on the student home page.</p>
           </div>
         </div>
-        <button className={`qs-toggle-btn${settings?.enabled ? ' qs-toggle-btn--on' : ''}`}
-          onClick={handleToggleEnabled} disabled={!!toggling}>
-          {toggling === 'enabled' ? <Loader2 size={15} className="spin" /> :
-            settings?.enabled ? <><ToggleRight size={18} /> Visible</> : <><ToggleLeft size={18} /> Hidden</>}
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          {toggling === 'enabled' && <Loader2 size={13} className="spin" style={{ color: 'var(--text-3)' }} />}
+          <LiquidToggle
+            checked={!!settings?.enabled}
+            onChange={handleToggleEnabled}
+            disabled={!!toggling}
+            label={settings?.enabled ? 'Visible' : 'Hidden'}
+            hue={144}
+          />
+        </div>
       </div>
 
       {/* Control rows */}
@@ -445,11 +451,16 @@ export default function QuoteAdmin() {
               <span className="qs-control-row__desc">When a section has no quotes, daily quotes from the Bhagavad Gita, Upanishads, Adi Shankaracharya, Ramana Maharshi and Thirukkural show automatically.</span>
             </div>
           </div>
-          <button className={`qs-toggle-btn qs-toggle-btn--sm${settings?.autoFallback ? ' qs-toggle-btn--on' : ''}`}
-            onClick={handleToggleAutoFallback} disabled={!!toggling}>
-            {toggling === 'autoFallback' ? <Loader2 size={13} className="spin" /> :
-              settings?.autoFallback ? <><ToggleRight size={16} /> Auto ON</> : <><ToggleLeft size={16} /> Auto OFF</>}
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+            {toggling === 'autoFallback' && <Loader2 size={12} className="spin" style={{ color: 'var(--text-3)' }} />}
+            <LiquidToggle
+              checked={!!settings?.autoFallback}
+              onChange={handleToggleAutoFallback}
+              disabled={!!toggling}
+              label={settings?.autoFallback ? 'Auto ON' : 'Auto OFF'}
+              hue={40}
+            />
+          </div>
         </div>
         <div className="qs-control-row">
           <div className="qs-control-row__info">
@@ -459,11 +470,16 @@ export default function QuoteAdmin() {
               <span className="qs-control-row__desc">Show or hide the author attribution below each quote.</span>
             </div>
           </div>
-          <button className={`qs-toggle-btn qs-toggle-btn--sm${settings?.showAuthor ? ' qs-toggle-btn--teal' : ''}`}
-            onClick={handleToggleShowAuthor} disabled={!!toggling}>
-            {toggling === 'showAuthor' ? <Loader2 size={13} className="spin" /> :
-              settings?.showAuthor ? <><ToggleRight size={16} /> Showing</> : <><ToggleLeft size={16} /> Hidden</>}
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+            {toggling === 'showAuthor' && <Loader2 size={12} className="spin" style={{ color: 'var(--text-3)' }} />}
+            <LiquidToggle
+              checked={!!settings?.showAuthor}
+              onChange={handleToggleShowAuthor}
+              disabled={!!toggling}
+              label={settings?.showAuthor ? 'Showing' : 'Hidden'}
+              hue={180}
+            />
+          </div>
         </div>
       </div>
 
