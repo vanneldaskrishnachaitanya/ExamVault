@@ -959,6 +959,7 @@ p, li, .dash-hero__sub, .reg-card__desc, .sp-header__meta, .login__domain-note,
   inset: 0;
 
   backdrop-filter: blur(3px);
+  filter: url(#glass-distortion);
   overflow: hidden;
 }
 
@@ -991,7 +992,6 @@ p, li, .dash-hero__sub, .reg-card__desc, .sp-header__meta, .login__domain-note,
   height: 100%;
   border-radius: 999px;
   overflow: visible;
-  filter: url(#glass-distortion);
 }
 
 .navbar__liquid-glass .liquidGlass-text {
