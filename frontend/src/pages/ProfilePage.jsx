@@ -35,7 +35,7 @@ export default function ProfilePage() {
       <div className="profile-card">
         <div className="profile-card__avatar">
           {backendUser?.avatarUrl
-            ? <img src={backendUser.avatarUrl} alt={backendUser.name} />
+            ? <img src={backendUser.avatarUrl} alt={backendUser.name} onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/avatar-placeholder.svg'; }} />
             : <span>{initials}</span>}
         </div>
         <div className="profile-card__info">

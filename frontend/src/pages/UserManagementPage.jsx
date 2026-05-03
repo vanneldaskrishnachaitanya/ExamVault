@@ -94,7 +94,7 @@ export default function UserManagementPage() {
             <div key={user._id} className={`user-row${!user.isActive ? ' user-row--inactive' : ''}`}>
               <div className="user-row__avatar">
                 {user.avatarUrl
-                  ? <img src={user.avatarUrl} alt={user.name} />
+                  ? <img src={user.avatarUrl} alt={user.name} onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/avatar-placeholder.svg'; }} />
                   : <span>{user.name?.slice(0,2).toUpperCase()}</span>}
               </div>
               <div className="user-row__body">

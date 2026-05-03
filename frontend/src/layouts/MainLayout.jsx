@@ -19,6 +19,7 @@ const TYPE_STYLES = {
 };
 
 export default function MainLayout() {
+  const videoRef = useRef(null);
   const location = useLocation();
   const layoutRef = useRef(null);
   const themeOptions = ['system', 'dark', 'light', 'aurora', 'forest', 'sunset'];
@@ -241,15 +242,40 @@ export default function MainLayout() {
       />
 
       <video
+        ref={videoRef}
         className="site-bg-video"
         src="/Background.mp4"
         autoPlay
         muted
         loop
         playsInline
+        preload="auto"
       >
         Your browser does not support the background video.
       </video>
+
+      {/* Persist playback position across route changes */}
+      {(() => {
+        useEffect(() => {
+          const v = videoRef.current;
+          if (!v) return;
+          const key = 'site-bg-video-time';
+          // restore saved time
+          try {
+            const saved = parseFloat(sessionStorage.getItem(key) || '0');
+            if (!isNaN(saved) && saved > 0 && v.duration && v.duration > saved) {
+              v.currentTime = saved;
+            }
+          } catch (e) {}
+
+          const onTime = () => {
+            try { sessionStorage.setItem(key, String(v.currentTime)); } catch (e) {}
+          };
+          v.addEventListener('timeupdate', onTime);
+          return () => v.removeEventListener('timeupdate', onTime);
+        }, [videoRef.current]);
+        return null;
+      })()}
 
       {/* Announcement banners */}
       {showTour && <OnboardingTour onDone={() => { setShowTour(false); localStorage.setItem('ev-tour-done','1'); }} />}
