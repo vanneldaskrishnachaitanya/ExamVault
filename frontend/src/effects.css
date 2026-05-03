@@ -282,6 +282,18 @@
 }
 .nav-drawer__signout:hover { background: rgba(239,68,68,0.18); border-color: rgba(239,68,68,0.4); }
 
+/* Background video: full-viewport, behind UI with 80% opacity */
+.site-bg-video {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.8;
+  pointer-events: none;
+  z-index: -1;
+}
+
 /* ── 11. POLL MOBILE + VOTER BREAKDOWN FIX ───────────────── */
 /* Mobile poll layout fix */
 @media (max-width: 640px) {

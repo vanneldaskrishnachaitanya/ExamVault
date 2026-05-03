@@ -240,6 +240,17 @@ export default function MainLayout() {
         themeOptions={themeOptions}
       />
 
+      <video
+        className="site-bg-video"
+        src="/Background.mp4"
+        autoPlay
+        muted
+        loop
+        playsInline
+      >
+        Your browser does not support the background video.
+      </video>
+
       {/* Announcement banners */}
       {showTour && <OnboardingTour onDone={() => { setShowTour(false); localStorage.setItem('ev-tour-done','1'); }} />}
       {visible.map(ann => {
