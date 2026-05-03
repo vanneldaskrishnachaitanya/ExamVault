@@ -58,7 +58,7 @@ export default function LeaderboardPage() {
                 <>
                   <div className="leader-avatar">
                     {item.avatarUrl
-                      ? <img src={item.avatarUrl} alt={item.name}/>
+                      ? <img src={item.avatarUrl} alt={item.name} onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/avatar-placeholder.svg'; }} />
                       : <span>{(item.name||'?').slice(0,2).toUpperCase()}</span>}
                   </div>
                   <div className="leader-body">

@@ -139,17 +139,6 @@ export default function MainLayout() {
     const main = root.querySelector('.layout__main');
     if (!main) return undefined;
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add('is-visible');
-        observer.unobserve(entry.target);
-      });
-    }, {
-      threshold: 0.14,
-      rootMargin: '0px 0px -8% 0px',
-    });
-
     const selectors = [
       '.layout__main > *',
       '.layout__main section',
@@ -175,7 +164,9 @@ export default function MainLayout() {
       main.querySelectorAll(selectors).forEach((el) => {
         if (el.classList.contains('reveal-blur') || el.closest('.space-end')) return;
         el.classList.add('reveal-blur');
-        observer.observe(el);
+        window.requestAnimationFrame(() => {
+          el.classList.add('is-visible');
+        });
       });
     };
 
@@ -184,10 +175,40 @@ export default function MainLayout() {
     mutObserver.observe(main, { childList: true, subtree: true });
 
     return () => {
-      observer.disconnect();
       mutObserver.disconnect();
     };
   }, [location.pathname]);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return undefined;
+
+    const getStartTime = () => {
+      const duration = Number(video.duration) || 0;
+      return duration > 16 ? 16 : Math.max(0, duration - 0.1);
+    };
+
+    const startAtSixteen = () => {
+      const startTime = getStartTime();
+      if (video.currentTime !== startTime) {
+        video.currentTime = startTime;
+      }
+    };
+
+    const loopFromSixteen = () => {
+      const startTime = getStartTime();
+      video.currentTime = startTime;
+      video.play().catch(() => {});
+    };
+
+    video.addEventListener('loadedmetadata', startAtSixteen);
+    video.addEventListener('ended', loopFromSixteen);
+
+    return () => {
+      video.removeEventListener('loadedmetadata', startAtSixteen);
+      video.removeEventListener('ended', loopFromSixteen);
+    };
+  }, []);
 
   useEffect(() => {
     const handler = (e) => { e.preventDefault(); setInstallPrompt(e); setShowInstall(true); };
@@ -247,35 +268,11 @@ export default function MainLayout() {
         src="/Background.mp4"
         autoPlay
         muted
-        loop
         playsInline
         preload="auto"
       >
         Your browser does not support the background video.
       </video>
-
-      {/* Persist playback position across route changes */}
-      {(() => {
-        useEffect(() => {
-          const v = videoRef.current;
-          if (!v) return;
-          const key = 'site-bg-video-time';
-          // restore saved time
-          try {
-            const saved = parseFloat(sessionStorage.getItem(key) || '0');
-            if (!isNaN(saved) && saved > 0 && v.duration && v.duration > saved) {
-              v.currentTime = saved;
-            }
-          } catch (e) {}
-
-          const onTime = () => {
-            try { sessionStorage.setItem(key, String(v.currentTime)); } catch (e) {}
-          };
-          v.addEventListener('timeupdate', onTime);
-          return () => v.removeEventListener('timeupdate', onTime);
-        }, [videoRef.current]);
-        return null;
-      })()}
 
       {/* Announcement banners */}
       {showTour && <OnboardingTour onDone={() => { setShowTour(false); localStorage.setItem('ev-tour-done','1'); }} />}
