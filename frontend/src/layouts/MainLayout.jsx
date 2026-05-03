@@ -179,36 +179,7 @@ export default function MainLayout() {
     };
   }, [location.pathname]);
 
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return undefined;
 
-    const getStartTime = () => {
-      const duration = Number(video.duration) || 0;
-      return duration > 16 ? 16 : Math.max(0, duration - 0.1);
-    };
-
-    const startAtSixteen = () => {
-      const startTime = getStartTime();
-      if (video.currentTime !== startTime) {
-        video.currentTime = startTime;
-      }
-    };
-
-    const loopFromSixteen = () => {
-      const startTime = getStartTime();
-      video.currentTime = startTime;
-      video.play().catch(() => {});
-    };
-
-    video.addEventListener('loadedmetadata', startAtSixteen);
-    video.addEventListener('ended', loopFromSixteen);
-
-    return () => {
-      video.removeEventListener('loadedmetadata', startAtSixteen);
-      video.removeEventListener('ended', loopFromSixteen);
-    };
-  }, []);
 
   useEffect(() => {
     const handler = (e) => { e.preventDefault(); setInstallPrompt(e); setShowInstall(true); };
@@ -262,17 +233,7 @@ export default function MainLayout() {
         themeOptions={themeOptions}
       />
 
-      <video
-        ref={videoRef}
-        className="site-bg-video"
-        src="/Background.mp4"
-        autoPlay
-        muted
-        playsInline
-        preload="auto"
-      >
-        Your browser does not support the background video.
-      </video>
+
 
       {/* Announcement banners */}
       {showTour && <OnboardingTour onDone={() => { setShowTour(false); localStorage.setItem('ev-tour-done','1'); }} />}

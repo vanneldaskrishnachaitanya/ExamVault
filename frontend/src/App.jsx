@@ -73,44 +73,55 @@ function LazyPage({ children }) {
 // ── Route tree ────────────────────────────────────────────────
 export default function App() {
   return (
-    <Routes>
+    <>
+      <video
+        className="site-bg-video"
+        src="/Background.mp4"
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="auto"
+      />
+      <Routes>
 
-      {/* ── Public ─────────────────────────────────────────── */}
-      <Route path="/login" element={
-        <GuestRoute><LazyPage><Login /></LazyPage></GuestRoute>
-      } />
+        {/* ── Public ─────────────────────────────────────────── */}
+        <Route path="/login" element={
+          <GuestRoute><LazyPage><Login /></LazyPage></GuestRoute>
+        } />
 
-      <Route path="/admin-login" element={
-        <AdminGuestRoute><LazyPage><AdminLogin /></LazyPage></AdminGuestRoute>
-      } />
+        <Route path="/admin-login" element={
+          <AdminGuestRoute><LazyPage><AdminLogin /></LazyPage></AdminGuestRoute>
+        } />
 
-      {/* ── Student (protected) ────────────────────────────── */}
-      <Route element={<ProtectedRoute><LazyPage><MainLayout /></LazyPage></ProtectedRoute>}>
-        <Route path="/dashboard"                          element={<LazyPage><Dashboard /></LazyPage>} />
-        <Route path="/r/:regulation"                      element={<LazyPage><RegulationPage /></LazyPage>} />
-        <Route path="/r/:regulation/:branch/:subject"     element={<LazyPage><SubjectPage /></LazyPage>} />
-        <Route path="/profile"                            element={<LazyPage><ProfilePage /></LazyPage>} />
-        <Route path="/search"                             element={<LazyPage><GlobalSearchPage /></LazyPage>} />
-        <Route path="/downloads"                          element={<LazyPage><DownloadHistoryPage /></LazyPage>} />
-        <Route path="/coding"                             element={<LazyPage><CodingPage /></LazyPage>} />
-        <Route path="/syllabus"                           element={<LazyPage><SyllabusPage /></LazyPage>} />
-        <Route path="/exams"                              element={<LazyPage><ExamSchedulePage /></LazyPage>} />
-        <Route path="/timetable"                          element={<LazyPage><TimetablePage /></LazyPage>} />
-        <Route path="/events"                             element={<LazyPage><EventsPage /></LazyPage>} />
-        <Route path="/cgpa"                               element={<LazyPage><CGPACalculatorPage /></LazyPage>} />
-        <Route path="/feedback"                           element={<LazyPage><FeedbackPage /></LazyPage>} />
-      </Route>
+        {/* ── Student (protected) ────────────────────────────── */}
+        <Route element={<ProtectedRoute><LazyPage><MainLayout /></LazyPage></ProtectedRoute>}>
+          <Route path="/dashboard"                          element={<LazyPage><Dashboard /></LazyPage>} />
+          <Route path="/r/:regulation"                      element={<LazyPage><RegulationPage /></LazyPage>} />
+          <Route path="/r/:regulation/:branch/:subject"     element={<LazyPage><SubjectPage /></LazyPage>} />
+          <Route path="/profile"                            element={<LazyPage><ProfilePage /></LazyPage>} />
+          <Route path="/search"                             element={<LazyPage><GlobalSearchPage /></LazyPage>} />
+          <Route path="/downloads"                          element={<LazyPage><DownloadHistoryPage /></LazyPage>} />
+          <Route path="/coding"                             element={<LazyPage><CodingPage /></LazyPage>} />
+          <Route path="/syllabus"                           element={<LazyPage><SyllabusPage /></LazyPage>} />
+          <Route path="/exams"                              element={<LazyPage><ExamSchedulePage /></LazyPage>} />
+          <Route path="/timetable"                          element={<LazyPage><TimetablePage /></LazyPage>} />
+          <Route path="/events"                             element={<LazyPage><EventsPage /></LazyPage>} />
+          <Route path="/cgpa"                               element={<LazyPage><CGPACalculatorPage /></LazyPage>} />
+          <Route path="/feedback"                           element={<LazyPage><FeedbackPage /></LazyPage>} />
+        </Route>
 
-      {/* ── Admin (protected + role check) ─────────────────── */}
-      <Route path="/admin" element={<AdminRoute><LazyPage><MainLayout /></LazyPage></AdminRoute>}>
-        <Route index element={<LazyPage><AdminPanel /></LazyPage>} />
-        <Route path="analytics" element={<LazyPage><AnalyticsPage /></LazyPage>} />
-        <Route path="users"     element={<LazyPage><UserManagementPage /></LazyPage>} />
-      </Route>
+        {/* ── Admin (protected + role check) ─────────────────── */}
+        <Route path="/admin" element={<AdminRoute><LazyPage><MainLayout /></LazyPage></AdminRoute>}>
+          <Route index element={<LazyPage><AdminPanel /></LazyPage>} />
+          <Route path="analytics" element={<LazyPage><AnalyticsPage /></LazyPage>} />
+          <Route path="users"     element={<LazyPage><UserManagementPage /></LazyPage>} />
+        </Route>
 
-      {/* ── Catch-all ──────────────────────────────────────── */}
-      <Route path="/"  element={<Navigate to="/login"   replace />} />
-      <Route path="*"  element={<LazyPage><NotFoundPage /></LazyPage>} />
-    </Routes>
+        {/* ── Catch-all ──────────────────────────────────────── */}
+        <Route path="/"  element={<Navigate to="/login"   replace />} />
+        <Route path="*"  element={<LazyPage><NotFoundPage /></LazyPage>} />
+      </Routes>
+    </>
   );
 }
